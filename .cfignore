@@ -1,0 +1,10 @@
+node_modules
+package.json
+package-lock.json
+.gitignore
+readme
+scratch_dict1.json
+scratch_dict2.json
+scratch_dict3.json
+scratch_dict4.json
+scratch_dict5.json
