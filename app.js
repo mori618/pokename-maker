@@ -1,4 +1,4 @@
-import { pokemonList, themes, types as typeWords, affixes, foreign, tagWords } from './data.js';
+import { pokemonList, themes, types as typeWords, affixes, foreign, tagWords, generalWords } from './data.js';
 
 // --- State ---
 let selectedThemes = new Set(['random']);
@@ -233,9 +233,36 @@ function generateNicknames() {
     let results = new Set();
     const resultDetails = [];
 
+    // --- Prepare pool for Combinations ---
+    const wordsByLength = {2: [], 3: [], 4: [], 5: [], 6: []};
+    const addWordsToPool = (arr) => {
+        arr.forEach(w => {
+            if (!w) return;
+            const cleanWord = w.replace(/・/g, '').replace(/（.*?）/g, '');
+            const clen = cleanWord.length;
+            if (clen >= 2 && clen <= 6) {
+                wordsByLength[clen].push(cleanWord);
+            }
+        });
+    };
+    if (generalWords) {
+        if (generalWords.length2) addWordsToPool(generalWords.length2);
+        if (generalWords.length3) addWordsToPool(generalWords.length3);
+        if (generalWords.length4) addWordsToPool(generalWords.length4);
+    }
+    selectedTypes.forEach(t => { if (typeWords[t]) addWordsToPool(typeWords[t]); });
+    Object.values(tagWords).forEach(arr => addWordsToPool(arr));
+    
+    const getWordOfLength = (l) => {
+        const pool = wordsByLength[l];
+        if (!pool || pool.length === 0) return "";
+        return pool[Math.floor(Math.random() * pool.length)];
+    };
+    // -------------------------------------
+
     let methodCounts = {};
     let alphabetCount = 0;
-    const maxRandom = selectedThemes.has('random') ? 6 : 2;
+    const specialMethodLimit = selectedThemes.has('gibberish') ? 3 : 1;
 
     const addResult = (name, method, subtitle = '') => {
         // ・を消して、その後の文字数で判断
@@ -253,8 +280,8 @@ function generateNicknames() {
 
         // Limit same method
         let limit = 3;
-        if (method === 'ランダム') {
-            limit = maxRandom;
+        if (method === 'ランダム' || method === 'アナグラム') {
+            limit = specialMethodLimit;
         }
         if ((methodCounts[method] || 0) >= limit) return;
 
@@ -428,7 +455,7 @@ function generateNicknames() {
         }
 
         // 6. Random completely
-        if (selectedThemes.has('random') || Math.random() < 0.2) {
+        if (selectedThemes.has('random') || selectedThemes.has('gibberish') || Math.random() < 0.2) {
             const kana = "アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲンガギグゲゴザジズゼゾダヂヅデドバビブベボパピプペポ";
             const hiragana = "あいうえおかきくけこさしすせそたちつてとなにぬねのはひふへほまみむめもやゆよらりるれろわをんがぎぐげござじずぜぞだぢづでどばびぶべぼぱぴぷぺぽ";
             const chars = Math.random() < 0.5 ? kana : hiragana;
@@ -445,6 +472,31 @@ function generateNicknames() {
                 res += char;
             }
             addResult(res, 'ランダム');
+        }
+
+        // 7. Combination
+        if (targetLength >= 4 && Math.random() < 0.4) {
+            let len1, len2;
+            if (targetLength === 4) {
+                len1 = 2; len2 = 2;
+            } else if (targetLength === 5) {
+                len1 = Math.random() < 0.5 ? 2 : 3;
+                len2 = targetLength - len1;
+            } else if (targetLength === 6) {
+                const splits = [[2,4], [3,3], [4,2]];
+                const s = splits[Math.floor(Math.random() * splits.length)];
+                len1 = s[0]; len2 = s[1];
+            } else {
+                len1 = 0; len2 = 0;
+            }
+
+            if (len1 > 0 && len2 > 0) {
+                const w1 = getWordOfLength(len1);
+                const w2 = getWordOfLength(len2);
+                if (w1 && w2) {
+                    addResult(w1 + w2, '言葉の組み合わせ', `${w1} + ${w2}`);
+                }
+            }
         }
     }
 
