@@ -1,18 +1,20 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ポケモン ニックネームメーカー</title>
     <link rel="stylesheet" href="styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;700;900&display=swap"
+        rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
 </head>
+
 <body>
     <header class="app-header">
         <div class="header-container">
             <div class="logo">
-                <span class="material-icons-round logo-icon">catching_pokemon</span>
                 <h1>ニックネームメーカー</h1>
             </div>
             <nav class="header-nav">
@@ -30,7 +32,7 @@
     <main class="app-main">
         <section class="controls-section glass-panel">
             <h2>条件を指定する</h2>
-            
+
             <div class="form-group">
                 <label for="pokemon-input">
                     <span class="material-icons-round">search</span>
@@ -64,6 +66,7 @@
                     <button class="theme-btn" data-theme="japanese">和風</button>
                     <button class="theme-btn" data-theme="western">洋風</button>
                     <button class="theme-btn" data-theme="unique">ネタ</button>
+                    <button class="theme-btn" data-theme="gibberish">ランダム</button>
                 </div>
             </div>
 
@@ -74,9 +77,8 @@
                 </label>
                 <div class="slider-container">
                     <input type="range" id="length-slider" min="1" max="6" value="5" class="slider">
-                    <span id="length-val" class="slider-val">制限なし</span>
+                    <span id="length-val" class="slider-val">5文字</span>
                 </div>
-                <p class="hint">※6文字に設定すると制限なしになります。</p>
             </div>
 
             <button id="generate-btn" class="generate-btn primary-btn pulse-anim">
@@ -132,4 +134,5 @@
 
     <script type="module" src="app.js"></script>
 </body>
+
 </html>

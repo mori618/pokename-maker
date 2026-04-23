@@ -1,8 +1,9 @@
-import { pokemonList, themes, types as typeWords, affixes, foreign } from './data.js';
+import { pokemonList, themes, types as typeWords, affixes, foreign, tagWords } from './data.js';
+import { generalWords, extendedTagWords } from './data_words.js';
 
 // --- State ---
 let selectedThemes = new Set(['random']);
-let selectedType = null;
+let selectedTypes = new Set();
 let favorites = JSON.parse(localStorage.getItem('pokemonNicknames_favs')) || [];
 
 // --- DOM Elements ---
@@ -57,12 +58,16 @@ function renderTypes() {
         btn.style.backgroundColor = TYPE_COLORS[key];
         
         btn.addEventListener('click', () => {
-            if (selectedType === key) {
-                selectedType = null;
+            if (selectedTypes.has(key)) {
+                selectedTypes.delete(key);
                 btn.classList.remove('active');
             } else {
-                document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('active'));
-                selectedType = key;
+                if (selectedTypes.size >= 2) {
+                    const first = selectedTypes.values().next().value;
+                    selectedTypes.delete(first);
+                    document.querySelector(`.type-btn[data-type="${first}"]`).classList.remove('active');
+                }
+                selectedTypes.add(key);
                 btn.classList.add('active');
             }
         });
@@ -75,7 +80,7 @@ function setupEventListeners() {
     // Slider
     lengthSlider.addEventListener('input', (e) => {
         const val = parseInt(e.target.value);
-        lengthVal.textContent = val === 6 ? '制限なし' : `${val}文字`;
+        lengthVal.textContent = `${val}文字`;
     });
 
     // Themes
@@ -126,11 +131,22 @@ function setupEventListeners() {
                     suggestionsList.classList.add('hidden');
                     // Automatically select type if matched
                     const pType1Label = p.type1;
-                    const typeKey = Object.keys(TYPE_LABELS).find(k => TYPE_LABELS[k] === pType1Label);
-                    if (typeKey) {
-                        document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('active'));
-                        selectedType = typeKey;
-                        document.querySelector(`[data-type="${typeKey}"]`).classList.add('active');
+                    const pType2Label = p.type2;
+                    
+                    document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('active'));
+                    selectedTypes.clear();
+
+                    const type1Key = Object.keys(TYPE_LABELS).find(k => TYPE_LABELS[k] === pType1Label);
+                    if (type1Key) {
+                        selectedTypes.add(type1Key);
+                        document.querySelector(`[data-type="${type1Key}"]`).classList.add('active');
+                    }
+                    if (pType2Label) {
+                        const type2Key = Object.keys(TYPE_LABELS).find(k => TYPE_LABELS[k] === pType2Label);
+                        if (type2Key) {
+                            selectedTypes.add(type2Key);
+                            document.querySelector(`[data-type="${type2Key}"]`).classList.add('active');
+                        }
                     }
                 });
                 suggestionsList.appendChild(li);
@@ -213,25 +229,78 @@ function truncateToNatural(word, targetLength) {
 // --- Generation Logic ---
 function generateNicknames() {
     const targetLength = parseInt(lengthSlider.value);
-    const limitLength = targetLength === 6 ? 99 : targetLength;
     const basePokemon = pokemonInput.value.trim();
     
     let results = new Set();
     const resultDetails = [];
 
+    // --- Prepare pool for Combinations ---
+    const wordsByLength = {2: [], 3: [], 4: [], 5: [], 6: []};
+    const addWordsToPool = (arr) => {
+        arr.forEach(w => {
+            if (!w) return;
+            const cleanWord = w.replace(/・/g, '').replace(/（.*?）/g, '');
+            const clen = cleanWord.length;
+            if (clen >= 2 && clen <= 6) {
+                wordsByLength[clen].push(cleanWord);
+            }
+        });
+    };
+    if (generalWords) {
+        if (generalWords.length2) addWordsToPool(generalWords.length2);
+        if (generalWords.length3) addWordsToPool(generalWords.length3);
+        if (generalWords.length4) addWordsToPool(generalWords.length4);
+    }
+    selectedTypes.forEach(t => { if (typeWords[t]) addWordsToPool(typeWords[t]); });
+    Object.values(tagWords).forEach(arr => addWordsToPool(arr));
+    if (typeof extendedTagWords !== 'undefined') {
+        Object.values(extendedTagWords).forEach(arr => addWordsToPool(arr));
+    }
+    
+    const getWordOfLength = (l) => {
+        const pool = wordsByLength[l];
+        if (!pool || pool.length === 0) return "";
+        return pool[Math.floor(Math.random() * pool.length)];
+    };
+    // -------------------------------------
+
+    let methodCounts = {};
+    let alphabetCount = 0;
+    const specialMethodLimit = selectedThemes.has('gibberish') ? 3 : 1;
+
     const addResult = (name, method, subtitle = '') => {
+        // ・を消して、その後の文字数で判断
+        name = name.replace(/・/g, '');
+
         // filter by length rules
         if (name.length < 1) return;
-        if (targetLength !== 6 && name.length !== targetLength) return;
+        if (name.length !== targetLength) return;
         
         // Custom rules
         if (name.startsWith('ん')) return;
         if (name.includes('んん')) return;
         if (/(?<char>.)\k<char>\k<char>/.test(name)) return; // 3 same chars
+        if (/[\u4E00-\u9FFF]/.test(name)) return; // 漢字なしで
+
+        // Limit same method
+        let limit = 3;
+        if (method === 'ランダム' || method === 'アナグラム') {
+            limit = specialMethodLimit;
+        }
+        if ((methodCounts[method] || 0) >= limit) return;
+
+        const isAlphabet = /^[a-zA-Z\s\-\ä\ö\ü\ß\é\è\ê\ë\à\â\ç\î\ï\ô\ù\û]+$/i.test(name);
+        if (isAlphabet) {
+            if (alphabetCount >= 1) return;
+        }
 
         if (!results.has(name) && results.size < 8) {
             results.add(name);
             resultDetails.push({ name, method, subtitle });
+            methodCounts[method] = (methodCounts[method] || 0) + 1;
+            if (isAlphabet) {
+                alphabetCount++;
+            }
         }
     };
 
@@ -272,18 +341,24 @@ function generateNicknames() {
                         const k = keys[Math.floor(Math.random() * keys.length)];
                         const originalMap = { en: pkmn.motifEn, la: pkmn.motifLa, de: pkmn.motifDe, fr: pkmn.motifFr };
                         const originalWord = originalMap[k] || '';
-                        const translation = pkmn.motif || '';
                         specificMethods.push({ 
                             word: pkmn.motifReading[k], 
-                            method: 'モチーフ外国語',
-                            subtitle: `${originalWord} (${translation})`
+                            method: '関連外国語',
+                            subtitle: originalWord
                         });
                     }
                 }
                 // Add tags
                 if (pkmn.tags && pkmn.tags.length > 0) {
                     const t = pkmn.tags[Math.floor(Math.random() * pkmn.tags.length)];
-                    specificMethods.push({ word: t, method: '特徴タグ', subtitle: '' });
+                    let pool = [];
+                    if (tagWords && tagWords[t]) pool = pool.concat(tagWords[t]);
+                    if (typeof extendedTagWords !== 'undefined' && extendedTagWords[t]) pool = pool.concat(extendedTagWords[t]);
+                    
+                    if (pool.length > 0) {
+                        const tagWord = pool[Math.floor(Math.random() * pool.length)];
+                        specificMethods.push({ word: tagWord, method: '特徴タグ', subtitle: t });
+                    }
                 }
 
                 if (specificMethods.length > 0) {
@@ -304,13 +379,16 @@ function generateNicknames() {
                                 const orig = origParts[idx] || origParts[0];
                                 const trans = transParts[idx] || transParts[0];
                                 subtitle = `${orig} (${trans})`;
+                            } else {
+                                const origParts = subtitle.split('/');
+                                subtitle = origParts[idx] || origParts[0];
                             }
                         }
                     }
                     // Extract just the base if it has prefixes like "（アローラフォーム）"
                     word = word.replace(/（.*?）/g, '').replace(/メガ・/, '');
                     
-                    if (targetLength !== 6 && word.length > targetLength) {
+                    if (word.length > targetLength) {
                         word = truncateToNatural(word, targetLength);
                     }
                     
@@ -320,10 +398,14 @@ function generateNicknames() {
         }
 
         // 2. Type based
-        if (selectedType && typeWords[selectedType] && Math.random() < 0.4) {
-            const arr = typeWords[selectedType];
-            const word = arr[Math.floor(Math.random() * arr.length)];
-            addResult(word, 'タイプ連想');
+        if (selectedTypes.size > 0 && Math.random() < 0.4) {
+            const typesArr = Array.from(selectedTypes);
+            const chosenType = typesArr[Math.floor(Math.random() * typesArr.length)];
+            if (typeWords[chosenType]) {
+                const arr = typeWords[chosenType];
+                const word = arr[Math.floor(Math.random() * arr.length)];
+                addResult(word, 'タイプ連想');
+            }
         }
 
         // 3. Theme based
@@ -344,7 +426,7 @@ function generateNicknames() {
             const arr = foreign[lang];
             let word = arr[Math.floor(Math.random() * arr.length)];
             
-            if (targetLength !== 6 && word.length > targetLength) {
+            if (word.length > targetLength) {
                 word = truncateToNatural(word, targetLength);
             }
             
@@ -358,9 +440,15 @@ function generateNicknames() {
             let base = "";
             if (basePokemon) {
                 base = basePokemon.substring(0, 2);
-            } else if (selectedType && typeWords[selectedType]) {
-                const arr = typeWords[selectedType];
-                base = arr[Math.floor(Math.random() * arr.length)].substring(0, 2);
+            } else if (selectedTypes.size > 0) {
+                const typesArr = Array.from(selectedTypes);
+                const chosenType = typesArr[Math.floor(Math.random() * typesArr.length)];
+                if (typeWords[chosenType]) {
+                    const arr = typeWords[chosenType];
+                    base = arr[Math.floor(Math.random() * arr.length)].substring(0, 2);
+                } else {
+                    base = "モン";
+                }
             } else {
                 base = "モン";
             }
@@ -375,21 +463,48 @@ function generateNicknames() {
         }
 
         // 6. Random completely
-        if (selectedThemes.has('random') || Math.random() < 0.2) {
+        if (selectedThemes.has('random') || selectedThemes.has('gibberish') || Math.random() < 0.2) {
             const kana = "アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲンガギグゲゴザジズゼゾダヂヅデドバビブベボパピプペポ";
-            let len = targetLength === 6 ? Math.floor(Math.random() * 3) + 3 : targetLength;
+            const hiragana = "あいうえおかきくけこさしすせそたちつてとなにぬねのはひふへほまみむめもやゆよらりるれろわをんがぎぐげござじずぜぞだぢづでどばびぶべぼぱぴぷぺぽ";
+            const chars = Math.random() < 0.5 ? kana : hiragana;
+            let len = targetLength;
             let res = "";
             let dakuonCount = 0;
             for(let i=0; i<len; i++) {
-                let char = kana[Math.floor(Math.random() * kana.length)];
-                if (i===0 && char==='ン') char = 'ア';
-                if ("ガギグゲゴザジズゼゾダヂヅデドバビブベボパピプペポ".includes(char)) {
+                let char = chars[Math.floor(Math.random() * chars.length)];
+                if (i===0 && (char==='ン' || char==='ん')) char = chars[0];
+                if ("ガギグゲゴザジズゼゾダヂヅデドバビブベボパピプペポがぎぐげござじずぜぞだぢづでどばびぶべぼぱぴぷぺぽ".includes(char)) {
                     dakuonCount++;
-                    if (dakuonCount > 3) char = 'ア';
+                    if (dakuonCount > 3) char = chars[0];
                 }
                 res += char;
             }
             addResult(res, 'ランダム');
+        }
+
+        // 7. Combination
+        if (targetLength >= 4 && Math.random() < 0.4) {
+            let len1, len2;
+            if (targetLength === 4) {
+                len1 = 2; len2 = 2;
+            } else if (targetLength === 5) {
+                len1 = Math.random() < 0.5 ? 2 : 3;
+                len2 = targetLength - len1;
+            } else if (targetLength === 6) {
+                const splits = [[2,4], [3,3], [4,2]];
+                const s = splits[Math.floor(Math.random() * splits.length)];
+                len1 = s[0]; len2 = s[1];
+            } else {
+                len1 = 0; len2 = 0;
+            }
+
+            if (len1 > 0 && len2 > 0) {
+                const w1 = getWordOfLength(len1);
+                const w2 = getWordOfLength(len2);
+                if (w1 && w2) {
+                    addResult(w1 + w2, '言葉の組み合わせ', `${w1} + ${w2}`);
+                }
+            }
         }
     }
 
