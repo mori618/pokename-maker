@@ -429,6 +429,14 @@ function renderResults(details) {
                     <span class="material-icons-round">${isFav ? 'favorite' : 'favorite_border'}</span>
                     お気に入り
                 </button>
+                <button class="action-btn anagram-btn" title="アナグラム">
+                    <span class="material-icons-round">shuffle</span>
+                    アナグラム
+                </button>
+                <button class="action-btn revert-btn hidden" data-original="${d.name}" title="元に戻す">
+                    <span class="material-icons-round">undo</span>
+                    元に戻す
+                </button>
             </div>
         `;
 
@@ -454,6 +462,56 @@ function renderResults(details) {
                 showToast(`「${name}」をお気に入りに追加しました！`);
             }
             saveFavorites();
+        });
+
+        // Anagram & Revert events
+        const displayEl = card.querySelector('.nickname-display');
+        const copyBtn = card.querySelector('.copy-btn');
+        const favBtn = card.querySelector('.fav-btn');
+        const anagramBtn = card.querySelector('.anagram-btn');
+        const revertBtn = card.querySelector('.revert-btn');
+
+        anagramBtn.addEventListener('click', () => {
+            const currentName = displayEl.textContent;
+            let shuffled = currentName.split('').sort(() => 0.5 - Math.random()).join('');
+            
+            let tries = 0;
+            while(shuffled === currentName && tries < 5) {
+                 shuffled = currentName.split('').sort(() => 0.5 - Math.random()).join('');
+                 tries++;
+            }
+            
+            displayEl.textContent = shuffled;
+            copyBtn.dataset.name = shuffled;
+            favBtn.dataset.name = shuffled;
+            
+            if (favorites.includes(shuffled)) {
+                favBtn.classList.add('active');
+                favBtn.querySelector('.material-icons-round').textContent = 'favorite';
+            } else {
+                favBtn.classList.remove('active');
+                favBtn.querySelector('.material-icons-round').textContent = 'favorite_border';
+            }
+            
+            revertBtn.classList.remove('hidden');
+        });
+
+        revertBtn.addEventListener('click', () => {
+            const originalName = revertBtn.dataset.original;
+            
+            displayEl.textContent = originalName;
+            copyBtn.dataset.name = originalName;
+            favBtn.dataset.name = originalName;
+            
+            if (favorites.includes(originalName)) {
+                favBtn.classList.add('active');
+                favBtn.querySelector('.material-icons-round').textContent = 'favorite';
+            } else {
+                favBtn.classList.remove('active');
+                favBtn.querySelector('.material-icons-round').textContent = 'favorite_border';
+            }
+            
+            revertBtn.classList.add('hidden');
         });
 
         resultsGrid.appendChild(card);
