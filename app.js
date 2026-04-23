@@ -164,6 +164,52 @@ function setupEventListeners() {
     });
 }
 
+// --- Natural Truncation for Kana ---
+function truncateToNatural(word, targetLength) {
+    if (word.length <= targetLength) return word;
+    
+    // 1. ・で区切られている場合は、その区切りを優先
+    if (word.includes('・')) {
+        const parts = word.split('・');
+        const exactPart = parts.find(p => p.length === targetLength);
+        if (exactPart) return exactPart;
+        
+        const longParts = parts.filter(p => p.length > targetLength);
+        if (longParts.length > 0) {
+            word = longParts[Math.floor(Math.random() * longParts.length)];
+        } else {
+            word = parts.join(''); // つなげて再試行
+        }
+    }
+    
+    if (word.length <= targetLength) return word;
+
+    const smallKana = "ァィゥェォャュョッー";
+    const validStarts = [];
+    
+    for (let i = 0; i <= word.length - targetLength; i++) {
+        // 先頭が小文字や伸ばし棒になるのは不自然
+        if (smallKana.includes(word[i])) continue;
+        
+        // 切り取った直後の文字が小文字や伸ばし棒の場合、切り捨てられた文字が孤立して不自然になる
+        const nextChar = word[i + targetLength];
+        if (nextChar && smallKana.includes(nextChar)) continue;
+        
+        validStarts.push(i);
+    }
+    
+    if (validStarts.length > 0) {
+        // 最初の文字から切り取るのが最も自然なことが多いので確率を高くする
+        if (validStarts.includes(0) && Math.random() < 0.7) {
+            return word.substring(0, targetLength);
+        }
+        const start = validStarts[Math.floor(Math.random() * validStarts.length)];
+        return word.substring(start, start + targetLength);
+    }
+    
+    return word.substring(0, targetLength);
+}
+
 // --- Generation Logic ---
 function generateNicknames() {
     const targetLength = parseInt(lengthSlider.value);
@@ -173,11 +219,10 @@ function generateNicknames() {
     let results = new Set();
     const resultDetails = [];
 
-    const addResult = (name, method) => {
+    const addResult = (name, method, subtitle = '') => {
         // filter by length rules
         if (name.length < 1) return;
         if (targetLength !== 6 && name.length !== targetLength) return;
-        if (targetLength === 6 && name.length > 6) return; // Rom limit is 6 for JPN usually, but we allow 6 = any (up to 6)
         
         // Custom rules
         if (name.startsWith('ん')) return;
@@ -186,7 +231,7 @@ function generateNicknames() {
 
         if (!results.has(name) && results.size < 8) {
             results.add(name);
-            resultDetails.push({ name, method });
+            resultDetails.push({ name, method, subtitle });
         }
     };
 
@@ -195,9 +240,83 @@ function generateNicknames() {
         attempts++;
         
         // 1. Anagram if base pokemon exists
-        if (basePokemon && Math.random() < 0.3) {
+        if (basePokemon && Math.random() < 0.2) {
             const shuffled = basePokemon.split('').sort(() => 0.5 - Math.random()).join('');
             if (shuffled !== basePokemon) addResult(shuffled, 'アナグラム');
+        }
+
+        // 1.5. Specific Pokemon Data (Foreign names, Motifs, Tags)
+        if (basePokemon && Math.random() < 0.5) {
+            const pkmn = pokemonList.find(p => p.name === basePokemon);
+            if (pkmn) {
+                const specificMethods = [];
+                // Add name readings
+                if (pkmn.nameReading) {
+                    const keys = Object.keys(pkmn.nameReading);
+                    if (keys.length > 0) {
+                        const k = keys[Math.floor(Math.random() * keys.length)];
+                        const originalMap = { en: pkmn.nameEn, la: pkmn.nameLa, de: pkmn.nameDe, fr: pkmn.nameFr };
+                        const originalWord = originalMap[k] || '';
+                        const translation = pkmn.name || '';
+                        specificMethods.push({ 
+                            word: pkmn.nameReading[k], 
+                            method: '外国語名',
+                            subtitle: `${originalWord} (${translation})`
+                        });
+                    }
+                }
+                // Add motif readings
+                if (pkmn.motifReading) {
+                    const keys = Object.keys(pkmn.motifReading);
+                    if (keys.length > 0) {
+                        const k = keys[Math.floor(Math.random() * keys.length)];
+                        const originalMap = { en: pkmn.motifEn, la: pkmn.motifLa, de: pkmn.motifDe, fr: pkmn.motifFr };
+                        const originalWord = originalMap[k] || '';
+                        const translation = pkmn.motif || '';
+                        specificMethods.push({ 
+                            word: pkmn.motifReading[k], 
+                            method: 'モチーフ外国語',
+                            subtitle: `${originalWord} (${translation})`
+                        });
+                    }
+                }
+                // Add tags
+                if (pkmn.tags && pkmn.tags.length > 0) {
+                    const t = pkmn.tags[Math.floor(Math.random() * pkmn.tags.length)];
+                    specificMethods.push({ word: t, method: '特徴タグ', subtitle: '' });
+                }
+
+                if (specificMethods.length > 0) {
+                    const choice = specificMethods[Math.floor(Math.random() * specificMethods.length)];
+                    let word = choice.word;
+                    let subtitle = choice.subtitle;
+                    // Handle slash separated values like "トード/ラフレシア"
+                    if (word.includes('/')) {
+                        const parts = word.split('/');
+                        const idx = Math.floor(Math.random() * parts.length);
+                        word = parts[idx];
+                        
+                        if (subtitle) {
+                            const match = subtitle.match(/^(.*?)\s*\((.*?)\)$/);
+                            if (match) {
+                                const origParts = match[1].split('/');
+                                const transParts = match[2].split('/');
+                                const orig = origParts[idx] || origParts[0];
+                                const trans = transParts[idx] || transParts[0];
+                                subtitle = `${orig} (${trans})`;
+                            }
+                        }
+                    }
+                    // Extract just the base if it has prefixes like "（アローラフォーム）"
+                    word = word.replace(/（.*?）/g, '').replace(/メガ・/, '');
+                    
+                    if (targetLength !== 6 && word.length > targetLength) {
+                        word = truncateToNatural(word, targetLength);
+                    }
+                    
+                    addResult(word, choice.method, subtitle);
+                }
+            }
         }
 
         // 2. Type based
@@ -223,7 +342,12 @@ function generateNicknames() {
             const langs = Object.keys(foreign);
             const lang = langs[Math.floor(Math.random() * langs.length)];
             const arr = foreign[lang];
-            const word = arr[Math.floor(Math.random() * arr.length)];
+            let word = arr[Math.floor(Math.random() * arr.length)];
+            
+            if (targetLength !== 6 && word.length > targetLength) {
+                word = truncateToNatural(word, targetLength);
+            }
+            
             // simplistic kana conversion or just use romaji/english
             addResult(word, '外国語');
         }
@@ -295,6 +419,7 @@ function renderResults(details) {
         card.innerHTML = `
             <span class="method-tag">${d.method}</span>
             <div class="nickname-display">${d.name}</div>
+            ${d.subtitle ? `<div class="nickname-subtitle" style="font-size: 0.8rem; color: #666; margin-top: -10px; margin-bottom: 10px; text-align: center;">${d.subtitle}</div>` : ''}
             <div class="card-actions">
                 <button class="action-btn copy-btn" data-name="${d.name}">
                     <span class="material-icons-round">content_copy</span>
