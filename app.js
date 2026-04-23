@@ -2,7 +2,7 @@ import { pokemonList, themes, types as typeWords, affixes, foreign } from './dat
 
 // --- State ---
 let selectedThemes = new Set(['random']);
-let selectedType = null;
+let selectedTypes = new Set();
 let favorites = JSON.parse(localStorage.getItem('pokemonNicknames_favs')) || [];
 
 // --- DOM Elements ---
@@ -57,12 +57,16 @@ function renderTypes() {
         btn.style.backgroundColor = TYPE_COLORS[key];
         
         btn.addEventListener('click', () => {
-            if (selectedType === key) {
-                selectedType = null;
+            if (selectedTypes.has(key)) {
+                selectedTypes.delete(key);
                 btn.classList.remove('active');
             } else {
-                document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('active'));
-                selectedType = key;
+                if (selectedTypes.size >= 2) {
+                    const first = selectedTypes.values().next().value;
+                    selectedTypes.delete(first);
+                    document.querySelector(`.type-btn[data-type="${first}"]`).classList.remove('active');
+                }
+                selectedTypes.add(key);
                 btn.classList.add('active');
             }
         });
@@ -126,11 +130,22 @@ function setupEventListeners() {
                     suggestionsList.classList.add('hidden');
                     // Automatically select type if matched
                     const pType1Label = p.type1;
-                    const typeKey = Object.keys(TYPE_LABELS).find(k => TYPE_LABELS[k] === pType1Label);
-                    if (typeKey) {
-                        document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('active'));
-                        selectedType = typeKey;
-                        document.querySelector(`[data-type="${typeKey}"]`).classList.add('active');
+                    const pType2Label = p.type2;
+                    
+                    document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('active'));
+                    selectedTypes.clear();
+
+                    const type1Key = Object.keys(TYPE_LABELS).find(k => TYPE_LABELS[k] === pType1Label);
+                    if (type1Key) {
+                        selectedTypes.add(type1Key);
+                        document.querySelector(`[data-type="${type1Key}"]`).classList.add('active');
+                    }
+                    if (pType2Label) {
+                        const type2Key = Object.keys(TYPE_LABELS).find(k => TYPE_LABELS[k] === pType2Label);
+                        if (type2Key) {
+                            selectedTypes.add(type2Key);
+                            document.querySelector(`[data-type="${type2Key}"]`).classList.add('active');
+                        }
                     }
                 });
                 suggestionsList.appendChild(li);
@@ -219,6 +234,8 @@ function generateNicknames() {
     let results = new Set();
     const resultDetails = [];
 
+    let randomMethodCount = 0;
+
     const addResult = (name, method, subtitle = '') => {
         // filter by length rules
         if (name.length < 1) return;
@@ -229,9 +246,17 @@ function generateNicknames() {
         if (name.includes('んん')) return;
         if (/(?<char>.)\k<char>\k<char>/.test(name)) return; // 3 same chars
 
+        // Limit completely random generated names to 2
+        if (method === 'ランダム') {
+            if (randomMethodCount >= 2) return;
+        }
+
         if (!results.has(name) && results.size < 8) {
             results.add(name);
             resultDetails.push({ name, method, subtitle });
+            if (method === 'ランダム') {
+                randomMethodCount++;
+            }
         }
     };
 
@@ -320,10 +345,14 @@ function generateNicknames() {
         }
 
         // 2. Type based
-        if (selectedType && typeWords[selectedType] && Math.random() < 0.4) {
-            const arr = typeWords[selectedType];
-            const word = arr[Math.floor(Math.random() * arr.length)];
-            addResult(word, 'タイプ連想');
+        if (selectedTypes.size > 0 && Math.random() < 0.4) {
+            const typesArr = Array.from(selectedTypes);
+            const chosenType = typesArr[Math.floor(Math.random() * typesArr.length)];
+            if (typeWords[chosenType]) {
+                const arr = typeWords[chosenType];
+                const word = arr[Math.floor(Math.random() * arr.length)];
+                addResult(word, 'タイプ連想');
+            }
         }
 
         // 3. Theme based
@@ -358,9 +387,15 @@ function generateNicknames() {
             let base = "";
             if (basePokemon) {
                 base = basePokemon.substring(0, 2);
-            } else if (selectedType && typeWords[selectedType]) {
-                const arr = typeWords[selectedType];
-                base = arr[Math.floor(Math.random() * arr.length)].substring(0, 2);
+            } else if (selectedTypes.size > 0) {
+                const typesArr = Array.from(selectedTypes);
+                const chosenType = typesArr[Math.floor(Math.random() * typesArr.length)];
+                if (typeWords[chosenType]) {
+                    const arr = typeWords[chosenType];
+                    base = arr[Math.floor(Math.random() * arr.length)].substring(0, 2);
+                } else {
+                    base = "モン";
+                }
             } else {
                 base = "モン";
             }
