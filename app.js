@@ -312,7 +312,7 @@ function generateNicknames() {
                         const originalWord = originalMap[k] || '';
                         specificMethods.push({ 
                             word: pkmn.motifReading[k], 
-                            method: 'モチーフ外国語',
+                            method: '関連外国語',
                             subtitle: originalWord
                         });
                     }
