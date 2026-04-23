@@ -233,7 +233,7 @@ function generateNicknames() {
     let results = new Set();
     const resultDetails = [];
 
-    let randomMethodCount = 0;
+    let methodCounts = {};
     let alphabetCount = 0;
     const maxRandom = selectedThemes.has('random') ? 6 : 2;
 
@@ -251,10 +251,12 @@ function generateNicknames() {
         if (/(?<char>.)\k<char>\k<char>/.test(name)) return; // 3 same chars
         if (/[\u4E00-\u9FFF]/.test(name)) return; // 漢字なしで
 
-        // Limit completely random generated names
+        // Limit same method
+        let limit = 3;
         if (method === 'ランダム') {
-            if (randomMethodCount >= maxRandom) return;
+            limit = maxRandom;
         }
+        if ((methodCounts[method] || 0) >= limit) return;
 
         const isAlphabet = /^[a-zA-Z\s\-\ä\ö\ü\ß\é\è\ê\ë\à\â\ç\î\ï\ô\ù\û]+$/i.test(name);
         if (isAlphabet) {
@@ -264,9 +266,7 @@ function generateNicknames() {
         if (!results.has(name) && results.size < 8) {
             results.add(name);
             resultDetails.push({ name, method, subtitle });
-            if (method === 'ランダム') {
-                randomMethodCount++;
-            }
+            methodCounts[method] = (methodCounts[method] || 0) + 1;
             if (isAlphabet) {
                 alphabetCount++;
             }
