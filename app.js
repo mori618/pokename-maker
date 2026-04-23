@@ -1,4 +1,4 @@
-import { pokemonList, themes, types as typeWords, affixes, foreign } from './data.js';
+import { pokemonList, themes, types as typeWords, affixes, foreign, tagWords } from './data.js';
 
 // --- State ---
 let selectedThemes = new Set(['random']);
@@ -79,7 +79,7 @@ function setupEventListeners() {
     // Slider
     lengthSlider.addEventListener('input', (e) => {
         const val = parseInt(e.target.value);
-        lengthVal.textContent = val === 6 ? '制限なし' : `${val}文字`;
+        lengthVal.textContent = `${val}文字`;
     });
 
     // Themes
@@ -228,27 +228,37 @@ function truncateToNatural(word, targetLength) {
 // --- Generation Logic ---
 function generateNicknames() {
     const targetLength = parseInt(lengthSlider.value);
-    const limitLength = targetLength === 6 ? 99 : targetLength;
     const basePokemon = pokemonInput.value.trim();
     
     let results = new Set();
     const resultDetails = [];
 
     let randomMethodCount = 0;
+    let alphabetCount = 0;
+    const maxRandom = selectedThemes.has('random') ? 6 : 2;
 
     const addResult = (name, method, subtitle = '') => {
+        // ・を消して、その後の文字数で判断
+        name = name.replace(/・/g, '');
+
         // filter by length rules
         if (name.length < 1) return;
-        if (targetLength !== 6 && name.length !== targetLength) return;
+        if (name.length !== targetLength) return;
         
         // Custom rules
         if (name.startsWith('ん')) return;
         if (name.includes('んん')) return;
         if (/(?<char>.)\k<char>\k<char>/.test(name)) return; // 3 same chars
+        if (/[\u4E00-\u9FFF]/.test(name)) return; // 漢字なしで
 
-        // Limit completely random generated names to 2
+        // Limit completely random generated names
         if (method === 'ランダム') {
-            if (randomMethodCount >= 2) return;
+            if (randomMethodCount >= maxRandom) return;
+        }
+
+        const isAlphabet = /^[a-zA-Z\s\-\ä\ö\ü\ß\é\è\ê\ë\à\â\ç\î\ï\ô\ù\û]+$/i.test(name);
+        if (isAlphabet) {
+            if (alphabetCount >= 1) return;
         }
 
         if (!results.has(name) && results.size < 8) {
@@ -256,6 +266,9 @@ function generateNicknames() {
             resultDetails.push({ name, method, subtitle });
             if (method === 'ランダム') {
                 randomMethodCount++;
+            }
+            if (isAlphabet) {
+                alphabetCount++;
             }
         }
     };
@@ -297,18 +310,20 @@ function generateNicknames() {
                         const k = keys[Math.floor(Math.random() * keys.length)];
                         const originalMap = { en: pkmn.motifEn, la: pkmn.motifLa, de: pkmn.motifDe, fr: pkmn.motifFr };
                         const originalWord = originalMap[k] || '';
-                        const translation = pkmn.motif || '';
                         specificMethods.push({ 
                             word: pkmn.motifReading[k], 
                             method: 'モチーフ外国語',
-                            subtitle: `${originalWord} (${translation})`
+                            subtitle: originalWord
                         });
                     }
                 }
                 // Add tags
                 if (pkmn.tags && pkmn.tags.length > 0) {
                     const t = pkmn.tags[Math.floor(Math.random() * pkmn.tags.length)];
-                    specificMethods.push({ word: t, method: '特徴タグ', subtitle: '' });
+                    if (tagWords && tagWords[t] && tagWords[t].length > 0) {
+                        const tagWord = tagWords[t][Math.floor(Math.random() * tagWords[t].length)];
+                        specificMethods.push({ word: tagWord, method: '特徴タグ', subtitle: t });
+                    }
                 }
 
                 if (specificMethods.length > 0) {
@@ -329,13 +344,16 @@ function generateNicknames() {
                                 const orig = origParts[idx] || origParts[0];
                                 const trans = transParts[idx] || transParts[0];
                                 subtitle = `${orig} (${trans})`;
+                            } else {
+                                const origParts = subtitle.split('/');
+                                subtitle = origParts[idx] || origParts[0];
                             }
                         }
                     }
                     // Extract just the base if it has prefixes like "（アローラフォーム）"
                     word = word.replace(/（.*?）/g, '').replace(/メガ・/, '');
                     
-                    if (targetLength !== 6 && word.length > targetLength) {
+                    if (word.length > targetLength) {
                         word = truncateToNatural(word, targetLength);
                     }
                     
@@ -373,7 +391,7 @@ function generateNicknames() {
             const arr = foreign[lang];
             let word = arr[Math.floor(Math.random() * arr.length)];
             
-            if (targetLength !== 6 && word.length > targetLength) {
+            if (word.length > targetLength) {
                 word = truncateToNatural(word, targetLength);
             }
             
@@ -412,15 +430,17 @@ function generateNicknames() {
         // 6. Random completely
         if (selectedThemes.has('random') || Math.random() < 0.2) {
             const kana = "アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲンガギグゲゴザジズゼゾダヂヅデドバビブベボパピプペポ";
-            let len = targetLength === 6 ? Math.floor(Math.random() * 3) + 3 : targetLength;
+            const hiragana = "あいうえおかきくけこさしすせそたちつてとなにぬねのはひふへほまみむめもやゆよらりるれろわをんがぎぐげござじずぜぞだぢづでどばびぶべぼぱぴぷぺぽ";
+            const chars = Math.random() < 0.5 ? kana : hiragana;
+            let len = targetLength;
             let res = "";
             let dakuonCount = 0;
             for(let i=0; i<len; i++) {
-                let char = kana[Math.floor(Math.random() * kana.length)];
-                if (i===0 && char==='ン') char = 'ア';
-                if ("ガギグゲゴザジズゼゾダヂヅデドバビブベボパピプペポ".includes(char)) {
+                let char = chars[Math.floor(Math.random() * chars.length)];
+                if (i===0 && (char==='ン' || char==='ん')) char = chars[0];
+                if ("ガギグゲゴザジズゼゾダヂヅデドバビブベボパピプペポがぎぐげござじずぜぞだぢづでどばびぶべぼぱぴぷぺぽ".includes(char)) {
                     dakuonCount++;
-                    if (dakuonCount > 3) char = 'ア';
+                    if (dakuonCount > 3) char = chars[0];
                 }
                 res += char;
             }
