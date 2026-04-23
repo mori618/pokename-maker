@@ -1,0 +1,2478 @@
+// チャンピオンズ登場ポケモンリスト
+export const pokemonList = [
+  {
+    "no": "003",
+    "name": "フシギバナ",
+    "type1": "くさ",
+    "type2": "どく",
+    "ability1": "しんりょく",
+    "ability2": "",
+    "hiddenAbility": "ようりょくそ"
+  },
+  {
+    "no": "003",
+    "name": "メガフシギバナ",
+    "type1": "くさ",
+    "type2": "どく",
+    "ability1": "あついしぼう",
+    "ability2": "",
+    "hiddenAbility": ""
+  },
+  {
+    "no": "006",
+    "name": "リザードン",
+    "type1": "ほのお",
+    "type2": "ひこう",
+    "ability1": "もうか",
+    "ability2": "",
+    "hiddenAbility": "サンパワー"
+  },
+  {
+    "no": "006",
+    "name": "メガリザードンX",
+    "type1": "ほのお",
+    "type2": "ドラゴン",
+    "ability1": "かたいツメ",
+    "ability2": "",
+    "hiddenAbility": ""
+  },
+  {
+    "no": "006",
+    "name": "メガリザードンY",
+    "type1": "ほのお",
+    "type2": "ひこう",
+    "ability1": "ひでり",
+    "ability2": "",
+    "hiddenAbility": ""
+  },
+  {
+    "no": "009",
+    "name": "カメックス",
+    "type1": "みず",
+    "type2": "",
+    "ability1": "げきりゅう",
+    "ability2": "",
+    "hiddenAbility": "あめうけざら"
+  },
+  {
+    "no": "009",
+    "name": "メガカメックス",
+    "type1": "みず",
+    "type2": "",
+    "ability1": "メガランチャー",
+    "ability2": "",
+    "hiddenAbility": ""
+  },
+  {
+    "no": "015",
+    "name": "スピアー",
+    "type1": "むし",
+    "type2": "どく",
+    "ability1": "むしのしらせ",
+    "ability2": "",
+    "hiddenAbility": "スナイパー"
+  },
+  {
+    "no": "015",
+    "name": "メガスピアー",
+    "type1": "むし",
+    "type2": "どく",
+    "ability1": "てきおうりょく",
+    "ability2": "",
+    "hiddenAbility": ""
+  },
+  {
+    "no": "018",
+    "name": "ピジョット",
+    "type1": "ノーマル",
+    "type2": "ひこう",
+    "ability1": "するどいめ",
+    "ability2": "ちどりあし",
+    "hiddenAbility": "はとむね"
+  },
+  {
+    "no": "018",
+    "name": "メガピジョット",
+    "type1": "ノーマル",
+    "type2": "ひこう",
+    "ability1": "ノーガード",
+    "ability2": "",
+    "hiddenAbility": ""
+  },
+  {
+    "no": "024",
+    "name": "アーボック",
+    "type1": "どく",
+    "type2": "",
+    "ability1": "いかく",
+    "ability2": "だっぴ",
+    "hiddenAbility": "きんちょうかん"
+  },
+  {
+    "no": "025",
+    "name": "ピカチュウ",
+    "type1": "でんき",
+    "type2": "",
+    "ability1": "せいでんき",
+    "ability2": "",
+    "hiddenAbility": "ひらいしん"
+  },
+  {
+    "no": "026",
+    "name": "ライチュウ",
+    "type1": "でんき",
+    "type2": "",
+    "ability1": "せいでんき",
+    "ability2": "",
+    "hiddenAbility": "ひらいしん"
+  },
+  {
+    "no": "026",
+    "name": "ライチュウ(アローラ)",
+    "type1": "でんき",
+    "type2": "エスパー",
+    "ability1": "サーフテール",
+    "ability2": "",
+    "hiddenAbility": ""
+  },
+  {
+    "no": "036",
+    "name": "ピクシー",
+    "type1": "フェアリー",
+    "type2": "",
+    "ability1": "メロメロボディ",
+    "ability2": "マジックガード",
+    "hiddenAbility": "てんねん"
+  },
+  {
+    "no": "036",
+    "name": "メガピクシー",
+    "type1": "フェアリー",
+    "type2": "",
+    "ability1": "マジックミラー",
+    "ability2": "",
+    "hiddenAbility": ""
+  },
+  {
+    "no": "038",
+    "name": "キュウコン",
+    "type1": "ほのお",
+    "type2": "",
+    "ability1": "もらいび",
+    "ability2": "",
+    "hiddenAbility": "ひでり"
+  },
+  {
+    "no": "038",
+    "name": "キュウコン(アローラ)",
+    "type1": "こおり",
+    "type2": "フェアリー",
+    "ability1": "ゆきがくれ",
+    "ability2": "",
+    "hiddenAbility": "ゆきふらし"
+  },
+  {
+    "no": "059",
+    "name": "ウインディ",
+    "type1": "ほのお",
+    "type2": "",
+    "ability1": "いかく",
+    "ability2": "もらいび",
+    "hiddenAbility": "せいぎのこころ"
+  },
+  {
+    "no": "059",
+    "name": "ウインディ(ヒスイ)",
+    "type1": "ほのお",
+    "type2": "いわ",
+    "ability1": "いかく",
+    "ability2": "もらいび",
+    "hiddenAbility": "いしあたま"
+  },
+  {
+    "no": "065",
+    "name": "フーディン",
+    "type1": "エスパー",
+    "type2": "",
+    "ability1": "シンクロ",
+    "ability2": "せいしんりょく",
+    "hiddenAbility": "マジックガード"
+  },
+  {
+    "no": "065",
+    "name": "メガフーディン",
+    "type1": "エスパー",
+    "type2": "",
+    "ability1": "トレース",
+    "ability2": "",
+    "hiddenAbility": ""
+  },
+  {
+    "no": "068",
+    "name": "カイリキー",
+    "type1": "かくとう",
+    "type2": "",
+    "ability1": "こんじょう",
+    "ability2": "ノーガード",
+    "hiddenAbility": "ふくつのこころ"
+  },
+  {
+    "no": "071",
+    "name": "ウツボット",
+    "type1": "くさ",
+    "type2": "どく",
+    "ability1": "ようりょくそ",
+    "ability2": "",
+    "hiddenAbility": "くいしんぼう"
+  },
+  {
+    "no": "071",
+    "name": "メガウツボット",
+    "type1": "くさ",
+    "type2": "どく",
+    "ability1": "とびだすなかみ",
+    "ability2": "",
+    "hiddenAbility": ""
+  },
+  {
+    "no": "080",
+    "name": "ヤドラン",
+    "type1": "みず",
+    "type2": "エスパー",
+    "ability1": "どんかん",
+    "ability2": "マイペース",
+    "hiddenAbility": "さいせいりょく"
+  },
+  {
+    "no": "080",
+    "name": "メガヤドラン",
+    "type1": "みず",
+    "type2": "エスパー",
+    "ability1": "シェルアーマー",
+    "ability2": "",
+    "hiddenAbility": ""
+  },
+  {
+    "no": "080",
+    "name": "ヤドラン(ガラル)",
+    "type1": "どく",
+    "type2": "エスパー",
+    "ability1": "クイックドロウ",
+    "ability2": "マイペース",
+    "hiddenAbility": "さいせいりょく"
+  },
+  {
+    "no": "094",
+    "name": "ゲンガー",
+    "type1": "ゴースト",
+    "type2": "どく",
+    "ability1": "のろわれボディ",
+    "ability2": "",
+    "hiddenAbility": ""
+  },
+  {
+    "no": "094",
+    "name": "メガゲンガー",
+    "type1": "ゴースト",
+    "type2": "どく",
+    "ability1": "かげふみ",
+    "ability2": "",
+    "hiddenAbility": ""
+  },
+  {
+    "no": "115",
+    "name": "ガルーラ",
+    "type1": "ノーマル",
+    "type2": "",
+    "ability1": "はやおき",
+    "ability2": "きもったま",
+    "hiddenAbility": "せいしんりょく"
+  },
+  {
+    "no": "115",
+    "name": "メガガルーラ",
+    "type1": "ノーマル",
+    "type2": "",
+    "ability1": "おやこあい",
+    "ability2": "",
+    "hiddenAbility": ""
+  },
+  {
+    "no": "121",
+    "name": "スターミー",
+    "type1": "みず",
+    "type2": "エスパー",
+    "ability1": "はっこう",
+    "ability2": "しぜんかいふく",
+    "hiddenAbility": "アナライズ"
+  },
+  {
+    "no": "121",
+    "name": "メガスターミー",
+    "type1": "みず",
+    "type2": "エスパー",
+    "ability1": "ちからもち",
+    "ability2": "",
+    "hiddenAbility": ""
+  },
+  {
+    "no": "127",
+    "name": "カイロス",
+    "type1": "むし",
+    "type2": "",
+    "ability1": "かいりきバサミ",
+    "ability2": "かたやぶり",
+    "hiddenAbility": "じしんかじょう"
+  },
+  {
+    "no": "127",
+    "name": "メガカイロス",
+    "type1": "むし",
+    "type2": "ひこう",
+    "ability1": "スカイスキン",
+    "ability2": "",
+    "hiddenAbility": ""
+  },
+  {
+    "no": "128",
+    "name": "ケンタロス",
+    "type1": "ノーマル",
+    "type2": "",
+    "ability1": "いかく",
+    "ability2": "いかりのつぼ",
+    "hiddenAbility": "ちからずく"
+  },
+  {
+    "no": "128",
+    "name": "ケンタロス(パルデア単)",
+    "type1": "かくとう",
+    "type2": "",
+    "ability1": "いかく",
+    "ability2": "いかりのつぼ",
+    "hiddenAbility": "はんすう"
+  },
+  {
+    "no": "128",
+    "name": "ケンタロス(パルデア炎)",
+    "type1": "かくとう",
+    "type2": "ほのお",
+    "ability1": "いかく",
+    "ability2": "いかりのつぼ",
+    "hiddenAbility": "はんすう"
+  },
+  {
+    "no": "128",
+    "name": "ケンタロス(パルデア水)",
+    "type1": "かくとう",
+    "type2": "みず",
+    "ability1": "いかく",
+    "ability2": "いかりのつぼ",
+    "hiddenAbility": "はんすう"
+  },
+  {
+    "no": "130",
+    "name": "ギャラドス",
+    "type1": "みず",
+    "type2": "ひこう",
+    "ability1": "いかく",
+    "ability2": "",
+    "hiddenAbility": "じしんかじょう"
+  },
+  {
+    "no": "130",
+    "name": "メガギャラドス",
+    "type1": "みず",
+    "type2": "あく",
+    "ability1": "かたやぶり",
+    "ability2": "",
+    "hiddenAbility": ""
+  },
+  {
+    "no": "132",
+    "name": "メタモン",
+    "type1": "ノーマル",
+    "type2": "",
+    "ability1": "じゅうなん",
+    "ability2": "",
+    "hiddenAbility": "かわりもの"
+  },
+  {
+    "no": "134",
+    "name": "シャワーズ",
+    "type1": "みず",
+    "type2": "",
+    "ability1": "ちょすい",
+    "ability2": "",
+    "hiddenAbility": "うるおいボディ"
+  },
+  {
+    "no": "135",
+    "name": "サンダース",
+    "type1": "でんき",
+    "type2": "",
+    "ability1": "ちくでん",
+    "ability2": "",
+    "hiddenAbility": "はやあし"
+  },
+  {
+    "no": "136",
+    "name": "ブースター",
+    "type1": "ほのお",
+    "type2": "",
+    "ability1": "もらいび",
+    "ability2": "",
+    "hiddenAbility": "こんじょう"
+  },
+  {
+    "no": "142",
+    "name": "プテラ",
+    "type1": "いわ",
+    "type2": "ひこう",
+    "ability1": "いしあたま",
+    "ability2": "プレッシャー",
+    "hiddenAbility": "きんちょうかん"
+  },
+  {
+    "no": "142",
+    "name": "メガプテラ",
+    "type1": "いわ",
+    "type2": "ひこう",
+    "ability1": "かたいツメ",
+    "ability2": "",
+    "hiddenAbility": ""
+  },
+  {
+    "no": "143",
+    "name": "カビゴン",
+    "type1": "ノーマル",
+    "type2": "",
+    "ability1": "めんえき",
+    "ability2": "あついしぼう",
+    "hiddenAbility": "くいしんぼう"
+  },
+  {
+    "no": "149",
+    "name": "カイリュー",
+    "type1": "ドラゴン",
+    "type2": "ひこう",
+    "ability1": "せいしんりょく",
+    "ability2": "",
+    "hiddenAbility": "マルチスケイル"
+  },
+  {
+    "no": "149",
+    "name": "メガカイリュー",
+    "type1": "ドラゴン",
+    "type2": "ひこう",
+    "ability1": "マルチスケイル",
+    "ability2": "",
+    "hiddenAbility": ""
+  },
+  {
+    "no": "154",
+    "name": "メガニウム",
+    "type1": "くさ",
+    "type2": "",
+    "ability1": "しんりょく",
+    "ability2": "",
+    "hiddenAbility": "リーフガード"
+  },
+  {
+    "no": "154",
+    "name": "メガメガニウム",
+    "type1": "くさ",
+    "type2": "",
+    "ability1": "メガソーラー",
+    "ability2": "",
+    "hiddenAbility": ""
+  },
+  {
+    "no": "157",
+    "name": "バクフーン",
+    "type1": "ほのお",
+    "type2": "",
+    "ability1": "もうか",
+    "ability2": "",
+    "hiddenAbility": "もらいび"
+  },
+  {
+    "no": "157",
+    "name": "バクフーン(ヒスイ)",
+    "type1": "ほのお",
+    "type2": "ゴースト",
+    "ability1": "もうか",
+    "ability2": "",
+    "hiddenAbility": "おみとおし"
+  },
+  {
+    "no": "160",
+    "name": "オーダイル",
+    "type1": "みず",
+    "type2": "",
+    "ability1": "げきりゅう",
+    "ability2": "",
+    "hiddenAbility": "ちからずく"
+  },
+  {
+    "no": "160",
+    "name": "メガオーダイル",
+    "type1": "みず",
+    "type2": "",
+    "ability1": "ドラゴンスキン",
+    "ability2": "",
+    "hiddenAbility": ""
+  },
+  {
+    "no": "168",
+    "name": "アリアドス",
+    "type1": "むし",
+    "type2": "どく",
+    "ability1": "むしのしらせ",
+    "ability2": "ふみん",
+    "hiddenAbility": "スナイパー"
+  },
+  {
+    "no": "181",
+    "name": "デンリュウ",
+    "type1": "でんき",
+    "type2": "",
+    "ability1": "せいでんき",
+    "ability2": "",
+    "hiddenAbility": "プラス"
+  },
+  {
+    "no": "181",
+    "name": "メガデンリュウ",
+    "type1": "でんき",
+    "type2": "ドラゴン",
+    "ability1": "かたやぶり",
+    "ability2": "",
+    "hiddenAbility": ""
+  },
+  {
+    "no": "184",
+    "name": "マリルリ",
+    "type1": "みず",
+    "type2": "フェアリー",
+    "ability1": "あついしぼう",
+    "ability2": "ちからもち",
+    "hiddenAbility": "そうしょく"
+  },
+  {
+    "no": "186",
+    "name": "ニョロトノ",
+    "type1": "みず",
+    "type2": "",
+    "ability1": "ちょすい",
+    "ability2": "しめりけ",
+    "hiddenAbility": "あめふらし"
+  },
+  {
+    "no": "196",
+    "name": "エーフィ",
+    "type1": "エスパー",
+    "type2": "",
+    "ability1": "シンクロ",
+    "ability2": "",
+    "hiddenAbility": "マジックミラー"
+  },
+  {
+    "no": "197",
+    "name": "ブラッキー",
+    "type1": "あく",
+    "type2": "",
+    "ability1": "シンクロ",
+    "ability2": "",
+    "hiddenAbility": "せいしんりょく"
+  },
+  {
+    "no": "199",
+    "name": "ヤドキング",
+    "type1": "みず",
+    "type2": "エスパー",
+    "ability1": "どんかん",
+    "ability2": "マイペース",
+    "hiddenAbility": "さいせいりょく"
+  },
+  {
+    "no": "199",
+    "name": "ヤドキング(ガラル)",
+    "type1": "どく",
+    "type2": "エスパー",
+    "ability1": "きみょうなくすり",
+    "ability2": "マイペース",
+    "hiddenAbility": "さいせいりょく"
+  },
+  {
+    "no": "205",
+    "name": "フォレトス",
+    "type1": "むし",
+    "type2": "はがね",
+    "ability1": "がんじょう",
+    "ability2": "",
+    "hiddenAbility": "ぼうじん"
+  },
+  {
+    "no": "208",
+    "name": "ハガネール",
+    "type1": "はがね",
+    "type2": "じめん",
+    "ability1": "いしあたま",
+    "ability2": "がんじょう",
+    "hiddenAbility": "ちからずく"
+  },
+  {
+    "no": "208",
+    "name": "メガハガネール",
+    "type1": "はがね",
+    "type2": "じめん",
+    "ability1": "すなのちから",
+    "ability2": "",
+    "hiddenAbility": ""
+  },
+  {
+    "no": "212",
+    "name": "ハッサム",
+    "type1": "むし",
+    "type2": "はがね",
+    "ability1": "むしのしらせ",
+    "ability2": "テクニシャン",
+    "hiddenAbility": "ライトメタル"
+  },
+  {
+    "no": "212",
+    "name": "メガハッサム",
+    "type1": "むし",
+    "type2": "はがね",
+    "ability1": "テクニシャン",
+    "ability2": "",
+    "hiddenAbility": ""
+  },
+  {
+    "no": "214",
+    "name": "ヘラクロス",
+    "type1": "むし",
+    "type2": "かくとう",
+    "ability1": "むしのしらせ",
+    "ability2": "こんじょう",
+    "hiddenAbility": "じしんかじょう"
+  },
+  {
+    "no": "214",
+    "name": "メガヘラクロス",
+    "type1": "むし",
+    "type2": "かくとう",
+    "ability1": "スキルリンク",
+    "ability2": "",
+    "hiddenAbility": ""
+  },
+  {
+    "no": "227",
+    "name": "エアームド",
+    "type1": "はがね",
+    "type2": "ひこう",
+    "ability1": "するどいめ",
+    "ability2": "がんじょう",
+    "hiddenAbility": "くだけるよろい"
+  },
+  {
+    "no": "227",
+    "name": "メガエアームド",
+    "type1": "はがね",
+    "type2": "ひこう",
+    "ability1": "すじがねいり",
+    "ability2": "",
+    "hiddenAbility": ""
+  },
+  {
+    "no": "229",
+    "name": "ヘルガー",
+    "type1": "あく",
+    "type2": "ほのお",
+    "ability1": "はやおき",
+    "ability2": "もらいび",
+    "hiddenAbility": "きんちょうかん"
+  },
+  {
+    "no": "229",
+    "name": "メガヘルガー",
+    "type1": "あく",
+    "type2": "ほのお",
+    "ability1": "サンパワー",
+    "ability2": "",
+    "hiddenAbility": ""
+  },
+  {
+    "no": "248",
+    "name": "バンギラス",
+    "type1": "いわ",
+    "type2": "あく",
+    "ability1": "すなおこし",
+    "ability2": "",
+    "hiddenAbility": "きんちょうかん"
+  },
+  {
+    "no": "248",
+    "name": "メガバンギラス",
+    "type1": "いわ",
+    "type2": "あく",
+    "ability1": "すなおこし",
+    "ability2": "",
+    "hiddenAbility": ""
+  },
+  {
+    "no": "279",
+    "name": "ペリッパー",
+    "type1": "みず",
+    "type2": "ひこう",
+    "ability1": "するどいめ",
+    "ability2": "あめふらし",
+    "hiddenAbility": "あめうけざら"
+  },
+  {
+    "no": "282",
+    "name": "サーナイト",
+    "type1": "エスパー",
+    "type2": "フェアリー",
+    "ability1": "シンクロ",
+    "ability2": "トレース",
+    "hiddenAbility": "テレパシー"
+  },
+  {
+    "no": "282",
+    "name": "メガサーナイト",
+    "type1": "エスパー",
+    "type2": "フェアリー",
+    "ability1": "フェアリースキン",
+    "ability2": "",
+    "hiddenAbility": ""
+  },
+  {
+    "no": "302",
+    "name": "ヤミラミ",
+    "type1": "あく",
+    "type2": "ゴースト",
+    "ability1": "するどいめ",
+    "ability2": "あとだし",
+    "hiddenAbility": "いたずらごころ"
+  },
+  {
+    "no": "302",
+    "name": "メガヤミラミ",
+    "type1": "あく",
+    "type2": "ゴースト",
+    "ability1": "マジックミラー",
+    "ability2": "",
+    "hiddenAbility": ""
+  },
+  {
+    "no": "306",
+    "name": "ボスゴドラ",
+    "type1": "はがね",
+    "type2": "いわ",
+    "ability1": "がんじょう",
+    "ability2": "いしあたま",
+    "hiddenAbility": "ヘヴィメタル"
+  },
+  {
+    "no": "306",
+    "name": "メガボスゴドラ",
+    "type1": "はがね",
+    "type2": "",
+    "ability1": "フィルター",
+    "ability2": "",
+    "hiddenAbility": ""
+  },
+  {
+    "no": "308",
+    "name": "チャーレム",
+    "type1": "かくとう",
+    "type2": "エスパー",
+    "ability1": "ヨガパワー",
+    "ability2": "",
+    "hiddenAbility": "テレパシー"
+  },
+  {
+    "no": "308",
+    "name": "メガチャーレム",
+    "type1": "かくとう",
+    "type2": "エスパー",
+    "ability1": "ヨガパワー",
+    "ability2": "",
+    "hiddenAbility": ""
+  },
+  {
+    "no": "310",
+    "name": "ライボルト",
+    "type1": "でんき",
+    "type2": "",
+    "ability1": "せいでんき",
+    "ability2": "ひらいしん",
+    "hiddenAbility": "マイナス"
+  },
+  {
+    "no": "310",
+    "name": "メガライボルト",
+    "type1": "でんき",
+    "type2": "",
+    "ability1": "いかく",
+    "ability2": "",
+    "hiddenAbility": ""
+  },
+  {
+    "no": "319",
+    "name": "サメハダー",
+    "type1": "みず",
+    "type2": "あく",
+    "ability1": "さめはだ",
+    "ability2": "",
+    "hiddenAbility": "かそく"
+  },
+  {
+    "no": "319",
+    "name": "メガサメハダー",
+    "type1": "みず",
+    "type2": "あく",
+    "ability1": "がんじょうあご",
+    "ability2": "",
+    "hiddenAbility": ""
+  },
+  {
+    "no": "323",
+    "name": "バクーダ",
+    "type1": "ほのお",
+    "type2": "じめん",
+    "ability1": "マグマのよろい",
+    "ability2": "ハードロック",
+    "hiddenAbility": "いかりのつぼ"
+  },
+  {
+    "no": "323",
+    "name": "メガバクーダ",
+    "type1": "ほのお",
+    "type2": "じめん",
+    "ability1": "ちからずく",
+    "ability2": "",
+    "hiddenAbility": ""
+  },
+  {
+    "no": "324",
+    "name": "コータス",
+    "type1": "ほのお",
+    "type2": "",
+    "ability1": "しろいけむり",
+    "ability2": "ひでり",
+    "hiddenAbility": "シェルアーマー"
+  },
+  {
+    "no": "334",
+    "name": "チルタリス",
+    "type1": "ドラゴン",
+    "type2": "ひこう",
+    "ability1": "しぜんかいふく",
+    "ability2": "",
+    "hiddenAbility": "ノーてんき"
+  },
+  {
+    "no": "334",
+    "name": "メガチルタリス",
+    "type1": "ドラゴン",
+    "type2": "フェアリー",
+    "ability1": "フェアリースキン",
+    "ability2": "",
+    "hiddenAbility": ""
+  },
+  {
+    "no": "350",
+    "name": "ミロカロス",
+    "type1": "みず",
+    "type2": "",
+    "ability1": "すいすい",
+    "ability2": "かちき",
+    "hiddenAbility": "メロメロボディ"
+  },
+  {
+    "no": "351",
+    "name": "ポワルン",
+    "type1": "ノーマル",
+    "type2": "",
+    "ability1": "てんきや",
+    "ability2": "",
+    "hiddenAbility": ""
+  },
+  {
+    "no": "354",
+    "name": "ジュペッタ",
+    "type1": "ゴースト",
+    "type2": "",
+    "ability1": "ふみん",
+    "ability2": "おみとおし",
+    "hiddenAbility": "のろわれボディ"
+  },
+  {
+    "no": "354",
+    "name": "メガジュペッタ",
+    "type1": "ゴースト",
+    "type2": "",
+    "ability1": "いたずらごころ",
+    "ability2": "",
+    "hiddenAbility": ""
+  },
+  {
+    "no": "358",
+    "name": "チリーン",
+    "type1": "エスパー",
+    "type2": "",
+    "ability1": "ふゆう",
+    "ability2": "",
+    "hiddenAbility": ""
+  },
+  {
+    "no": "358",
+    "name": "メガチリーン",
+    "type1": "エスパー",
+    "type2": "はがね",
+    "ability1": "ふゆう",
+    "ability2": "",
+    "hiddenAbility": ""
+  },
+  {
+    "no": "359",
+    "name": "アブソル",
+    "type1": "あく",
+    "type2": "",
+    "ability1": "プレッシャー",
+    "ability2": "きょううん",
+    "hiddenAbility": "せいぎのこころ"
+  },
+  {
+    "no": "359",
+    "name": "メガアブソル",
+    "type1": "あく",
+    "type2": "",
+    "ability1": "マジックミラー",
+    "ability2": "",
+    "hiddenAbility": ""
+  },
+  {
+    "no": "362",
+    "name": "オニゴーリ",
+    "type1": "こおり",
+    "type2": "",
+    "ability1": "せいしんりょく",
+    "ability2": "アイスボディ",
+    "hiddenAbility": "ムラっけ"
+  },
+  {
+    "no": "362",
+    "name": "メガオニゴーリ",
+    "type1": "こおり",
+    "type2": "",
+    "ability1": "フリーズスキン",
+    "ability2": "",
+    "hiddenAbility": ""
+  },
+  {
+    "no": "389",
+    "name": "ドダイトス",
+    "type1": "くさ",
+    "type2": "じめん",
+    "ability1": "しんりょく",
+    "ability2": "",
+    "hiddenAbility": "シェルアーマー"
+  },
+  {
+    "no": "392",
+    "name": "ゴウカザル",
+    "type1": "ほのお",
+    "type2": "かくとう",
+    "ability1": "もうか",
+    "ability2": "",
+    "hiddenAbility": "てつのこぶし"
+  },
+  {
+    "no": "395",
+    "name": "エンペルト",
+    "type1": "みず",
+    "type2": "はがね",
+    "ability1": "げきりゅう",
+    "ability2": "",
+    "hiddenAbility": "まけんき"
+  },
+  {
+    "no": "405",
+    "name": "レントラー",
+    "type1": "でんき",
+    "type2": "",
+    "ability1": "とうそうしん",
+    "ability2": "いかく",
+    "hiddenAbility": "こんじょう"
+  },
+  {
+    "no": "407",
+    "name": "ロズレイド",
+    "type1": "くさ",
+    "type2": "どく",
+    "ability1": "しぜんかいふく",
+    "ability2": "どくのトゲ",
+    "hiddenAbility": "テクニシャン"
+  },
+  {
+    "no": "409",
+    "name": "ラムパルド",
+    "type1": "いわ",
+    "type2": "",
+    "ability1": "かたやぶり",
+    "ability2": "",
+    "hiddenAbility": "ちからずく"
+  },
+  {
+    "no": "411",
+    "name": "トリデプス",
+    "type1": "いわ",
+    "type2": "はがね",
+    "ability1": "がんじょう",
+    "ability2": "",
+    "hiddenAbility": "ぼうおん"
+  },
+  {
+    "no": "428",
+    "name": "ミミロップ",
+    "type1": "ノーマル",
+    "type2": "",
+    "ability1": "メロメロボディ",
+    "ability2": "ぶきよう",
+    "hiddenAbility": "じゅうなん"
+  },
+  {
+    "no": "428",
+    "name": "メガミミロップ",
+    "type1": "ノーマル",
+    "type2": "かくとう",
+    "ability1": "きもったま",
+    "ability2": "",
+    "hiddenAbility": ""
+  },
+  {
+    "no": "442",
+    "name": "ミカルゲ",
+    "type1": "ゴースト",
+    "type2": "あく",
+    "ability1": "プレッシャー",
+    "ability2": "",
+    "hiddenAbility": "すりぬけ"
+  },
+  {
+    "no": "445",
+    "name": "ガブリアス",
+    "type1": "ドラゴン",
+    "type2": "じめん",
+    "ability1": "すながくれ",
+    "ability2": "",
+    "hiddenAbility": "さめはだ"
+  },
+  {
+    "no": "445",
+    "name": "メガガブリアス",
+    "type1": "ドラゴン",
+    "type2": "じめん",
+    "ability1": "すなのちから",
+    "ability2": "",
+    "hiddenAbility": ""
+  },
+  {
+    "no": "448",
+    "name": "ルカリオ",
+    "type1": "かくとう",
+    "type2": "はがね",
+    "ability1": "ふくつのこころ",
+    "ability2": "せいしんりょく",
+    "hiddenAbility": "せいぎのこころ"
+  },
+  {
+    "no": "448",
+    "name": "メガルカリオ",
+    "type1": "かくとう",
+    "type2": "はがね",
+    "ability1": "てきおうりょく",
+    "ability2": "",
+    "hiddenAbility": ""
+  },
+  {
+    "no": "450",
+    "name": "カバルドン",
+    "type1": "じめん",
+    "type2": "",
+    "ability1": "すなおこし",
+    "ability2": "",
+    "hiddenAbility": "すなのちから"
+  },
+  {
+    "no": "454",
+    "name": "ドクロッグ",
+    "type1": "どく",
+    "type2": "かくとう",
+    "ability1": "きけんよち",
+    "ability2": "かんそうはだ",
+    "hiddenAbility": "どくしゅ"
+  },
+  {
+    "no": "460",
+    "name": "ユキノオー",
+    "type1": "くさ",
+    "type2": "こおり",
+    "ability1": "ゆきふらし",
+    "ability2": "",
+    "hiddenAbility": "ぼうおん"
+  },
+  {
+    "no": "460",
+    "name": "メガユキノオー",
+    "type1": "くさ",
+    "type2": "こおり",
+    "ability1": "ゆきふらし",
+    "ability2": "",
+    "hiddenAbility": ""
+  },
+  {
+    "no": "461",
+    "name": "マニューラ",
+    "type1": "あく",
+    "type2": "こおり",
+    "ability1": "プレッシャー",
+    "ability2": "",
+    "hiddenAbility": "わるいてぐせ"
+  },
+  {
+    "no": "464",
+    "name": "ドサイドン",
+    "type1": "じめん",
+    "type2": "いわ",
+    "ability1": "ひらいしん",
+    "ability2": "ハードロック",
+    "hiddenAbility": "すてみ"
+  },
+  {
+    "no": "470",
+    "name": "リーフィア",
+    "type1": "くさ",
+    "type2": "",
+    "ability1": "リーフガード",
+    "ability2": "",
+    "hiddenAbility": "ようりょくそ"
+  },
+  {
+    "no": "471",
+    "name": "グレイシア",
+    "type1": "こおり",
+    "type2": "",
+    "ability1": "ゆきがくれ",
+    "ability2": "",
+    "hiddenAbility": "アイスボディ"
+  },
+  {
+    "no": "472",
+    "name": "グライオン",
+    "type1": "じめん",
+    "type2": "ひこう",
+    "ability1": "かいりきバサミ",
+    "ability2": "すながくれ",
+    "hiddenAbility": "ポイズンヒール"
+  },
+  {
+    "no": "473",
+    "name": "マンムー",
+    "type1": "こおり",
+    "type2": "じめん",
+    "ability1": "どんかん",
+    "ability2": "ゆきがくれ",
+    "hiddenAbility": "あついしぼう"
+  },
+  {
+    "no": "475",
+    "name": "エルレイド",
+    "type1": "エスパー",
+    "type2": "かくとう",
+    "ability1": "ふくつのこころ",
+    "ability2": "",
+    "hiddenAbility": "せいぎのこころ"
+  },
+  {
+    "no": "475",
+    "name": "メガエルレイド",
+    "type1": "エスパー",
+    "type2": "かくとう",
+    "ability1": "せいしんりょく",
+    "ability2": "",
+    "hiddenAbility": ""
+  },
+  {
+    "no": "478",
+    "name": "ユキメノコ",
+    "type1": "こおり",
+    "type2": "ゴースト",
+    "ability1": "ゆきがくれ",
+    "ability2": "",
+    "hiddenAbility": "のろわれボディ"
+  },
+  {
+    "no": "478",
+    "name": "メガユキメノコ",
+    "type1": "こおり",
+    "type2": "ゴースト",
+    "ability1": "ゆきふらし",
+    "ability2": "",
+    "hiddenAbility": ""
+  },
+  {
+    "no": "479",
+    "name": "ロトム",
+    "type1": "でんき",
+    "type2": "ゴースト",
+    "ability1": "ふゆう",
+    "ability2": "",
+    "hiddenAbility": ""
+  },
+  {
+    "no": "479",
+    "name": "ヒートロトム",
+    "type1": "でんき",
+    "type2": "ほのお",
+    "ability1": "ふゆう",
+    "ability2": "",
+    "hiddenAbility": ""
+  },
+  {
+    "no": "479",
+    "name": "ウォッシュロトム",
+    "type1": "でんき",
+    "type2": "みず",
+    "ability1": "ふゆう",
+    "ability2": "",
+    "hiddenAbility": ""
+  },
+  {
+    "no": "479",
+    "name": "フロストロトム",
+    "type1": "でんき",
+    "type2": "こおり",
+    "ability1": "ふゆう",
+    "ability2": "",
+    "hiddenAbility": ""
+  },
+  {
+    "no": "479",
+    "name": "スピンロトム",
+    "type1": "でんき",
+    "type2": "ひこう",
+    "ability1": "ふゆう",
+    "ability2": "",
+    "hiddenAbility": ""
+  },
+  {
+    "no": "479",
+    "name": "カットロトム",
+    "type1": "でんき",
+    "type2": "くさ",
+    "ability1": "ふゆう",
+    "ability2": "",
+    "hiddenAbility": ""
+  },
+  {
+    "no": "497",
+    "name": "ジャローダ",
+    "type1": "くさ",
+    "type2": "",
+    "ability1": "しんりょく",
+    "ability2": "",
+    "hiddenAbility": "あまのじゃく"
+  },
+  {
+    "no": "500",
+    "name": "エンブオー",
+    "type1": "ほのお",
+    "type2": "かくとう",
+    "ability1": "もうか",
+    "ability2": "",
+    "hiddenAbility": "すてみ"
+  },
+  {
+    "no": "500",
+    "name": "メガエンブオー",
+    "type1": "ほのお",
+    "type2": "かくとう",
+    "ability1": "かたやぶり",
+    "ability2": "",
+    "hiddenAbility": ""
+  },
+  {
+    "no": "503",
+    "name": "ダイケンキ",
+    "type1": "みず",
+    "type2": "",
+    "ability1": "げきりゅう",
+    "ability2": "",
+    "hiddenAbility": "シェルアーマー"
+  },
+  {
+    "no": "503",
+    "name": "ダイケンキ(ヒスイ)",
+    "type1": "みず",
+    "type2": "あく",
+    "ability1": "げきりゅう",
+    "ability2": "",
+    "hiddenAbility": "きれあじ"
+  },
+  {
+    "no": "505",
+    "name": "ミルホッグ",
+    "type1": "ノーマル",
+    "type2": "",
+    "ability1": "はっこう",
+    "ability2": "するどいめ",
+    "hiddenAbility": "アナライズ"
+  },
+  {
+    "no": "510",
+    "name": "レパルダス",
+    "type1": "あく",
+    "type2": "",
+    "ability1": "じゅうなん",
+    "ability2": "かるわざ",
+    "hiddenAbility": "いたずらごころ"
+  },
+  {
+    "no": "512",
+    "name": "ヤナッキー",
+    "type1": "くさ",
+    "type2": "",
+    "ability1": "くいしんぼう",
+    "ability2": "",
+    "hiddenAbility": "しんりょく"
+  },
+  {
+    "no": "514",
+    "name": "バオッキー",
+    "type1": "ほのお",
+    "type2": "",
+    "ability1": "くいしんぼう",
+    "ability2": "",
+    "hiddenAbility": "もうか"
+  },
+  {
+    "no": "516",
+    "name": "ヒヤッキー",
+    "type1": "みず",
+    "type2": "",
+    "ability1": "くいしんぼう",
+    "ability2": "",
+    "hiddenAbility": "げきりゅう"
+  },
+  {
+    "no": "530",
+    "name": "ドリュウズ",
+    "type1": "じめん",
+    "type2": "はがね",
+    "ability1": "すなかき",
+    "ability2": "すなのちから",
+    "hiddenAbility": "かたやぶり"
+  },
+  {
+    "no": "530",
+    "name": "メガドリュウズ",
+    "type1": "じめん",
+    "type2": "はがね",
+    "ability1": "かんつうドリル",
+    "ability2": "",
+    "hiddenAbility": ""
+  },
+  {
+    "no": "531",
+    "name": "タブンネ",
+    "type1": "ノーマル",
+    "type2": "",
+    "ability1": "いやしのこころ",
+    "ability2": "さいせいりょく",
+    "hiddenAbility": "ぶきよう"
+  },
+  {
+    "no": "531",
+    "name": "メガタブンネ",
+    "type1": "ノーマル",
+    "type2": "フェアリー",
+    "ability1": "いやしのこころ",
+    "ability2": "",
+    "hiddenAbility": ""
+  },
+  {
+    "no": "534",
+    "name": "ローブシン",
+    "type1": "かくとう",
+    "type2": "",
+    "ability1": "こんじょう",
+    "ability2": "ちからずく",
+    "hiddenAbility": "てつのこぶし"
+  },
+  {
+    "no": "547",
+    "name": "エルフーン",
+    "type1": "くさ",
+    "type2": "フェアリー",
+    "ability1": "いたずらごころ",
+    "ability2": "すりぬけ",
+    "hiddenAbility": "ようりょくそ"
+  },
+  {
+    "no": "553",
+    "name": "ワルビアル",
+    "type1": "じめん",
+    "type2": "あく",
+    "ability1": "いかく",
+    "ability2": "じしんかじょう",
+    "hiddenAbility": "いかりのつぼ"
+  },
+  {
+    "no": "563",
+    "name": "デスカーン",
+    "type1": "ゴースト",
+    "type2": "",
+    "ability1": "ミイラ",
+    "ability2": "",
+    "hiddenAbility": ""
+  },
+  {
+    "no": "569",
+    "name": "ダストダス",
+    "type1": "どく",
+    "type2": "",
+    "ability1": "あくしゅう",
+    "ability2": "くだけるよろい",
+    "hiddenAbility": "ゆうばく"
+  },
+  {
+    "no": "571",
+    "name": "ゾロアーク",
+    "type1": "あく",
+    "type2": "",
+    "ability1": "イリュージョン",
+    "ability2": "",
+    "hiddenAbility": ""
+  },
+  {
+    "no": "571",
+    "name": "ゾロアーク(ヒスイ)",
+    "type1": "ノーマル",
+    "type2": "ゴースト",
+    "ability1": "イリュージョン",
+    "ability2": "",
+    "hiddenAbility": ""
+  },
+  {
+    "no": "579",
+    "name": "ランクルス",
+    "type1": "エスパー",
+    "type2": "",
+    "ability1": "ぼうじん",
+    "ability2": "マジックガード",
+    "hiddenAbility": "さいせいりょく"
+  },
+  {
+    "no": "584",
+    "name": "バイバニラ",
+    "type1": "こおり",
+    "type2": "",
+    "ability1": "アイスボディ",
+    "ability2": "ゆきふらし",
+    "hiddenAbility": "くだけるよろい"
+  },
+  {
+    "no": "587",
+    "name": "エモンガ",
+    "type1": "でんき",
+    "type2": "ひこう",
+    "ability1": "せいでんき",
+    "ability2": "",
+    "hiddenAbility": "でんきエンジン"
+  },
+  {
+    "no": "609",
+    "name": "シャンデラ",
+    "type1": "ゴースト",
+    "type2": "ほのお",
+    "ability1": "もらいび",
+    "ability2": "ほのおのからだ",
+    "hiddenAbility": "すりぬけ"
+  },
+  {
+    "no": "609",
+    "name": "メガシャンデラ",
+    "type1": "ゴースト",
+    "type2": "ほのお",
+    "ability1": "すりぬけ",
+    "ability2": "",
+    "hiddenAbility": ""
+  },
+  {
+    "no": "614",
+    "name": "ツンベアー",
+    "type1": "こおり",
+    "type2": "",
+    "ability1": "ゆきがくれ",
+    "ability2": "ゆきかき",
+    "hiddenAbility": "すいすい"
+  },
+  {
+    "no": "618",
+    "name": "マッギョ",
+    "type1": "じめん",
+    "type2": "でんき",
+    "ability1": "せいでんき",
+    "ability2": "じゅうなん",
+    "hiddenAbility": "すながくれ"
+  },
+  {
+    "no": "618",
+    "name": "マッギョ(ガラル)",
+    "type1": "じめん",
+    "type2": "はがね",
+    "ability1": "ぎたい",
+    "ability2": "",
+    "hiddenAbility": ""
+  },
+  {
+    "no": "623",
+    "name": "ゴルーグ",
+    "type1": "じめん",
+    "type2": "ゴースト",
+    "ability1": "てつのこぶし",
+    "ability2": "ぶきよう",
+    "hiddenAbility": "ノーガード"
+  },
+  {
+    "no": "623",
+    "name": "メガゴルーグ",
+    "type1": "じめん",
+    "type2": "ゴースト",
+    "ability1": "ふかしのこぶし",
+    "ability2": "",
+    "hiddenAbility": ""
+  },
+  {
+    "no": "635",
+    "name": "サザンドラ",
+    "type1": "あく",
+    "type2": "ドラゴン",
+    "ability1": "ふゆう",
+    "ability2": "",
+    "hiddenAbility": ""
+  },
+  {
+    "no": "637",
+    "name": "ウルガモス",
+    "type1": "むし",
+    "type2": "ほのお",
+    "ability1": "ほのおのからだ",
+    "ability2": "",
+    "hiddenAbility": "むしのしらせ"
+  },
+  {
+    "no": "652",
+    "name": "ブリガロン",
+    "type1": "くさ",
+    "type2": "かくとう",
+    "ability1": "しんりょく",
+    "ability2": "",
+    "hiddenAbility": "ぼうだん"
+  },
+  {
+    "no": "652",
+    "name": "メガブリガロン",
+    "type1": "くさ",
+    "type2": "かくとう",
+    "ability1": "ぼうだん",
+    "ability2": "",
+    "hiddenAbility": ""
+  },
+  {
+    "no": "655",
+    "name": "マフォクシー",
+    "type1": "ほのお",
+    "type2": "エスパー",
+    "ability1": "もうか",
+    "ability2": "",
+    "hiddenAbility": "マジシャン"
+  },
+  {
+    "no": "655",
+    "name": "メガマフォクシー",
+    "type1": "ほのお",
+    "type2": "エスパー",
+    "ability1": "ふゆう",
+    "ability2": "",
+    "hiddenAbility": ""
+  },
+  {
+    "no": "658",
+    "name": "ゲッコウガ",
+    "type1": "みず",
+    "type2": "あく",
+    "ability1": "げきりゅう",
+    "ability2": "へんげんじざい",
+    "hiddenAbility": "きずなへんげ"
+  },
+  {
+    "no": "658",
+    "name": "メガゲッコウガ",
+    "type1": "みず",
+    "type2": "あく",
+    "ability1": "へんげんじざい",
+    "ability2": "",
+    "hiddenAbility": ""
+  },
+  {
+    "no": "660",
+    "name": "ホルード",
+    "type1": "ノーマル",
+    "type2": "じめん",
+    "ability1": "ものひろい",
+    "ability2": "ほおぶくろ",
+    "hiddenAbility": "ちからもち"
+  },
+  {
+    "no": "663",
+    "name": "ファイアロー",
+    "type1": "ほのお",
+    "type2": "ひこう",
+    "ability1": "ほのおのからだ",
+    "ability2": "",
+    "hiddenAbility": "はやてのつばさ"
+  },
+  {
+    "no": "666",
+    "name": "ビビヨン",
+    "type1": "むし",
+    "type2": "ひこう",
+    "ability1": "りんぷん",
+    "ability2": "ふくがん",
+    "hiddenAbility": "フレンドガード"
+  },
+  {
+    "no": "670",
+    "name": "フラエッテ(えいえん)",
+    "type1": "フェアリー",
+    "type2": "",
+    "ability1": "きょうせい",
+    "ability2": "",
+    "hiddenAbility": ""
+  },
+  {
+    "no": "670",
+    "name": "メガフラエッテ",
+    "type1": "フェアリー",
+    "type2": "",
+    "ability1": "フェアリーオーラ",
+    "ability2": "",
+    "hiddenAbility": ""
+  },
+  {
+    "no": "671",
+    "name": "フラージェス",
+    "type1": "フェアリー",
+    "type2": "",
+    "ability1": "フラワーベール",
+    "ability2": "",
+    "hiddenAbility": "きょうせい"
+  },
+  {
+    "no": "675",
+    "name": "ゴロンダ",
+    "type1": "かくとう",
+    "type2": "あく",
+    "ability1": "てつのこぶし",
+    "ability2": "かたやぶり",
+    "hiddenAbility": "きもったま"
+  },
+  {
+    "no": "676",
+    "name": "トリミアン",
+    "type1": "ノーマル",
+    "type2": "",
+    "ability1": "ファーコート",
+    "ability2": "",
+    "hiddenAbility": ""
+  },
+  {
+    "no": "678",
+    "name": "ニャオニクス♂",
+    "type1": "エスパー",
+    "type2": "",
+    "ability1": "するどいめ",
+    "ability2": "すりぬけ",
+    "hiddenAbility": "いたずらごころ"
+  },
+  {
+    "no": "678",
+    "name": "ニャオニクス♀",
+    "type1": "エスパー",
+    "type2": "",
+    "ability1": "するどいめ",
+    "ability2": "すりぬけ",
+    "hiddenAbility": "かちき"
+  },
+  {
+    "no": "678",
+    "name": "メガニャオニクス♂",
+    "type1": "エスパー",
+    "type2": "",
+    "ability1": "トレース",
+    "ability2": "",
+    "hiddenAbility": ""
+  },
+  {
+    "no": "678",
+    "name": "メガニャオニクス♀",
+    "type1": "エスパー",
+    "type2": "",
+    "ability1": "トレース",
+    "ability2": "",
+    "hiddenAbility": ""
+  },
+  {
+    "no": "681",
+    "name": "ギルガルド(シールド)",
+    "type1": "はがね",
+    "type2": "ゴースト",
+    "ability1": "バトルスイッチ",
+    "ability2": "",
+    "hiddenAbility": ""
+  },
+  {
+    "no": "681",
+    "name": "ギルガルド(ブレード)",
+    "type1": "はがね",
+    "type2": "ゴースト",
+    "ability1": "バトルスイッチ",
+    "ability2": "",
+    "hiddenAbility": ""
+  },
+  {
+    "no": "683",
+    "name": "フレフワン",
+    "type1": "フェアリー",
+    "type2": "",
+    "ability1": "いやしのこころ",
+    "ability2": "",
+    "hiddenAbility": "アロマベール"
+  },
+  {
+    "no": "685",
+    "name": "ペロリーム",
+    "type1": "フェアリー",
+    "type2": "",
+    "ability1": "スイートベール",
+    "ability2": "",
+    "hiddenAbility": "かるわざ"
+  },
+  {
+    "no": "693",
+    "name": "ブロスター",
+    "type1": "みず",
+    "type2": "",
+    "ability1": "メガランチャー",
+    "ability2": "",
+    "hiddenAbility": ""
+  },
+  {
+    "no": "695",
+    "name": "エレザード",
+    "type1": "でんき",
+    "type2": "ノーマル",
+    "ability1": "かんそうはだ",
+    "ability2": "すながくれ",
+    "hiddenAbility": "サンパワー"
+  },
+  {
+    "no": "697",
+    "name": "ガチゴラス",
+    "type1": "いわ",
+    "type2": "ドラゴン",
+    "ability1": "がんじょうあご",
+    "ability2": "",
+    "hiddenAbility": "いしあたま"
+  },
+  {
+    "no": "699",
+    "name": "アマルルガ",
+    "type1": "いわ",
+    "type2": "こおり",
+    "ability1": "フリーズスキン",
+    "ability2": "",
+    "hiddenAbility": "ゆきふらし"
+  },
+  {
+    "no": "700",
+    "name": "ニンフィア",
+    "type1": "フェアリー",
+    "type2": "",
+    "ability1": "メロメロボディ",
+    "ability2": "",
+    "hiddenAbility": "フェアリースキン"
+  },
+  {
+    "no": "701",
+    "name": "ルチャブル",
+    "type1": "かくとう",
+    "type2": "ひこう",
+    "ability1": "じゅうなん",
+    "ability2": "かるわざ",
+    "hiddenAbility": "かたやぶり"
+  },
+  {
+    "no": "701",
+    "name": "メガルチャブル",
+    "type1": "かくとう",
+    "type2": "ひこう",
+    "ability1": "ノーガード",
+    "ability2": "",
+    "hiddenAbility": ""
+  },
+  {
+    "no": "702",
+    "name": "デデンネ",
+    "type1": "でんき",
+    "type2": "フェアリー",
+    "ability1": "ほおぶくろ",
+    "ability2": "ものひろい",
+    "hiddenAbility": "プラス"
+  },
+  {
+    "no": "706",
+    "name": "ヌメルゴン",
+    "type1": "ドラゴン",
+    "type2": "",
+    "ability1": "そうしょく",
+    "ability2": "うるおいボディ",
+    "hiddenAbility": "ぬめぬめ"
+  },
+  {
+    "no": "706",
+    "name": "ヌメルゴン(ヒスイ)",
+    "type1": "はがね",
+    "type2": "ドラゴン",
+    "ability1": "そうしょく",
+    "ability2": "シェルアーマー",
+    "hiddenAbility": "ぬめぬめ"
+  },
+  {
+    "no": "707",
+    "name": "クレッフィ",
+    "type1": "はがね",
+    "type2": "フェアリー",
+    "ability1": "いたずらごころ",
+    "ability2": "",
+    "hiddenAbility": "マジシャン"
+  },
+  {
+    "no": "709",
+    "name": "オーロット",
+    "type1": "ゴースト",
+    "type2": "くさ",
+    "ability1": "しぜんかいふく",
+    "ability2": "おみとおし",
+    "hiddenAbility": "しゅうかく"
+  },
+  {
+    "no": "711",
+    "name": "パンプジン(普通)",
+    "type1": "ゴースト",
+    "type2": "くさ",
+    "ability1": "ものひろい",
+    "ability2": "おみとおし",
+    "hiddenAbility": "ふみん"
+  },
+  {
+    "no": "711",
+    "name": "パンプジン(小)",
+    "type1": "ゴースト",
+    "type2": "くさ",
+    "ability1": "ものひろい",
+    "ability2": "おみとおし",
+    "hiddenAbility": "ふみん"
+  },
+  {
+    "no": "711",
+    "name": "パンプジン(大)",
+    "type1": "ゴースト",
+    "type2": "くさ",
+    "ability1": "ものひろい",
+    "ability2": "おみとおし",
+    "hiddenAbility": "ふみん"
+  },
+  {
+    "no": "711",
+    "name": "パンプジン(特大)",
+    "type1": "ゴースト",
+    "type2": "くさ",
+    "ability1": "ものひろい",
+    "ability2": "おみとおし",
+    "hiddenAbility": "ふみん"
+  },
+  {
+    "no": "713",
+    "name": "クレベース",
+    "type1": "こおり",
+    "type2": "",
+    "ability1": "マイペース",
+    "ability2": "アイスボディ",
+    "hiddenAbility": "がんじょう"
+  },
+  {
+    "no": "713",
+    "name": "クレベース(ヒスイ)",
+    "type1": "こおり",
+    "type2": "いわ",
+    "ability1": "がんじょうあご",
+    "ability2": "アイスボディ",
+    "hiddenAbility": "がんじょう"
+  },
+  {
+    "no": "715",
+    "name": "オンバーン",
+    "type1": "ひこう",
+    "type2": "ドラゴン",
+    "ability1": "おみとおし",
+    "ability2": "すりぬけ",
+    "hiddenAbility": "テレパシー"
+  },
+  {
+    "no": "724",
+    "name": "ジュナイパー",
+    "type1": "くさ",
+    "type2": "ゴースト",
+    "ability1": "しんりょく",
+    "ability2": "",
+    "hiddenAbility": "えんかく"
+  },
+  {
+    "no": "724",
+    "name": "ジュナイパー(ヒスイ)",
+    "type1": "くさ",
+    "type2": "かくとう",
+    "ability1": "しんりょく",
+    "ability2": "",
+    "hiddenAbility": "きもったま"
+  },
+  {
+    "no": "727",
+    "name": "ガオガエン",
+    "type1": "ほのお",
+    "type2": "あく",
+    "ability1": "もうか",
+    "ability2": "",
+    "hiddenAbility": "いかく"
+  },
+  {
+    "no": "730",
+    "name": "アシレーヌ",
+    "type1": "みず",
+    "type2": "フェアリー",
+    "ability1": "げきりゅう",
+    "ability2": "",
+    "hiddenAbility": "うるおいボイス"
+  },
+  {
+    "no": "733",
+    "name": "ドデカバシ",
+    "type1": "ノーマル",
+    "type2": "ひこう",
+    "ability1": "するどいめ",
+    "ability2": "スキルリンク",
+    "hiddenAbility": "ちからずく"
+  },
+  {
+    "no": "740",
+    "name": "ケケンカニ",
+    "type1": "かくとう",
+    "type2": "こおり",
+    "ability1": "かいりきバサミ",
+    "ability2": "てつのこぶし",
+    "hiddenAbility": "いかりのつぼ"
+  },
+  {
+    "no": "740",
+    "name": "メガケケンカニ",
+    "type1": "かくとう",
+    "type2": "こおり",
+    "ability1": "てつのこぶし",
+    "ability2": "",
+    "hiddenAbility": ""
+  },
+  {
+    "no": "745",
+    "name": "ルガルガン(まひる)",
+    "type1": "いわ",
+    "type2": "",
+    "ability1": "するどいめ",
+    "ability2": "すなかき",
+    "hiddenAbility": "ふくつのこころ"
+  },
+  {
+    "no": "745",
+    "name": "ルガルガン(まよなか)",
+    "type1": "いわ",
+    "type2": "",
+    "ability1": "するどいめ",
+    "ability2": "やるき",
+    "hiddenAbility": "ノーガード"
+  },
+  {
+    "no": "745",
+    "name": "ルガルガン(たそがれ)",
+    "type1": "いわ",
+    "type2": "",
+    "ability1": "かたいツメ",
+    "ability2": "",
+    "hiddenAbility": ""
+  },
+  {
+    "no": "748",
+    "name": "ドヒドイデ",
+    "type1": "どく",
+    "type2": "みず",
+    "ability1": "ひとでなし",
+    "ability2": "じゅうなん",
+    "hiddenAbility": "さいせいりょく"
+  },
+  {
+    "no": "750",
+    "name": "バンバドロ",
+    "type1": "じめん",
+    "type2": "",
+    "ability1": "マイペース",
+    "ability2": "じきゅうりょく",
+    "hiddenAbility": "せいしんりょく"
+  },
+  {
+    "no": "752",
+    "name": "オニシズクモ",
+    "type1": "みず",
+    "type2": "むし",
+    "ability1": "すいほう",
+    "ability2": "",
+    "hiddenAbility": "ちょすい"
+  },
+  {
+    "no": "758",
+    "name": "エンニュート",
+    "type1": "どく",
+    "type2": "ほのお",
+    "ability1": "ふしょく",
+    "ability2": "",
+    "hiddenAbility": "どんかん"
+  },
+  {
+    "no": "763",
+    "name": "アマージョ",
+    "type1": "くさ",
+    "type2": "",
+    "ability1": "リーフガード",
+    "ability2": "じょおうのいげん",
+    "hiddenAbility": "スイートベール"
+  },
+  {
+    "no": "765",
+    "name": "ヤレユータン",
+    "type1": "ノーマル",
+    "type2": "エスパー",
+    "ability1": "せいしんりょく",
+    "ability2": "テレパシー",
+    "hiddenAbility": "きょうせい"
+  },
+  {
+    "no": "766",
+    "name": "ナゲツケサル",
+    "type1": "かくとう",
+    "type2": "",
+    "ability1": "レシーバー",
+    "ability2": "",
+    "hiddenAbility": "まけんき"
+  },
+  {
+    "no": "778",
+    "name": "ミミッキュ",
+    "type1": "ゴースト",
+    "type2": "フェアリー",
+    "ability1": "ばけのかわ",
+    "ability2": "",
+    "hiddenAbility": ""
+  },
+  {
+    "no": "780",
+    "name": "ジジーロン",
+    "type1": "ノーマル",
+    "type2": "ドラゴン",
+    "ability1": "ぎゃくじょう",
+    "ability2": "そうしょく",
+    "hiddenAbility": "ノーてんき"
+  },
+  {
+    "no": "780",
+    "name": "メガジジーロン",
+    "type1": "ノーマル",
+    "type2": "ドラゴン",
+    "ability1": "ぎゃくじょう",
+    "ability2": "",
+    "hiddenAbility": ""
+  },
+  {
+    "no": "784",
+    "name": "ジャラランガ",
+    "type1": "ドラゴン",
+    "type2": "かくとう",
+    "ability1": "ぼうだん",
+    "ability2": "ぼうおん",
+    "hiddenAbility": "ぼうじん"
+  },
+  {
+    "no": "823",
+    "name": "アーマーガア",
+    "type1": "ひこう",
+    "type2": "はがね",
+    "ability1": "プレッシャー",
+    "ability2": "きんちょうかん",
+    "hiddenAbility": "ミラーアーマー"
+  },
+  {
+    "no": "841",
+    "name": "アップリュー",
+    "type1": "くさ",
+    "type2": "ドラゴン",
+    "ability1": "じゅくせい",
+    "ability2": "くいしんぼう",
+    "hiddenAbility": "はりきり"
+  },
+  {
+    "no": "842",
+    "name": "タルップル",
+    "type1": "くさ",
+    "type2": "ドラゴン",
+    "ability1": "じゅくせい",
+    "ability2": "くいしんぼう",
+    "hiddenAbility": "あついしぼう"
+  },
+  {
+    "no": "844",
+    "name": "サダイジャ",
+    "type1": "じめん",
+    "type2": "",
+    "ability1": "すなはき",
+    "ability2": "だっぴ",
+    "hiddenAbility": "すながくれ"
+  },
+  {
+    "no": "855",
+    "name": "ポットデス",
+    "type1": "ゴースト",
+    "type2": "",
+    "ability1": "くだけるよろい",
+    "ability2": "",
+    "hiddenAbility": "のろわれボディ"
+  },
+  {
+    "no": "858",
+    "name": "ブリムオン",
+    "type1": "エスパー",
+    "type2": "フェアリー",
+    "ability1": "いやしのこころ",
+    "ability2": "きけんよち",
+    "hiddenAbility": "マジックミラー"
+  },
+  {
+    "no": "866",
+    "name": "バリコオル",
+    "type1": "こおり",
+    "type2": "エスパー",
+    "ability1": "ちどりあし",
+    "ability2": "バリアフリー",
+    "hiddenAbility": "アイスボディ"
+  },
+  {
+    "no": "867",
+    "name": "デスバーン",
+    "type1": "じめん",
+    "type2": "ゴースト",
+    "ability1": "さまようたましい",
+    "ability2": "",
+    "hiddenAbility": ""
+  },
+  {
+    "no": "869",
+    "name": "マホイップ",
+    "type1": "フェアリー",
+    "type2": "",
+    "ability1": "スイートベール",
+    "ability2": "",
+    "hiddenAbility": "アロマベール"
+  },
+  {
+    "no": "877",
+    "name": "モルペコ",
+    "type1": "でんき",
+    "type2": "あく",
+    "ability1": "はらぺこスイッチ",
+    "ability2": "",
+    "hiddenAbility": ""
+  },
+  {
+    "no": "887",
+    "name": "ドラパルト",
+    "type1": "ドラゴン",
+    "type2": "ゴースト",
+    "ability1": "クリアボディ",
+    "ability2": "すりぬけ",
+    "hiddenAbility": "のろわれボディ"
+  },
+  {
+    "no": "899",
+    "name": "アヤシシ",
+    "type1": "ノーマル",
+    "type2": "エスパー",
+    "ability1": "いかく",
+    "ability2": "おみとおし",
+    "hiddenAbility": "そうしょく"
+  },
+  {
+    "no": "900",
+    "name": "バサギリ",
+    "type1": "むし",
+    "type2": "いわ",
+    "ability1": "むしのしらせ",
+    "ability2": "ちからずく",
+    "hiddenAbility": "きれあじ"
+  },
+  {
+    "no": "902",
+    "name": "イダイトウ♂",
+    "type1": "みず",
+    "type2": "ゴースト",
+    "ability1": "すいすい",
+    "ability2": "てきおうりょく",
+    "hiddenAbility": "かたやぶり"
+  },
+  {
+    "no": "902",
+    "name": "イダイトウ♀",
+    "type1": "みず",
+    "type2": "ゴースト",
+    "ability1": "すいすい",
+    "ability2": "てきおうりょく",
+    "hiddenAbility": "かたやぶり"
+  },
+  {
+    "no": "903",
+    "name": "オオニューラ",
+    "type1": "どく",
+    "type2": "かくとう",
+    "ability1": "プレッシャー",
+    "ability2": "かるわざ",
+    "hiddenAbility": "どくしゅ"
+  },
+  {
+    "no": "908",
+    "name": "マスカーニャ",
+    "type1": "くさ",
+    "type2": "あく",
+    "ability1": "しんりょく",
+    "ability2": "",
+    "hiddenAbility": "へんげんじざい"
+  },
+  {
+    "no": "911",
+    "name": "ラウドボーン",
+    "type1": "ほのお",
+    "type2": "ゴースト",
+    "ability1": "もうか",
+    "ability2": "",
+    "hiddenAbility": "てんねん"
+  },
+  {
+    "no": "914",
+    "name": "ウェーニバル",
+    "type1": "みず",
+    "type2": "かくとう",
+    "ability1": "げきりゅう",
+    "ability2": "",
+    "hiddenAbility": "じしんかじょう"
+  },
+  {
+    "no": "925",
+    "name": "イッカネズミ",
+    "type1": "ノーマル",
+    "type2": "",
+    "ability1": "にげあし",
+    "ability2": "ほおぶくろ",
+    "hiddenAbility": "テクニシャン"
+  },
+  {
+    "no": "934",
+    "name": "キョジオーン",
+    "type1": "いわ",
+    "type2": "",
+    "ability1": "きよめのしお",
+    "ability2": "がんじょう",
+    "hiddenAbility": "クリアボディ"
+  },
+  {
+    "no": "936",
+    "name": "グレンアルマ",
+    "type1": "ほのお",
+    "type2": "エスパー",
+    "ability1": "もらいび",
+    "ability2": "",
+    "hiddenAbility": "くだけるよろい"
+  },
+  {
+    "no": "937",
+    "name": "ソウブレイズ",
+    "type1": "ほのお",
+    "type2": "ゴースト",
+    "ability1": "もらいび",
+    "ability2": "",
+    "hiddenAbility": "くだけるよろい"
+  },
+  {
+    "no": "939",
+    "name": "ハラバリー",
+    "type1": "でんき",
+    "type2": "",
+    "ability1": "でんきにかえる",
+    "ability2": "せいでんき",
+    "hiddenAbility": "しめりけ"
+  },
+  {
+    "no": "952",
+    "name": "スコヴィラン",
+    "type1": "くさ",
+    "type2": "ほのお",
+    "ability1": "ようりょくそ",
+    "ability2": "ふみん",
+    "hiddenAbility": "ムラっけ"
+  },
+  {
+    "no": "952",
+    "name": "メガスコヴィラン",
+    "type1": "くさ",
+    "type2": "ほのお",
+    "ability1": "とびだすハバネロ",
+    "ability2": "",
+    "hiddenAbility": ""
+  },
+  {
+    "no": "956",
+    "name": "クエスパトラ",
+    "type1": "エスパー",
+    "type2": "",
+    "ability1": "びんじょう",
+    "ability2": "おみとおし",
+    "hiddenAbility": "かそく"
+  },
+  {
+    "no": "959",
+    "name": "デカヌチャン",
+    "type1": "フェアリー",
+    "type2": "はがね",
+    "ability1": "かたやぶり",
+    "ability2": "マイペース",
+    "hiddenAbility": "わるいてぐせ"
+  },
+  {
+    "no": "964",
+    "name": "イルカマン(ナイーブ)",
+    "type1": "みず",
+    "type2": "",
+    "ability1": "マイティチェンジ",
+    "ability2": "",
+    "hiddenAbility": ""
+  },
+  {
+    "no": "964",
+    "name": "イルカマン(マイティ)",
+    "type1": "みず",
+    "type2": "",
+    "ability1": "マイティチェンジ",
+    "ability2": "",
+    "hiddenAbility": ""
+  },
+  {
+    "no": "968",
+    "name": "ミミズズ",
+    "type1": "はがね",
+    "type2": "",
+    "ability1": "どしょく",
+    "ability2": "",
+    "hiddenAbility": "すながくれ"
+  },
+  {
+    "no": "970",
+    "name": "キラフロル",
+    "type1": "いわ",
+    "type2": "どく",
+    "ability1": "どくげしょう",
+    "ability2": "",
+    "hiddenAbility": "ふしょく"
+  },
+  {
+    "no": "970",
+    "name": "メガキラフロル",
+    "type1": "いわ",
+    "type2": "どく",
+    "ability1": "てきおうりょく",
+    "ability2": "",
+    "hiddenAbility": ""
+  },
+  {
+    "no": "981",
+    "name": "リキキリン",
+    "type1": "ノーマル",
+    "type2": "エスパー",
+    "ability1": "はんすう",
+    "ability2": "テイルアーマー",
+    "hiddenAbility": "そうしょく"
+  },
+  {
+    "no": "983",
+    "name": "ドドゲザン",
+    "type1": "あく",
+    "type2": "はがね",
+    "ability1": "そうだいしょう",
+    "ability2": "まけんき",
+    "hiddenAbility": "プレッシャー"
+  },
+  {
+    "no": "1013",
+    "name": "ヤバソチャ",
+    "type1": "くさ",
+    "type2": "ゴースト",
+    "ability1": "おもてなし",
+    "ability2": "",
+    "hiddenAbility": "たいねつ"
+  },
+  {
+    "no": "1018",
+    "name": "ブリジュラス",
+    "type1": "はがね",
+    "type2": "ドラゴン",
+    "ability1": "じきゅうりょく",
+    "ability2": "がんじょう",
+    "hiddenAbility": "すじがねいり"
+  },
+  {
+    "no": "1019",
+    "name": "カミツオロチ",
+    "type1": "くさ",
+    "type2": "ドラゴン",
+    "ability1": "かんろなみつ",
+    "ability2": "さいせいりょく",
+    "hiddenAbility": "ねんちゃく"
+  }
+];
