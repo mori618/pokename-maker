@@ -75,7 +75,7 @@ function setupEventListeners() {
     // Slider
     lengthSlider.addEventListener('input', (e) => {
         const val = parseInt(e.target.value);
-        lengthVal.textContent = val === 6 ? '制限なし' : \`\${val}文字\`;
+        lengthVal.textContent = val === 6 ? '制限なし' : `${val}文字`;
     });
 
     // Themes
@@ -130,7 +130,7 @@ function setupEventListeners() {
                     if (typeKey) {
                         document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('active'));
                         selectedType = typeKey;
-                        document.querySelector(\`[data-type="\${typeKey}"]\`).classList.add('active');
+                        document.querySelector(`[data-type="${typeKey}"]`).classList.add('active');
                     }
                 });
                 suggestionsList.appendChild(li);
@@ -277,12 +277,12 @@ function renderResults(details) {
     resultsGrid.innerHTML = '';
     
     if (details.length === 0) {
-        resultsGrid.innerHTML = \`
+        resultsGrid.innerHTML = `
             <div class="empty-state">
                 <span class="material-icons-round huge-icon">sentiment_dissatisfied</span>
                 <p>条件が厳しすぎます。<br>文字数やテーマを変えてみてください。</p>
             </div>
-        \`;
+        `;
         return;
     }
 
@@ -290,27 +290,27 @@ function renderResults(details) {
         const isFav = favorites.includes(d.name);
         const card = document.createElement('div');
         card.className = 'result-card';
-        card.style.animationDelay = \`\${index * 0.05}s\`;
+        card.style.animationDelay = `${index * 0.05}s`;
         
-        card.innerHTML = \`
-            <span class="method-tag">\${d.method}</span>
-            <div class="nickname-display">\${d.name}</div>
+        card.innerHTML = `
+            <span class="method-tag">${d.method}</span>
+            <div class="nickname-display">${d.name}</div>
             <div class="card-actions">
-                <button class="action-btn copy-btn" data-name="\${d.name}">
+                <button class="action-btn copy-btn" data-name="${d.name}">
                     <span class="material-icons-round">content_copy</span>
                     コピー
                 </button>
-                <button class="action-btn fav-btn \${isFav ? 'active' : ''}" data-name="\${d.name}">
-                    <span class="material-icons-round">\${isFav ? 'favorite' : 'favorite_border'}</span>
+                <button class="action-btn fav-btn ${isFav ? 'active' : ''}" data-name="${d.name}">
+                    <span class="material-icons-round">${isFav ? 'favorite' : 'favorite_border'}</span>
                     お気に入り
                 </button>
             </div>
-        \`;
+        `;
 
         // Copy event
         card.querySelector('.copy-btn').addEventListener('click', (e) => {
             navigator.clipboard.writeText(d.name).then(() => {
-                showToast(\`「\${d.name}」をコピーしました！\`);
+                showToast(`「${d.name}」をコピーしました！`);
             });
         });
 
@@ -326,7 +326,7 @@ function renderResults(details) {
                 favorites.push(name);
                 btn.classList.add('active');
                 btn.querySelector('.material-icons-round').textContent = 'favorite';
-                showToast(\`「\${name}」をお気に入りに追加しました！\`);
+                showToast(`「${name}」をお気に入りに追加しました！`);
             }
             saveFavorites();
         });
@@ -375,21 +375,21 @@ function renderFavorites() {
     favorites.forEach(name => {
         const item = document.createElement('div');
         item.className = 'favorite-item';
-        item.innerHTML = \`
-            <span class="fav-name">\${name}</span>
+        item.innerHTML = `
+            <span class="fav-name">${name}</span>
             <div style="display:flex; gap: 0.5rem;">
-                <button class="icon-btn dark copy-btn" data-name="\${name}">
+                <button class="icon-btn dark copy-btn" data-name="${name}">
                     <span class="material-icons-round" style="font-size: 1rem;">content_copy</span>
                 </button>
-                <button class="icon-btn dark delete-btn" data-name="\${name}">
+                <button class="icon-btn dark delete-btn" data-name="${name}">
                     <span class="material-icons-round" style="font-size: 1rem; color: #ef5350;">delete</span>
                 </button>
             </div>
-        \`;
+        `;
 
         item.querySelector('.copy-btn').addEventListener('click', () => {
             navigator.clipboard.writeText(name).then(() => {
-                showToast(\`「\${name}」をコピーしました！\`);
+                showToast(`「${name}」をコピーしました！`);
             });
         });
 
