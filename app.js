@@ -1,4 +1,5 @@
-import { pokemonList, themes, types as typeWords, affixes, foreign, tagWords, generalWords } from './data.js';
+import { pokemonList, themes, types as typeWords, affixes, foreign, tagWords } from './data.js';
+import { generalWords, extendedTagWords } from './data_words.js';
 
 // --- State ---
 let selectedThemes = new Set(['random']);
@@ -252,6 +253,9 @@ function generateNicknames() {
     }
     selectedTypes.forEach(t => { if (typeWords[t]) addWordsToPool(typeWords[t]); });
     Object.values(tagWords).forEach(arr => addWordsToPool(arr));
+    if (typeof extendedTagWords !== 'undefined') {
+        Object.values(extendedTagWords).forEach(arr => addWordsToPool(arr));
+    }
     
     const getWordOfLength = (l) => {
         const pool = wordsByLength[l];
@@ -347,8 +351,12 @@ function generateNicknames() {
                 // Add tags
                 if (pkmn.tags && pkmn.tags.length > 0) {
                     const t = pkmn.tags[Math.floor(Math.random() * pkmn.tags.length)];
-                    if (tagWords && tagWords[t] && tagWords[t].length > 0) {
-                        const tagWord = tagWords[t][Math.floor(Math.random() * tagWords[t].length)];
+                    let pool = [];
+                    if (tagWords && tagWords[t]) pool = pool.concat(tagWords[t]);
+                    if (typeof extendedTagWords !== 'undefined' && extendedTagWords[t]) pool = pool.concat(extendedTagWords[t]);
+                    
+                    if (pool.length > 0) {
+                        const tagWord = pool[Math.floor(Math.random() * pool.length)];
                         specificMethods.push({ word: tagWord, method: '特徴タグ', subtitle: t });
                     }
                 }
