@@ -4,7 +4,7 @@ import { generalWords, extendedTagWords } from './data_words.js';
 // --- State ---
 let selectedThemes = new Set(['random']);
 let selectedTypes = new Set();
-let favorites = JSON.parse(localStorage.getItem('pokemonNicknames_favs')) || [];
+
 
 // --- DOM Elements ---
 const typeGrid = document.getElementById('type-grid');
@@ -16,19 +16,11 @@ const lengthVal = document.getElementById('length-val');
 const generateBtn = document.getElementById('generate-btn');
 const regenerateBtn = document.getElementById('regenerate-btn');
 const resultsGrid = document.getElementById('results-grid');
-const favoritesBtn = document.getElementById('favorites-btn');
-const favoritesCount = document.getElementById('favorites-count');
-const favoritesModal = document.getElementById('favorites-modal');
-const closeModalBtn = document.getElementById('close-modal-btn');
-const modalOverlay = document.querySelector('.modal-overlay');
-const favoritesList = document.getElementById('favorites-list');
-const clearFavoritesBtn = document.getElementById('clear-favorites-btn');
 const toast = document.getElementById('toast');
 
 // --- Initialization ---
 function init() {
     renderTypes();
-    updateFavoritesCount();
     setupEventListeners();
 }
 
@@ -120,7 +112,8 @@ function setupEventListeners() {
             return;
         }
         
-        const matches = pokemonList.filter(p => p.name.includes(val)).slice(0, 5);
+        const katakanaVal = toKatakana(val);
+        const matches = pokemonList.filter(p => p.name.includes(katakanaVal)).slice(0, 5);
         if (matches.length > 0) {
             suggestionsList.innerHTML = '';
             matches.forEach(p => {
@@ -167,17 +160,7 @@ function setupEventListeners() {
     generateBtn.addEventListener('click', () => generateNicknames());
     regenerateBtn.addEventListener('click', () => generateNicknames());
 
-    // Favorites
-    favoritesBtn.addEventListener('click', showFavorites);
-    closeModalBtn.addEventListener('click', hideFavorites);
-    modalOverlay.addEventListener('click', hideFavorites);
-    clearFavoritesBtn.addEventListener('click', () => {
-        if(confirm('すべてのお気に入りを削除しますか？')) {
-            favorites = [];
-            saveFavorites();
-            renderFavorites();
-        }
-    });
+
 }
 
 // --- Natural Truncation for Kana ---
@@ -526,7 +509,6 @@ function renderResults(details) {
     }
 
     details.forEach((d, index) => {
-        const isFav = favorites.includes(d.name);
         const card = document.createElement('div');
         card.className = 'result-card';
         card.style.animationDelay = `${index * 0.05}s`;
@@ -539,10 +521,6 @@ function renderResults(details) {
                 <button class="action-btn copy-btn" data-name="${d.name}">
                     <span class="material-icons-round">content_copy</span>
                     コピー
-                </button>
-                <button class="action-btn fav-btn ${isFav ? 'active' : ''}" data-name="${d.name}">
-                    <span class="material-icons-round">${isFav ? 'favorite' : 'favorite_border'}</span>
-                    お気に入り
                 </button>
                 <button class="action-btn anagram-btn" title="アナグラム">
                     <span class="material-icons-round">shuffle</span>
@@ -562,27 +540,9 @@ function renderResults(details) {
             });
         });
 
-        // Fav event
-        card.querySelector('.fav-btn').addEventListener('click', (e) => {
-            const btn = e.currentTarget;
-            const name = btn.dataset.name;
-            if (favorites.includes(name)) {
-                favorites = favorites.filter(f => f !== name);
-                btn.classList.remove('active');
-                btn.querySelector('.material-icons-round').textContent = 'favorite_border';
-            } else {
-                favorites.push(name);
-                btn.classList.add('active');
-                btn.querySelector('.material-icons-round').textContent = 'favorite';
-                showToast(`「${name}」をお気に入りに追加しました！`);
-            }
-            saveFavorites();
-        });
-
         // Anagram & Revert events
         const displayEl = card.querySelector('.nickname-display');
         const copyBtn = card.querySelector('.copy-btn');
-        const favBtn = card.querySelector('.fav-btn');
         const anagramBtn = card.querySelector('.anagram-btn');
         const revertBtn = card.querySelector('.revert-btn');
 
@@ -598,15 +558,6 @@ function renderResults(details) {
             
             displayEl.textContent = shuffled;
             copyBtn.dataset.name = shuffled;
-            favBtn.dataset.name = shuffled;
-            
-            if (favorites.includes(shuffled)) {
-                favBtn.classList.add('active');
-                favBtn.querySelector('.material-icons-round').textContent = 'favorite';
-            } else {
-                favBtn.classList.remove('active');
-                favBtn.querySelector('.material-icons-round').textContent = 'favorite_border';
-            }
             
             revertBtn.classList.remove('hidden');
         });
@@ -616,15 +567,6 @@ function renderResults(details) {
             
             displayEl.textContent = originalName;
             copyBtn.dataset.name = originalName;
-            favBtn.dataset.name = originalName;
-            
-            if (favorites.includes(originalName)) {
-                favBtn.classList.add('active');
-                favBtn.querySelector('.material-icons-round').textContent = 'favorite';
-            } else {
-                favBtn.classList.remove('active');
-                favBtn.querySelector('.material-icons-round').textContent = 'favorite_border';
-            }
             
             revertBtn.classList.add('hidden');
         });
@@ -633,75 +575,16 @@ function renderResults(details) {
     });
 }
 
-// --- Favorites ---
-function saveFavorites() {
-    localStorage.setItem('pokemonNicknames_favs', JSON.stringify(favorites));
-    updateFavoritesCount();
-}
 
-function updateFavoritesCount() {
-    favoritesCount.textContent = favorites.length;
-}
-
-function showFavorites() {
-    renderFavorites();
-    favoritesModal.classList.remove('hidden');
-}
-
-function hideFavorites() {
-    favoritesModal.classList.add('hidden');
-    // update grid in case favs were removed
-    document.querySelectorAll('.fav-btn').forEach(btn => {
-        const name = btn.dataset.name;
-        if (favorites.includes(name)) {
-            btn.classList.add('active');
-            btn.querySelector('.material-icons-round').textContent = 'favorite';
-        } else {
-            btn.classList.remove('active');
-            btn.querySelector('.material-icons-round').textContent = 'favorite_border';
-        }
-    });
-}
-
-function renderFavorites() {
-    favoritesList.innerHTML = '';
-    if (favorites.length === 0) {
-        favoritesList.innerHTML = '<p style="text-align:center; color:#7f8c8d;">お気に入りはまだありません。</p>';
-        return;
-    }
-
-    favorites.forEach(name => {
-        const item = document.createElement('div');
-        item.className = 'favorite-item';
-        item.innerHTML = `
-            <span class="fav-name">${name}</span>
-            <div style="display:flex; gap: 0.5rem;">
-                <button class="icon-btn dark copy-btn" data-name="${name}">
-                    <span class="material-icons-round" style="font-size: 1rem;">content_copy</span>
-                </button>
-                <button class="icon-btn dark delete-btn" data-name="${name}">
-                    <span class="material-icons-round" style="font-size: 1rem; color: #ef5350;">delete</span>
-                </button>
-            </div>
-        `;
-
-        item.querySelector('.copy-btn').addEventListener('click', () => {
-            navigator.clipboard.writeText(name).then(() => {
-                showToast(`「${name}」をコピーしました！`);
-            });
-        });
-
-        item.querySelector('.delete-btn').addEventListener('click', () => {
-            favorites = favorites.filter(f => f !== name);
-            saveFavorites();
-            renderFavorites();
-        });
-
-        favoritesList.appendChild(item);
-    });
-}
 
 // --- Utils ---
+function toKatakana(str) {
+    return str.replace(/[\u3041-\u3096]/g, function(match) {
+        const chr = match.charCodeAt(0) + 0x60;
+        return String.fromCharCode(chr);
+    });
+}
+
 let toastTimeout;
 function showToast(msg) {
     toast.textContent = msg;
