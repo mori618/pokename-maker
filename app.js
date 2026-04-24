@@ -316,18 +316,19 @@ function generateNicknames() {
         }
     };
 
+    const pkmn = basePokemon ? pokemonList.find(p => p.name === basePokemon) : null;
+
     let attempts = 0;
     while(results.size < 16 && attempts < 200) {
         attempts++;
         
         // 0. AI Generated
-        if (basePokemon && Math.random() < 0.6) {
-            const pkmn = pokemonList.find(p => p.name === basePokemon);
-            if (pkmn && pkmn.aiNicknames) {
-                const availableAiNames = [];
-                const themesArr = Array.from(selectedThemes);
-                
-                themesArr.forEach(t => {
+        // 最初の試行では、AIニックネームがあれば必ず追加を試みる
+        if (pkmn && pkmn.aiNicknames && (attempts === 1 || Math.random() < 0.6)) {
+            const availableAiNames = [];
+            const themesArr = Array.from(selectedThemes);
+            
+            themesArr.forEach(t => {
                     if (t === 'random') {
                         if (pkmn.aiNicknames.general) availableAiNames.push(...pkmn.aiNicknames.general.map(n => ({name: n, method: 'AI作成(おまかせ)'})));
                     } else if (pkmn.aiNicknames[t]) {
