@@ -17,6 +17,7 @@ const generateBtn = document.getElementById('generate-btn');
 const regenerateBtn = document.getElementById('regenerate-btn');
 const resultsGrid = document.getElementById('results-grid');
 const toast = document.getElementById('toast');
+const associationToggle = document.getElementById('association-toggle');
 
 // --- Initialization ---
 function init() {
@@ -160,7 +161,16 @@ function setupEventListeners() {
     generateBtn.addEventListener('click', () => generateNicknames());
     regenerateBtn.addEventListener('click', () => generateNicknames());
 
-
+    // Mode Toggle
+    associationToggle.addEventListener('change', (e) => {
+        if (e.target.checked) {
+            generateBtn.classList.add('association-mode');
+            generateBtn.innerHTML = 'インスピレーションを得る';
+        } else {
+            generateBtn.classList.remove('association-mode');
+            generateBtn.textContent = 'ニックネームを作成！';
+        }
+    });
 }
 
 // --- Natural Truncation for Kana ---
@@ -213,6 +223,7 @@ function truncateToNatural(word, targetLength) {
 function generateNicknames() {
     const targetLength = parseInt(lengthSlider.value);
     const basePokemon = pokemonInput.value.trim();
+    const isAssociationMode = associationToggle.checked;
     
     let results = new Set();
     const resultDetails = [];
@@ -252,17 +263,23 @@ function generateNicknames() {
     const specialMethodLimit = selectedThemes.has('gibberish') ? 3 : 1;
 
     const addResult = (name, method, subtitle = '', ignoreLength = false) => {
+        if (isAssociationMode) {
+            ignoreLength = true;
+        }
+
         // ・を消して、その後の文字数で判断
-        name = name.replace(/・/g, '');
+        name = isAssociationMode ? name : name.replace(/・/g, '');
 
         // filter by length rules
         if (name.length < 1) return;
         if (!ignoreLength && name.length !== targetLength) return;
         
         // Custom rules
-        if (name.startsWith('ん')) return;
-        if (name.includes('んん')) return;
-        if (/(?<char>.)\k<char>\k<char>/.test(name)) return; // 3 same chars
+        if (!isAssociationMode) {
+            if (name.startsWith('ん')) return;
+            if (name.includes('んん')) return;
+            if (/(?<char>.)\k<char>\k<char>/.test(name)) return; // 3 same chars
+        }
         if (/[\u4E00-\u9FFF]/.test(name)) return; // 漢字なしで
 
         // Limit same method
@@ -327,7 +344,7 @@ function generateNicknames() {
         }
 
         // 1.5. Specific Pokemon Data (Foreign names, Motifs, Tags)
-        if (basePokemon && Math.random() < 0.5) {
+        if (basePokemon && (isAssociationMode || Math.random() < 0.5)) {
             const pkmn = pokemonList.find(p => p.name === basePokemon);
             if (pkmn) {
                 const specificMethods = [];
@@ -400,7 +417,7 @@ function generateNicknames() {
                     // Extract just the base if it has prefixes like "（アローラフォーム）"
                     word = word.replace(/（.*?）/g, '').replace(/メガ・/, '');
                     
-                    if (word.length > targetLength) {
+                    if (word.length > targetLength && !isAssociationMode) {
                         word = truncateToNatural(word, targetLength);
                     }
                     
@@ -410,7 +427,7 @@ function generateNicknames() {
         }
 
         // 2. Type based
-        if (selectedTypes.size > 0 && Math.random() < 0.4) {
+        if (selectedTypes.size > 0 && (isAssociationMode || Math.random() < 0.4)) {
             const typesArr = Array.from(selectedTypes);
             const chosenType = typesArr[Math.floor(Math.random() * typesArr.length)];
             if (typeWords[chosenType]) {
@@ -438,7 +455,7 @@ function generateNicknames() {
             const arr = foreign[lang];
             let word = arr[Math.floor(Math.random() * arr.length)];
             
-            if (word.length > targetLength) {
+            if (word.length > targetLength && !isAssociationMode) {
                 word = truncateToNatural(word, targetLength);
             }
             
