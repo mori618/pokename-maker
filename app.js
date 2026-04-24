@@ -294,9 +294,21 @@ function generateNicknames() {
             if (alphabetCount >= 1) return;
         }
 
-        if (!results.has(name) && results.size < 8) {
+        if (!results.has(name) && results.size < 16) {
             results.add(name);
-            resultDetails.push({ name, method, subtitle });
+            
+            // 優先度の計算
+            let priority = 10;
+            if (method.includes('AI作成')) priority = 100;
+            else if (['外国語名', '関連外国語', '特徴タグ'].includes(method)) priority = 90;
+            else if (method === '言葉の組み合わせ') priority = 80;
+            else if (['タイプ連想', 'テーマ'].includes(method)) priority = 70;
+            else if (['接頭辞', '接尾辞'].includes(method)) priority = 60;
+            else if (method === '外国語') priority = 50;
+            else if (method === 'アナグラム') priority = 40;
+            else if (method === 'ランダム') priority = 10;
+
+            resultDetails.push({ name, method, subtitle, priority });
             methodCounts[method] = (methodCounts[method] || 0) + 1;
             if (isAlphabet) {
                 alphabetCount++;
@@ -305,7 +317,7 @@ function generateNicknames() {
     };
 
     let attempts = 0;
-    while(results.size < 8 && attempts < 100) {
+    while(results.size < 16 && attempts < 200) {
         attempts++;
         
         // 0. AI Generated
@@ -537,7 +549,11 @@ function generateNicknames() {
         }
     }
 
-    renderResults(resultDetails);
+    // 優先度順にソートして、上位8件を抽出
+    resultDetails.sort((a, b) => b.priority - a.priority);
+    const finalResults = resultDetails.slice(0, 8);
+
+    renderResults(finalResults);
 }
 
 // --- Render Results ---
