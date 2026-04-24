@@ -105,6 +105,16 @@ h1, h2, h3 {
 .logo h1 {
     font-size: 1.5rem;
     letter-spacing: 1px;
+    display: flex;
+    flex-direction: column;
+    line-height: 1.2;
+}
+
+.logo-sub {
+    font-size: 0.75rem;
+    font-weight: 400;
+    opacity: 0.9;
+    letter-spacing: 0;
 }
 
 .logo-icon {
