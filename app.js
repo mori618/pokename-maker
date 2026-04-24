@@ -348,7 +348,6 @@ function generateNicknames() {
                     addResult(choice.name, choice.method, 'AI厳選', true);
                 }
             }
-        }
 
         // 1. Anagram if base pokemon exists
         if (basePokemon && Math.random() < 0.2) {
