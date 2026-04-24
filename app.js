@@ -300,14 +300,14 @@ function generateNicknames() {
             
             // 優先度の計算
             let priority = 10;
-            if (method.includes('AI作成')) priority = 100;
-            else if (['外国語名', '関連外国語', '特徴タグ'].includes(method)) priority = 90;
-            else if (method === '言葉の組み合わせ') priority = 80;
-            else if (['タイプ連想', 'テーマ'].includes(method)) priority = 70;
+            if (method.includes('AIのイチオシ')) priority = 100;
+            else if (['せかいの名前', 'つながる外国語', 'イメージから'].includes(method)) priority = 90;
+            else if (method === 'ことばをミックス') priority = 80;
+            else if (['タイプつながり', 'テーマから'].includes(method)) priority = 70;
             else if (['まえにプラス', 'うしろにプラス'].includes(method)) priority = 60;
-            else if (method === '外国語') priority = 50;
-            else if (method === 'アナグラム') priority = 40;
-            else if (method === 'ランダム') priority = 10;
+            else if (method === '外国のことば') priority = 50;
+            else if (method === 'ならべかえ') priority = 40;
+            else if (method === 'ひらめき！') priority = 10;
 
             resultDetails.push({ name, method, subtitle, priority });
             methodCounts[method] = (methodCounts[method] || 0) + 1;
@@ -331,14 +331,14 @@ function generateNicknames() {
             
             themesArr.forEach(t => {
                     if (t === 'random') {
-                        if (pkmn.aiNicknames.general) availableAiNames.push(...pkmn.aiNicknames.general.map(n => ({name: n, method: 'AI作成(おまかせ)'})));
+                        if (pkmn.aiNicknames.general) availableAiNames.push(...pkmn.aiNicknames.general.map(n => ({name: n, method: 'AIのイチオシ(おまかせ)'})));
                     } else if (pkmn.aiNicknames[t]) {
-                        let methodLabel = 'AI作成';
-                        if (t === 'cool') methodLabel = 'AI作成(かっこいい)';
-                        if (t === 'cute') methodLabel = 'AI作成(かわいい)';
-                        if (t === 'japanese') methodLabel = 'AI作成(和風)';
-                        if (t === 'western') methodLabel = 'AI作成(洋風)';
-                        if (t === 'unique') methodLabel = 'AI作成(ネタ)';
+                        let methodLabel = 'AIのイチオシ';
+                        if (t === 'cool') methodLabel = 'AIのイチオシ(かっこいい)';
+                        if (t === 'cute') methodLabel = 'AIのイチオシ(かわいい)';
+                        if (t === 'japanese') methodLabel = 'AIのイチオシ(和風)';
+                        if (t === 'western') methodLabel = 'AIのイチオシ(洋風)';
+                        if (t === 'unique') methodLabel = 'AIのイチオシ(ネタ)';
                         availableAiNames.push(...pkmn.aiNicknames[t].map(n => ({name: n, method: methodLabel})));
                     }
                 });
@@ -353,7 +353,7 @@ function generateNicknames() {
         // 1. Anagram if base pokemon exists
         if (basePokemon && Math.random() < 0.2) {
             const shuffled = basePokemon.split('').sort(() => 0.5 - Math.random()).join('');
-            if (shuffled !== basePokemon) addResult(shuffled, 'アナグラム');
+            if (shuffled !== basePokemon) addResult(shuffled, 'ならべかえ');
         }
 
         // 1.5. Specific Pokemon Data (Foreign names, Motifs, Tags)
@@ -371,7 +371,7 @@ function generateNicknames() {
                         const translation = pkmn.name || '';
                         specificMethods.push({ 
                             word: pkmn.nameReading[k], 
-                            method: '外国語名',
+                            method: 'せかいの名前',
                             subtitle: `${originalWord} (${translation})`
                         });
                     }
@@ -386,7 +386,7 @@ function generateNicknames() {
                         const translation = pkmn.motif || '';
                         specificMethods.push({ 
                             word: pkmn.motifReading[k], 
-                            method: '関連外国語',
+                            method: 'つながる外国語',
                             subtitle: `${originalWord} (${translation})`
                         });
                     }
@@ -400,7 +400,7 @@ function generateNicknames() {
                     
                     if (pool.length > 0) {
                         const tagWord = pool[Math.floor(Math.random() * pool.length)];
-                        specificMethods.push({ word: tagWord, method: '特徴タグ', subtitle: t });
+                        specificMethods.push({ word: tagWord, method: 'イメージから', subtitle: t });
                     }
                 }
 
@@ -447,7 +447,7 @@ function generateNicknames() {
             if (typeWords[chosenType]) {
                 const arr = typeWords[chosenType];
                 const word = arr[Math.floor(Math.random() * arr.length)];
-                addResult(word, 'タイプ連想');
+                addResult(word, 'タイプつながり');
             }
         }
 
@@ -458,7 +458,7 @@ function generateNicknames() {
             if (themes[theme]) {
                 const arr = themes[theme];
                 const word = arr[Math.floor(Math.random() * arr.length)];
-                addResult(word, 'テーマ');
+                addResult(word, 'テーマから');
             }
         }
 
@@ -474,7 +474,7 @@ function generateNicknames() {
             }
             
             // simplistic kana conversion or just use romaji/english
-            addResult(word, '外国語');
+            addResult(word, '外国のことば');
         }
 
         // 5. Affixes
@@ -522,7 +522,7 @@ function generateNicknames() {
                 }
                 res += char;
             }
-            addResult(res, 'ランダム');
+            addResult(res, 'ひらめき！');
         }
 
         // 7. Combination
@@ -545,7 +545,7 @@ function generateNicknames() {
                 const w1 = getWordOfLength(len1);
                 const w2 = getWordOfLength(len2);
                 if (w1 && w2) {
-                    addResult(w1 + w2, '言葉の組み合わせ', `${w1} + ${w2}`);
+                    addResult(w1 + w2, 'ことばをミックス', `${w1} + ${w2}`);
                 }
             }
         }
