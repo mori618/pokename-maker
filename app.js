@@ -324,8 +324,8 @@ function generateNicknames() {
         attempts++;
         
         // 0. AI Generated
-        // 最初の試行では、AIニックネームがあれば必ず追加を試みる
-        if (pkmn && pkmn.aiNicknames && (attempts === 1 || Math.random() < 0.6)) {
+        // インスピレーションモード以外かつ、最初の試行ではAIニックネームがあれば必ず追加を試みる
+        if (!isAssociationMode && pkmn && pkmn.aiNicknames && (attempts === 1 || Math.random() < 0.6)) {
             const availableAiNames = [];
             const themesArr = Array.from(selectedThemes);
             
