@@ -652,3 +652,45 @@ input[type="text"]:focus {
 .toast.show {
     transform: translateX(-50%) translateY(0);
 }
+/* Footer */
+.app-footer {
+    margin-top: 4rem;
+    padding: 2rem 1rem;
+    background: white;
+    border-top: 1px solid rgba(0,0,0,0.05);
+    color: var(--text-muted);
+}
+
+.footer-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.footer-nav {
+    display: flex;
+    gap: 1.5rem;
+}
+
+.footer-nav a {
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 0.85rem;
+    transition: var(--transition-fast);
+}
+
+.footer-nav a:hover {
+    color: var(--primary-color);
+    text-decoration: underline;
+}
+
+@media (max-width: 600px) {
+    .footer-container {
+        flex-direction: column;
+        text-align: center;
+    }
+}
