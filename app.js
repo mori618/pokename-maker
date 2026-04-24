@@ -304,7 +304,7 @@ function generateNicknames() {
             else if (['外国語名', '関連外国語', '特徴タグ'].includes(method)) priority = 90;
             else if (method === '言葉の組み合わせ') priority = 80;
             else if (['タイプ連想', 'テーマ'].includes(method)) priority = 70;
-            else if (['接頭辞', '接尾辞'].includes(method)) priority = 60;
+            else if (['まえにプラス', 'うしろにプラス'].includes(method)) priority = 60;
             else if (method === '外国語') priority = 50;
             else if (method === 'アナグラム') priority = 40;
             else if (method === 'ランダム') priority = 10;
@@ -498,10 +498,10 @@ function generateNicknames() {
             
             if (Math.random() > 0.5) {
                 const prefix = affixes.prefixes[Math.floor(Math.random() * affixes.prefixes.length)];
-                addResult(prefix + base, '接頭辞');
+                addResult(prefix + base, 'まえにプラス');
             } else {
                 const suffix = affixes.suffixes[Math.floor(Math.random() * affixes.suffixes.length)];
-                addResult(base + suffix, '接尾辞');
+                addResult(base + suffix, 'うしろにプラス');
             }
         }
 
