@@ -383,10 +383,11 @@ function generateNicknames() {
                         const k = keys[Math.floor(Math.random() * keys.length)];
                         const originalMap = { en: pkmn.motifEn, la: pkmn.motifLa, de: pkmn.motifDe, fr: pkmn.motifFr };
                         const originalWord = originalMap[k] || '';
+                        const translation = pkmn.motif || '';
                         specificMethods.push({ 
                             word: pkmn.motifReading[k], 
                             method: '関連外国語',
-                            subtitle: originalWord
+                            subtitle: `${originalWord} (${translation})`
                         });
                     }
                 }
