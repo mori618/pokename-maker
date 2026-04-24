@@ -1,4 +1,5 @@
-import { pokemonList, themes, types as typeWords, affixes, foreign, tagWords } from './data.js';
+import { themes, types as typeWords, affixes, foreign, tagWords } from './data.js';
+import { pokemonList } from './data_pokemon.js';
 import { generalWords, extendedTagWords } from './data_words.js';
 
 // --- State ---
