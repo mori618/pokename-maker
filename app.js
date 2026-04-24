@@ -305,9 +305,9 @@ function generateNicknames() {
             else if (method === 'ことばをミックス') priority = 80;
             else if (['タイプつながり', 'テーマから'].includes(method)) priority = 70;
             else if (['まえにプラス', 'うしろにプラス'].includes(method)) priority = 60;
-            else if (method === '外国のことば') priority = 50;
-            else if (method === 'ならべかえ') priority = 40;
-            else if (method === 'ひらめき！') priority = 10;
+            else if (method === '外国語') priority = 50;
+            else if (method === 'アナグラム') priority = 40;
+            else if (method === 'ランダム') priority = 10;
 
             resultDetails.push({ name, method, subtitle, priority });
             methodCounts[method] = (methodCounts[method] || 0) + 1;
@@ -353,7 +353,7 @@ function generateNicknames() {
         // 1. Anagram if base pokemon exists
         if (basePokemon && Math.random() < 0.2) {
             const shuffled = basePokemon.split('').sort(() => 0.5 - Math.random()).join('');
-            if (shuffled !== basePokemon) addResult(shuffled, 'ならべかえ');
+            if (shuffled !== basePokemon) addResult(shuffled, 'アナグラム');
         }
 
         // 1.5. Specific Pokemon Data (Foreign names, Motifs, Tags)
@@ -474,7 +474,7 @@ function generateNicknames() {
             }
             
             // simplistic kana conversion or just use romaji/english
-            addResult(word, '外国のことば');
+            addResult(word, '外国語');
         }
 
         // 5. Affixes
@@ -522,7 +522,7 @@ function generateNicknames() {
                 }
                 res += char;
             }
-            addResult(res, 'ひらめき！');
+            addResult(res, 'ランダム');
         }
 
         // 7. Combination
