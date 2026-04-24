@@ -1,0 +1,2 @@
+# Google AdSense 審査通過後に、管理画面から発行された内容に書き換えてください。
+# 形式: google.com, pub-XXXXXXXXXXXXXXXX, DIRECT, f08c47fec0942fa0

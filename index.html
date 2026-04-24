@@ -4,27 +4,61 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ポケモン ニックネームメーカー</title>
+    <title>ポケモン ニックネームメーカー｜最高にかわいい・かっこいい名前を自動生成</title>
+    <meta name="description"
+        content="ポケモンのニックネーム（名前）を自動生成するツールです。かっこいい、かわいい、和風、おしゃれな外国語風など、豊富なテーマからあなただけの特別なニックネームが見つかります。名前の決め方に迷った時や、おすすめの名前を探している時に最適です。">
+    <meta name="keywords" content="ポケモン,ニックネーム,名前,メーカー,ジェネレーター,かっこいい,かわいい,おしゃれ,和風,自動生成,決め方,おすすめ">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://yurand.com/nickname/"> <!-- 必要に応じて修正してください -->
+    <meta property="og:title" content="ポケモン ニックネームメーカー｜最高にかわいい・かっこいい名前を自動生成">
+    <meta property="og:description" content="ポケモンの最高なニックネームをあなたのパートナーに。テーマに合わせて自動生成！決め方に迷ったらこちら。">
+    <meta property="og:image" content="https://yurand.com/nickname/og-image.png"> <!-- 画像がある場合は配置してください -->
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://yurand.com/nickname/">
+    <meta property="twitter:title" content="ポケモン ニックネームメーカー｜最高にかわいい・かっこいい名前を自動生成">
+    <meta property="twitter:description" content="ポケモンの最高なニックネームをあなたのパートナーに。テーマに合わせて自動生成！決め方に迷ったらこちら。">
+    <meta property="twitter:image" content="https://yurand.com/nickname/og-image.png">
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://yurand.com/nickname/">
+    <link rel="icon" href="favicon.png" type="image/png">
+
     <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;700;900&display=swap"
         rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "ポケモン ニックネームメーカー",
+      "url": "https://yurand.com/nickname/",
+      "description": "ポケモンのニックネーム（名前）を自動生成するツール。かっこいい、かわいい、和風、おしゃれな外国語風など豊富なテーマが選択可能。",
+      "applicationCategory": "Utility",
+      "operatingSystem": "All"
+    }
+    </script>
+
+    <!-- Google AdSense Code -->
+    <!-- 審査に申し込む際、ここに発行されたコードを貼り付けてください -->
 </head>
 
 <body>
     <header class="app-header">
         <div class="header-container">
             <div class="logo">
-                <h1>ニックネームメーカー</h1>
+                <h1>
+                    <span>ニックネームメーカー</span>
+                    <span class="logo-sub">チャンピオンズ用 / for champions</span>
+                </h1>
             </div>
             <nav class="header-nav">
-                <button id="favorites-btn" class="icon-btn">
-                    <span class="material-icons-round">favorite</span>
-                    <span class="badge" id="favorites-count">0</span>
-                </button>
-                <button id="help-btn" class="icon-btn">
-                    <span class="material-icons-round">help_outline</span>
-                </button>
             </nav>
         </div>
     </header>
@@ -76,14 +110,21 @@
                     文字数目安 (1〜6文字)
                 </label>
                 <div class="slider-container">
-                    <input type="range" id="length-slider" min="1" max="6" value="5" class="slider">
-                    <span id="length-val" class="slider-val">5文字</span>
+                    <input type="range" id="length-slider" min="1" max="6" value="6" class="slider">
+                    <span id="length-val" class="slider-val">6文字</span>
                 </div>
             </div>
 
+            <div class="form-group mode-toggle-group">
+                <label class="toggle-label" for="association-toggle">
+                    <input type="checkbox" id="association-toggle" class="toggle-checkbox">
+                    <div class="toggle-switch"></div>
+                    <span class="toggle-text">インスピレーションモード (自分で考えるヒントを表示)</span>
+                </label>
+            </div>
+
             <button id="generate-btn" class="generate-btn primary-btn pulse-anim">
-                <span class="material-icons-round">auto_awesome</span>
-                ニックネームを生成！
+                ニックネームを作成！
             </button>
         </section>
 
@@ -105,32 +146,19 @@
         </section>
     </main>
 
-    <!-- Favorites Modal -->
-    <div id="favorites-modal" class="modal hidden">
-        <div class="modal-overlay"></div>
-        <div class="modal-content glass-panel">
-            <div class="modal-header">
-                <h2>お気に入り</h2>
-                <button id="close-modal-btn" class="icon-btn">
-                    <span class="material-icons-round">close</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <div id="favorites-list" class="favorites-list">
-                    <!-- Favorites injected here -->
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button id="clear-favorites-btn" class="danger-btn">
-                    <span class="material-icons-round">delete_sweep</span>
-                    すべて削除
-                </button>
-            </div>
-        </div>
-    </div>
+
 
     <!-- Toast Notification -->
     <div id="toast" class="toast hidden"></div>
+
+    <footer class="app-footer">
+        <div class="footer-container">
+            <p>&copy; 2026 ポケモン ニックネームメーカー</p>
+            <nav class="footer-nav">
+                <a href="privacy.html">プライバシーポリシー</a>
+            </nav>
+        </div>
+    </footer>
 
     <script type="module" src="app.js"></script>
 </body>

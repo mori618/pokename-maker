@@ -1,10 +1,11 @@
-import { pokemonList, themes, types as typeWords, affixes, foreign, tagWords } from './data.js';
+import { themes, types as typeWords, affixes, foreign, tagWords } from './data.js';
+import { pokemonList } from './data_pokemon.js';
 import { generalWords, extendedTagWords } from './data_words.js';
 
 // --- State ---
 let selectedThemes = new Set(['random']);
 let selectedTypes = new Set();
-let favorites = JSON.parse(localStorage.getItem('pokemonNicknames_favs')) || [];
+
 
 // --- DOM Elements ---
 const typeGrid = document.getElementById('type-grid');
@@ -16,19 +17,12 @@ const lengthVal = document.getElementById('length-val');
 const generateBtn = document.getElementById('generate-btn');
 const regenerateBtn = document.getElementById('regenerate-btn');
 const resultsGrid = document.getElementById('results-grid');
-const favoritesBtn = document.getElementById('favorites-btn');
-const favoritesCount = document.getElementById('favorites-count');
-const favoritesModal = document.getElementById('favorites-modal');
-const closeModalBtn = document.getElementById('close-modal-btn');
-const modalOverlay = document.querySelector('.modal-overlay');
-const favoritesList = document.getElementById('favorites-list');
-const clearFavoritesBtn = document.getElementById('clear-favorites-btn');
 const toast = document.getElementById('toast');
+const associationToggle = document.getElementById('association-toggle');
 
 // --- Initialization ---
 function init() {
     renderTypes();
-    updateFavoritesCount();
     setupEventListeners();
 }
 
@@ -120,7 +114,8 @@ function setupEventListeners() {
             return;
         }
         
-        const matches = pokemonList.filter(p => p.name.includes(val)).slice(0, 5);
+        const katakanaVal = toKatakana(val);
+        const matches = pokemonList.filter(p => p.name.includes(katakanaVal)).slice(0, 5);
         if (matches.length > 0) {
             suggestionsList.innerHTML = '';
             matches.forEach(p => {
@@ -167,15 +162,14 @@ function setupEventListeners() {
     generateBtn.addEventListener('click', () => generateNicknames());
     regenerateBtn.addEventListener('click', () => generateNicknames());
 
-    // Favorites
-    favoritesBtn.addEventListener('click', showFavorites);
-    closeModalBtn.addEventListener('click', hideFavorites);
-    modalOverlay.addEventListener('click', hideFavorites);
-    clearFavoritesBtn.addEventListener('click', () => {
-        if(confirm('すべてのお気に入りを削除しますか？')) {
-            favorites = [];
-            saveFavorites();
-            renderFavorites();
+    // Mode Toggle
+    associationToggle.addEventListener('change', (e) => {
+        if (e.target.checked) {
+            generateBtn.classList.add('association-mode');
+            generateBtn.innerHTML = 'インスピレーションを得る';
+        } else {
+            generateBtn.classList.remove('association-mode');
+            generateBtn.textContent = 'ニックネームを作成！';
         }
     });
 }
@@ -230,6 +224,7 @@ function truncateToNatural(word, targetLength) {
 function generateNicknames() {
     const targetLength = parseInt(lengthSlider.value);
     const basePokemon = pokemonInput.value.trim();
+    const isAssociationMode = associationToggle.checked;
     
     let results = new Set();
     const resultDetails = [];
@@ -268,18 +263,24 @@ function generateNicknames() {
     let alphabetCount = 0;
     const specialMethodLimit = selectedThemes.has('gibberish') ? 3 : 1;
 
-    const addResult = (name, method, subtitle = '') => {
+    const addResult = (name, method, subtitle = '', ignoreLength = false) => {
+        if (isAssociationMode) {
+            ignoreLength = true;
+        }
+
         // ・を消して、その後の文字数で判断
-        name = name.replace(/・/g, '');
+        name = isAssociationMode ? name : name.replace(/・/g, '');
 
         // filter by length rules
         if (name.length < 1) return;
-        if (name.length !== targetLength) return;
+        if (!ignoreLength && name.length !== targetLength) return;
         
         // Custom rules
-        if (name.startsWith('ん')) return;
-        if (name.includes('んん')) return;
-        if (/(?<char>.)\k<char>\k<char>/.test(name)) return; // 3 same chars
+        if (!isAssociationMode) {
+            if (name.startsWith('ん')) return;
+            if (name.includes('んん')) return;
+            if (/(?<char>.)\k<char>\k<char>/.test(name)) return; // 3 same chars
+        }
         if (/[\u4E00-\u9FFF]/.test(name)) return; // 漢字なしで
 
         // Limit same method
@@ -294,9 +295,21 @@ function generateNicknames() {
             if (alphabetCount >= 1) return;
         }
 
-        if (!results.has(name) && results.size < 8) {
+        if (!results.has(name) && results.size < 16) {
             results.add(name);
-            resultDetails.push({ name, method, subtitle });
+            
+            // 優先度の計算
+            let priority = 10;
+            if (method.includes('AIのイチオシ')) priority = 100;
+            else if (['せかいの名前', 'つながる外国語', 'イメージから'].includes(method)) priority = 90;
+            else if (method === 'ことばをミックス') priority = 80;
+            else if (['タイプつながり', 'テーマから'].includes(method)) priority = 70;
+            else if (['まえにプラス', 'うしろにプラス'].includes(method)) priority = 60;
+            else if (method === '外国語') priority = 50;
+            else if (method === 'アナグラム') priority = 40;
+            else if (method === 'ランダム') priority = 10;
+
+            resultDetails.push({ name, method, subtitle, priority });
             methodCounts[method] = (methodCounts[method] || 0) + 1;
             if (isAlphabet) {
                 alphabetCount++;
@@ -304,10 +317,39 @@ function generateNicknames() {
         }
     };
 
+    const pkmn = basePokemon ? pokemonList.find(p => p.name === basePokemon) : null;
+
     let attempts = 0;
-    while(results.size < 8 && attempts < 100) {
+    while(results.size < 16 && attempts < 200) {
         attempts++;
         
+        // 0. AI Generated
+        // インスピレーションモード以外かつ、最初の試行ではAIニックネームがあれば必ず追加を試みる
+        if (!isAssociationMode && pkmn && pkmn.aiNicknames && (attempts === 1 || Math.random() < 0.6)) {
+            const availableAiNames = [];
+            const themesArr = Array.from(selectedThemes);
+            
+            themesArr.forEach(t => {
+                    if (t === 'random') {
+                        if (pkmn.aiNicknames.general) availableAiNames.push(...pkmn.aiNicknames.general.map(n => ({name: n, method: 'AIのイチオシ(おまかせ)'})));
+                    } else if (pkmn.aiNicknames[t]) {
+                        let methodLabel = 'AIのイチオシ';
+                        if (t === 'cool') methodLabel = 'AIのイチオシ(かっこいい)';
+                        if (t === 'cute') methodLabel = 'AIのイチオシ(かわいい)';
+                        if (t === 'japanese') methodLabel = 'AIのイチオシ(和風)';
+                        if (t === 'western') methodLabel = 'AIのイチオシ(洋風)';
+                        if (t === 'unique') methodLabel = 'AIのイチオシ(ネタ)';
+                        availableAiNames.push(...pkmn.aiNicknames[t].map(n => ({name: n, method: methodLabel})));
+                    }
+                });
+
+                if (availableAiNames.length > 0) {
+                    const choice = availableAiNames[Math.floor(Math.random() * availableAiNames.length)];
+                    // ignoreLength を true にして長さを無視して表示する
+                    addResult(choice.name, choice.method, 'AI厳選', true);
+                }
+            }
+
         // 1. Anagram if base pokemon exists
         if (basePokemon && Math.random() < 0.2) {
             const shuffled = basePokemon.split('').sort(() => 0.5 - Math.random()).join('');
@@ -315,7 +357,7 @@ function generateNicknames() {
         }
 
         // 1.5. Specific Pokemon Data (Foreign names, Motifs, Tags)
-        if (basePokemon && Math.random() < 0.5) {
+        if (basePokemon && (isAssociationMode || Math.random() < 0.5)) {
             const pkmn = pokemonList.find(p => p.name === basePokemon);
             if (pkmn) {
                 const specificMethods = [];
@@ -329,7 +371,7 @@ function generateNicknames() {
                         const translation = pkmn.name || '';
                         specificMethods.push({ 
                             word: pkmn.nameReading[k], 
-                            method: '外国語名',
+                            method: 'せかいの名前',
                             subtitle: `${originalWord} (${translation})`
                         });
                     }
@@ -341,10 +383,11 @@ function generateNicknames() {
                         const k = keys[Math.floor(Math.random() * keys.length)];
                         const originalMap = { en: pkmn.motifEn, la: pkmn.motifLa, de: pkmn.motifDe, fr: pkmn.motifFr };
                         const originalWord = originalMap[k] || '';
+                        const translation = pkmn.motif || '';
                         specificMethods.push({ 
                             word: pkmn.motifReading[k], 
-                            method: '関連外国語',
-                            subtitle: originalWord
+                            method: 'つながる外国語',
+                            subtitle: `${originalWord} (${translation})`
                         });
                     }
                 }
@@ -357,7 +400,7 @@ function generateNicknames() {
                     
                     if (pool.length > 0) {
                         const tagWord = pool[Math.floor(Math.random() * pool.length)];
-                        specificMethods.push({ word: tagWord, method: '特徴タグ', subtitle: t });
+                        specificMethods.push({ word: tagWord, method: 'イメージから', subtitle: t });
                     }
                 }
 
@@ -388,7 +431,7 @@ function generateNicknames() {
                     // Extract just the base if it has prefixes like "（アローラフォーム）"
                     word = word.replace(/（.*?）/g, '').replace(/メガ・/, '');
                     
-                    if (word.length > targetLength) {
+                    if (word.length > targetLength && !isAssociationMode) {
                         word = truncateToNatural(word, targetLength);
                     }
                     
@@ -398,13 +441,13 @@ function generateNicknames() {
         }
 
         // 2. Type based
-        if (selectedTypes.size > 0 && Math.random() < 0.4) {
+        if (selectedTypes.size > 0 && (isAssociationMode || Math.random() < 0.4)) {
             const typesArr = Array.from(selectedTypes);
             const chosenType = typesArr[Math.floor(Math.random() * typesArr.length)];
             if (typeWords[chosenType]) {
                 const arr = typeWords[chosenType];
                 const word = arr[Math.floor(Math.random() * arr.length)];
-                addResult(word, 'タイプ連想');
+                addResult(word, 'タイプつながり');
             }
         }
 
@@ -415,7 +458,7 @@ function generateNicknames() {
             if (themes[theme]) {
                 const arr = themes[theme];
                 const word = arr[Math.floor(Math.random() * arr.length)];
-                addResult(word, 'テーマ');
+                addResult(word, 'テーマから');
             }
         }
 
@@ -426,7 +469,7 @@ function generateNicknames() {
             const arr = foreign[lang];
             let word = arr[Math.floor(Math.random() * arr.length)];
             
-            if (word.length > targetLength) {
+            if (word.length > targetLength && !isAssociationMode) {
                 word = truncateToNatural(word, targetLength);
             }
             
@@ -455,10 +498,10 @@ function generateNicknames() {
             
             if (Math.random() > 0.5) {
                 const prefix = affixes.prefixes[Math.floor(Math.random() * affixes.prefixes.length)];
-                addResult(prefix + base, '接頭辞');
+                addResult(prefix + base, 'まえにプラス');
             } else {
                 const suffix = affixes.suffixes[Math.floor(Math.random() * affixes.suffixes.length)];
-                addResult(base + suffix, '接尾辞');
+                addResult(base + suffix, 'うしろにプラス');
             }
         }
 
@@ -502,13 +545,17 @@ function generateNicknames() {
                 const w1 = getWordOfLength(len1);
                 const w2 = getWordOfLength(len2);
                 if (w1 && w2) {
-                    addResult(w1 + w2, '言葉の組み合わせ', `${w1} + ${w2}`);
+                    addResult(w1 + w2, 'ことばをミックス', `${w1} + ${w2}`);
                 }
             }
         }
     }
 
-    renderResults(resultDetails);
+    // 優先度順にソートして、上位8件を抽出
+    resultDetails.sort((a, b) => b.priority - a.priority);
+    const finalResults = resultDetails.slice(0, 8);
+
+    renderResults(finalResults);
 }
 
 // --- Render Results ---
@@ -526,7 +573,6 @@ function renderResults(details) {
     }
 
     details.forEach((d, index) => {
-        const isFav = favorites.includes(d.name);
         const card = document.createElement('div');
         card.className = 'result-card';
         card.style.animationDelay = `${index * 0.05}s`;
@@ -539,10 +585,6 @@ function renderResults(details) {
                 <button class="action-btn copy-btn" data-name="${d.name}">
                     <span class="material-icons-round">content_copy</span>
                     コピー
-                </button>
-                <button class="action-btn fav-btn ${isFav ? 'active' : ''}" data-name="${d.name}">
-                    <span class="material-icons-round">${isFav ? 'favorite' : 'favorite_border'}</span>
-                    お気に入り
                 </button>
                 <button class="action-btn anagram-btn" title="アナグラム">
                     <span class="material-icons-round">shuffle</span>
@@ -562,27 +604,9 @@ function renderResults(details) {
             });
         });
 
-        // Fav event
-        card.querySelector('.fav-btn').addEventListener('click', (e) => {
-            const btn = e.currentTarget;
-            const name = btn.dataset.name;
-            if (favorites.includes(name)) {
-                favorites = favorites.filter(f => f !== name);
-                btn.classList.remove('active');
-                btn.querySelector('.material-icons-round').textContent = 'favorite_border';
-            } else {
-                favorites.push(name);
-                btn.classList.add('active');
-                btn.querySelector('.material-icons-round').textContent = 'favorite';
-                showToast(`「${name}」をお気に入りに追加しました！`);
-            }
-            saveFavorites();
-        });
-
         // Anagram & Revert events
         const displayEl = card.querySelector('.nickname-display');
         const copyBtn = card.querySelector('.copy-btn');
-        const favBtn = card.querySelector('.fav-btn');
         const anagramBtn = card.querySelector('.anagram-btn');
         const revertBtn = card.querySelector('.revert-btn');
 
@@ -598,15 +622,6 @@ function renderResults(details) {
             
             displayEl.textContent = shuffled;
             copyBtn.dataset.name = shuffled;
-            favBtn.dataset.name = shuffled;
-            
-            if (favorites.includes(shuffled)) {
-                favBtn.classList.add('active');
-                favBtn.querySelector('.material-icons-round').textContent = 'favorite';
-            } else {
-                favBtn.classList.remove('active');
-                favBtn.querySelector('.material-icons-round').textContent = 'favorite_border';
-            }
             
             revertBtn.classList.remove('hidden');
         });
@@ -616,15 +631,6 @@ function renderResults(details) {
             
             displayEl.textContent = originalName;
             copyBtn.dataset.name = originalName;
-            favBtn.dataset.name = originalName;
-            
-            if (favorites.includes(originalName)) {
-                favBtn.classList.add('active');
-                favBtn.querySelector('.material-icons-round').textContent = 'favorite';
-            } else {
-                favBtn.classList.remove('active');
-                favBtn.querySelector('.material-icons-round').textContent = 'favorite_border';
-            }
             
             revertBtn.classList.add('hidden');
         });
@@ -633,75 +639,16 @@ function renderResults(details) {
     });
 }
 
-// --- Favorites ---
-function saveFavorites() {
-    localStorage.setItem('pokemonNicknames_favs', JSON.stringify(favorites));
-    updateFavoritesCount();
-}
 
-function updateFavoritesCount() {
-    favoritesCount.textContent = favorites.length;
-}
-
-function showFavorites() {
-    renderFavorites();
-    favoritesModal.classList.remove('hidden');
-}
-
-function hideFavorites() {
-    favoritesModal.classList.add('hidden');
-    // update grid in case favs were removed
-    document.querySelectorAll('.fav-btn').forEach(btn => {
-        const name = btn.dataset.name;
-        if (favorites.includes(name)) {
-            btn.classList.add('active');
-            btn.querySelector('.material-icons-round').textContent = 'favorite';
-        } else {
-            btn.classList.remove('active');
-            btn.querySelector('.material-icons-round').textContent = 'favorite_border';
-        }
-    });
-}
-
-function renderFavorites() {
-    favoritesList.innerHTML = '';
-    if (favorites.length === 0) {
-        favoritesList.innerHTML = '<p style="text-align:center; color:#7f8c8d;">お気に入りはまだありません。</p>';
-        return;
-    }
-
-    favorites.forEach(name => {
-        const item = document.createElement('div');
-        item.className = 'favorite-item';
-        item.innerHTML = `
-            <span class="fav-name">${name}</span>
-            <div style="display:flex; gap: 0.5rem;">
-                <button class="icon-btn dark copy-btn" data-name="${name}">
-                    <span class="material-icons-round" style="font-size: 1rem;">content_copy</span>
-                </button>
-                <button class="icon-btn dark delete-btn" data-name="${name}">
-                    <span class="material-icons-round" style="font-size: 1rem; color: #ef5350;">delete</span>
-                </button>
-            </div>
-        `;
-
-        item.querySelector('.copy-btn').addEventListener('click', () => {
-            navigator.clipboard.writeText(name).then(() => {
-                showToast(`「${name}」をコピーしました！`);
-            });
-        });
-
-        item.querySelector('.delete-btn').addEventListener('click', () => {
-            favorites = favorites.filter(f => f !== name);
-            saveFavorites();
-            renderFavorites();
-        });
-
-        favoritesList.appendChild(item);
-    });
-}
 
 // --- Utils ---
+function toKatakana(str) {
+    return str.replace(/[\u3041-\u3096]/g, function(match) {
+        const chr = match.charCodeAt(0) + 0x60;
+        return String.fromCharCode(chr);
+    });
+}
+
 let toastTimeout;
 function showToast(msg) {
     toast.textContent = msg;
