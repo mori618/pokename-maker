@@ -251,13 +251,13 @@ function generateNicknames() {
     let alphabetCount = 0;
     const specialMethodLimit = selectedThemes.has('gibberish') ? 3 : 1;
 
-    const addResult = (name, method, subtitle = '') => {
+    const addResult = (name, method, subtitle = '', ignoreLength = false) => {
         // ・を消して、その後の文字数で判断
         name = name.replace(/・/g, '');
 
         // filter by length rules
         if (name.length < 1) return;
-        if (name.length !== targetLength) return;
+        if (!ignoreLength && name.length !== targetLength) return;
         
         // Custom rules
         if (name.startsWith('ん')) return;
@@ -291,6 +291,35 @@ function generateNicknames() {
     while(results.size < 8 && attempts < 100) {
         attempts++;
         
+        // 0. AI Generated
+        if (basePokemon && Math.random() < 0.6) {
+            const pkmn = pokemonList.find(p => p.name === basePokemon);
+            if (pkmn && pkmn.aiNicknames) {
+                const availableAiNames = [];
+                const themesArr = Array.from(selectedThemes);
+                
+                themesArr.forEach(t => {
+                    if (t === 'random') {
+                        if (pkmn.aiNicknames.general) availableAiNames.push(...pkmn.aiNicknames.general.map(n => ({name: n, method: 'AI作成(おまかせ)'})));
+                    } else if (pkmn.aiNicknames[t]) {
+                        let methodLabel = 'AI作成';
+                        if (t === 'cool') methodLabel = 'AI作成(かっこいい)';
+                        if (t === 'cute') methodLabel = 'AI作成(かわいい)';
+                        if (t === 'japanese') methodLabel = 'AI作成(和風)';
+                        if (t === 'western') methodLabel = 'AI作成(洋風)';
+                        if (t === 'unique') methodLabel = 'AI作成(ネタ)';
+                        availableAiNames.push(...pkmn.aiNicknames[t].map(n => ({name: n, method: methodLabel})));
+                    }
+                });
+
+                if (availableAiNames.length > 0) {
+                    const choice = availableAiNames[Math.floor(Math.random() * availableAiNames.length)];
+                    // ignoreLength を true にして長さを無視して表示する
+                    addResult(choice.name, choice.method, 'AI厳選', true);
+                }
+            }
+        }
+
         // 1. Anagram if base pokemon exists
         if (basePokemon && Math.random() < 0.2) {
             const shuffled = basePokemon.split('').sort(() => 0.5 - Math.random()).join('');
