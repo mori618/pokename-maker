@@ -285,18 +285,25 @@ function generateNicknames() {
 
         // Limit same method（ポケモン特徴ベースは多めに出せるよう上限を調整）
         let limit = 3;
+        const themeSelected = !selectedThemes.has('random') && selectedThemes.size > 0;
         if (method === 'ランダム' || method === 'アナグラム') {
             limit = specialMethodLimit;
+        } else if (method === 'テーマから') {
+            limit = themeSelected ? 5 : 2; // テーマ選択時は積極的に出す
+        } else if (method === 'タイプつながり') {
+            limit = selectedTypes.size > 0 ? 4 : 2;
         } else if (method === 'イメージから') {
             limit = 3; // タグは複数カテゴリがあるので多めに
         } else if (method === 'とくせいから') {
             limit = 2; // 特性は最大2個まで
         } else if (method === 'せかいの名前' || method === 'つながる外国語') {
             limit = 2; // 外国語は言語ごとに異なる候補が出るので2個まで
+        } else if (method === '外国語') {
+            limit = 2;
         } else if (method === 'ことばをミックス') {
             limit = 1; // ことばをミックスは1個まで
         } else if (method === '和風スタイル') {
-            limit = 3; // 和風スタイルは積極的に出す
+            limit = themeSelected && selectedThemes.has('japanese') ? 5 : 3;
         }
         if ((methodCounts[method] || 0) >= limit) return;
 
@@ -308,18 +315,22 @@ function generateNicknames() {
         if (!results.has(name) && results.size < 16) {
             results.add(name);
             
-            // 優先度の計算（ポケモン特徴ベースを上位に）
+            // 優先度の計算（テーマ・タイプ選択時はそちらを重視）
+            const themeActive = !selectedThemes.has('random') && selectedThemes.size > 0;
+            const typeActive = selectedTypes.size > 0;
             let priority = 10;
             if (method.includes('AIのイチオシ')) priority = 100;
-            else if (method === 'イメージから') priority = 88;
-            else if (['せかいの名前', 'つながる外国語'].includes(method)) priority = 55;
-            else if (method === 'とくせいから') priority = 85;
-            else if (method === 'ことばをミックス') priority = 80;
-            else if (method === '和風スタイル') priority = 78;
-            else if (['タイプつながり', 'テーマから'].includes(method)) priority = 70;
-            else if (['まえにプラス', 'うしろにプラス'].includes(method)) priority = 60;
-            else if (method === '外国語') priority = 50;
-            else if (method === 'アナグラム') priority = 40;
+            else if (method === 'テーマから') priority = themeActive ? 95 : 70;   // テーマ選択中は最上位
+            else if (method === 'タイプつながり') priority = typeActive ? 92 : 68; // タイプ選択中は高優先
+            else if (method === 'イメージから') priority = 85;
+            else if (method === 'とくせいから') priority = 82;
+            else if (method === 'ことばをミックス') priority = 78;
+            else if (method === '和風スタイル') priority = (themeActive && selectedThemes.has('japanese')) ? 94 : 75;
+            else if (method === 'せかいの名前') priority = (themeActive && selectedThemes.has('western')) ? 88 : 65;
+            else if (method === 'つながる外国語') priority = (themeActive && selectedThemes.has('western')) ? 86 : 63;
+            else if (['まえにプラス', 'うしろにプラス'].includes(method)) priority = 58;
+            else if (method === '外国語') priority = (themeActive && selectedThemes.has('western')) ? 85 : 52;
+            else if (method === 'アナグラム') priority = 38;
             else if (method === 'ランダム') priority = 10;
 
             resultDetails.push({ name, method, subtitle, priority });
@@ -376,7 +387,9 @@ function generateNicknames() {
             if (pkmnData) {
 
                 // --- A. 外国語名（せかいの名前）: 80%の確率で試行 ---
-                if ((isAssociationMode || Math.random() < 0.45) && pkmnData.nameReading) {
+                // 洋風テーマ選択時は確率アップ
+                const nameReadingChance = (!selectedThemes.has('random') && selectedThemes.has('western')) ? 0.85 : 0.6;
+                if ((isAssociationMode || Math.random() < nameReadingChance) && pkmnData.nameReading) {
                     const keys = Object.keys(pkmnData.nameReading).filter(k => pkmnData.nameReading[k] && pkmnData.nameReading[k].trim() !== '');
                     if (keys.length > 0) {
                         const k = keys[Math.floor(Math.random() * keys.length)];
@@ -397,7 +410,8 @@ function generateNicknames() {
                 }
 
                 // --- B. モチーフ外国語（つながる外国語）: 80%の確率で試行 ---
-                if ((isAssociationMode || Math.random() < 0.45) && pkmnData.motifReading) {
+                const motifReadingChance = (!selectedThemes.has('random') && selectedThemes.has('western')) ? 0.85 : 0.6;
+                if ((isAssociationMode || Math.random() < motifReadingChance) && pkmnData.motifReading) {
                     const keys = Object.keys(pkmnData.motifReading).filter(k => pkmnData.motifReading[k] && pkmnData.motifReading[k].trim() !== '');
                     if (keys.length > 0) {
                         const k = keys[Math.floor(Math.random() * keys.length)];
@@ -470,19 +484,25 @@ function generateNicknames() {
             }
         }
 
-        // 3. Theme based
+        // 3. Theme based（テーマ選択中は複数回試行して多く出す）
         if (selectedThemes.size > 0 && !selectedThemes.has('random')) {
             const themesArr = Array.from(selectedThemes);
-            const theme = themesArr[Math.floor(Math.random() * themesArr.length)];
-            if (themes[theme]) {
-                const arr = themes[theme];
-                const word = arr[Math.floor(Math.random() * arr.length)];
-                addResult(word, 'テーマから');
+            // テーマ選択中は1ループで2回試みる（異なるテーマから）
+            const trialCount = themesArr.length > 1 ? 2 : 2;
+            for (let ti = 0; ti < trialCount; ti++) {
+                const theme = themesArr[Math.floor(Math.random() * themesArr.length)];
+                if (themes[theme]) {
+                    const arr = themes[theme];
+                    const word = arr[Math.floor(Math.random() * arr.length)];
+                    addResult(word, 'テーマから');
+                }
             }
         }
 
         // 4. Foreign Language
-        if (Math.random() < 0.2) {
+        // 洋風テーマ選択中は外国語をより多く試行
+        const foreignChance = (!selectedThemes.has('random') && selectedThemes.has('western')) ? 0.6 : 0.35;
+        if (Math.random() < foreignChance) {
             const langs = Object.keys(foreign);
             const lang = langs[Math.floor(Math.random() * langs.length)];
             const arr = foreign[lang];
