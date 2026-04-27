@@ -283,10 +283,16 @@ function generateNicknames() {
         }
         if (/[\u4E00-\u9FFF]/.test(name)) return; // 漢字なしで
 
-        // Limit same method
+        // Limit same method（ポケモン特徴ベースは多めに出せるよう上限を調整）
         let limit = 3;
         if (method === 'ランダム' || method === 'アナグラム') {
             limit = specialMethodLimit;
+        } else if (method === 'イメージから') {
+            limit = 3; // タグは複数カテゴリがあるので多めに
+        } else if (method === 'とくせいから') {
+            limit = 2; // 特性は最大2個まで
+        } else if (method === 'せかいの名前' || method === 'つながる外国語') {
+            limit = 2; // 外国語は言語ごとに異なる候補が出るので2個まで
         }
         if ((methodCounts[method] || 0) >= limit) return;
 
@@ -298,10 +304,11 @@ function generateNicknames() {
         if (!results.has(name) && results.size < 16) {
             results.add(name);
             
-            // 優先度の計算
+            // 優先度の計算（ポケモン特徴ベースを上位に）
             let priority = 10;
             if (method.includes('AIのイチオシ')) priority = 100;
             else if (['せかいの名前', 'つながる外国語', 'イメージから'].includes(method)) priority = 90;
+            else if (method === 'とくせいから') priority = 85;
             else if (method === 'ことばをミックス') priority = 80;
             else if (['タイプつながり', 'テーマから'].includes(method)) priority = 70;
             else if (['まえにプラス', 'うしろにプラス'].includes(method)) priority = 60;
@@ -356,86 +363,92 @@ function generateNicknames() {
             if (shuffled !== basePokemon) addResult(shuffled, 'アナグラム');
         }
 
-        // 1.5. Specific Pokemon Data (Foreign names, Motifs, Tags)
-        if (basePokemon && (isAssociationMode || Math.random() < 0.5)) {
-            const pkmn = pokemonList.find(p => p.name === basePokemon);
-            if (pkmn) {
-                const specificMethods = [];
-                // Add name readings
-                if (pkmn.nameReading) {
-                    const keys = Object.keys(pkmn.nameReading);
+        // 1.5. ポケモン固有データ（外国語名・モチーフ・タグ・特性）から独立して生成
+        // ※ポケモン名が入力されている場合、各カテゴリを独立して高確率で試行する
+        if (basePokemon) {
+            const pkmnData = pokemonList.find(p => p.name === basePokemon);
+            if (pkmnData) {
+
+                // --- A. 外国語名（せかいの名前）: 80%の確率で試行 ---
+                if ((isAssociationMode || Math.random() < 0.8) && pkmnData.nameReading) {
+                    const keys = Object.keys(pkmnData.nameReading).filter(k => pkmnData.nameReading[k] && pkmnData.nameReading[k].trim() !== '');
                     if (keys.length > 0) {
                         const k = keys[Math.floor(Math.random() * keys.length)];
-                        const originalMap = { en: pkmn.nameEn, la: pkmn.nameLa, de: pkmn.nameDe, fr: pkmn.nameFr };
-                        const originalWord = originalMap[k] || '';
-                        const translation = pkmn.name || '';
-                        specificMethods.push({ 
-                            word: pkmn.nameReading[k], 
-                            method: 'せかいの名前',
-                            subtitle: `${originalWord} (${translation})`
-                        });
-                    }
-                }
-                // Add motif readings
-                if (pkmn.motifReading) {
-                    const keys = Object.keys(pkmn.motifReading);
-                    if (keys.length > 0) {
-                        const k = keys[Math.floor(Math.random() * keys.length)];
-                        const originalMap = { en: pkmn.motifEn, la: pkmn.motifLa, de: pkmn.motifDe, fr: pkmn.motifFr };
-                        const originalWord = originalMap[k] || '';
-                        const translation = pkmn.motif || '';
-                        specificMethods.push({ 
-                            word: pkmn.motifReading[k], 
-                            method: 'つながる外国語',
-                            subtitle: `${originalWord} (${translation})`
-                        });
-                    }
-                }
-                // Add tags
-                if (pkmn.tags && pkmn.tags.length > 0) {
-                    const t = pkmn.tags[Math.floor(Math.random() * pkmn.tags.length)];
-                    let pool = [];
-                    if (tagWords && tagWords[t]) pool = pool.concat(tagWords[t]);
-                    if (typeof extendedTagWords !== 'undefined' && extendedTagWords[t]) pool = pool.concat(extendedTagWords[t]);
-                    
-                    if (pool.length > 0) {
-                        const tagWord = pool[Math.floor(Math.random() * pool.length)];
-                        specificMethods.push({ word: tagWord, method: 'イメージから', subtitle: t });
+                        const originalMap = { en: pkmnData.nameEn, la: pkmnData.nameLa, de: pkmnData.nameDe, fr: pkmnData.nameFr };
+                        let word = pkmnData.nameReading[k];
+                        let subtitle = `${originalMap[k] || ''} (${pkmnData.name || ''})`;
+
+                        if (word.includes('/')) {
+                            const parts = word.split('/');
+                            word = parts[Math.floor(Math.random() * parts.length)];
+                        }
+                        word = word.replace(/（.*?）/g, '').replace(/メガ・/, '');
+                        if (word.length > targetLength && !isAssociationMode) {
+                            word = truncateToNatural(word, targetLength);
+                        }
+                        if (word) addResult(word, 'せかいの名前', subtitle);
                     }
                 }
 
-                if (specificMethods.length > 0) {
-                    const choice = specificMethods[Math.floor(Math.random() * specificMethods.length)];
-                    let word = choice.word;
-                    let subtitle = choice.subtitle;
-                    // Handle slash separated values like "トード/ラフレシア"
-                    if (word.includes('/')) {
-                        const parts = word.split('/');
-                        const idx = Math.floor(Math.random() * parts.length);
-                        word = parts[idx];
-                        
-                        if (subtitle) {
+                // --- B. モチーフ外国語（つながる外国語）: 80%の確率で試行 ---
+                if ((isAssociationMode || Math.random() < 0.8) && pkmnData.motifReading) {
+                    const keys = Object.keys(pkmnData.motifReading).filter(k => pkmnData.motifReading[k] && pkmnData.motifReading[k].trim() !== '');
+                    if (keys.length > 0) {
+                        const k = keys[Math.floor(Math.random() * keys.length)];
+                        const originalMap = { en: pkmnData.motifEn, la: pkmnData.motifLa, de: pkmnData.motifDe, fr: pkmnData.motifFr };
+                        let word = pkmnData.motifReading[k];
+                        let subtitle = `${originalMap[k] || ''} (${pkmnData.motif || ''})`;
+
+                        if (word.includes('/')) {
+                            const parts = word.split('/');
+                            const idx = Math.floor(Math.random() * parts.length);
+                            word = parts[idx];
                             const match = subtitle.match(/^(.*?)\s*\((.*?)\)$/);
                             if (match) {
                                 const origParts = match[1].split('/');
                                 const transParts = match[2].split('/');
-                                const orig = origParts[idx] || origParts[0];
-                                const trans = transParts[idx] || transParts[0];
-                                subtitle = `${orig} (${trans})`;
-                            } else {
-                                const origParts = subtitle.split('/');
-                                subtitle = origParts[idx] || origParts[0];
+                                subtitle = `${origParts[idx] || origParts[0]} (${transParts[idx] || transParts[0]})`;
                             }
                         }
+                        word = word.replace(/（.*?）/g, '').replace(/メガ・/, '');
+                        if (word.length > targetLength && !isAssociationMode) {
+                            word = truncateToNatural(word, targetLength);
+                        }
+                        if (word) addResult(word, 'つながる外国語', subtitle);
                     }
-                    // Extract just the base if it has prefixes like "（アローラフォーム）"
-                    word = word.replace(/（.*?）/g, '').replace(/メガ・/, '');
-                    
-                    if (word.length > targetLength && !isAssociationMode) {
-                        word = truncateToNatural(word, targetLength);
+                }
+
+                // --- C. タグ（イメージから）: 90%の確率で試行（タグが複数ある場合は2つまで） ---
+                if ((isAssociationMode || Math.random() < 0.9) && pkmnData.tags && pkmnData.tags.length > 0) {
+                    // タグをシャッフルして最大2つを試みる
+                    const shuffledTags = [...pkmnData.tags].sort(() => 0.5 - Math.random());
+                    const tagTrials = isAssociationMode ? shuffledTags.length : Math.min(2, shuffledTags.length);
+                    for (let ti = 0; ti < tagTrials; ti++) {
+                        const t = shuffledTags[ti];
+                        let pool = [];
+                        if (tagWords && tagWords[t]) pool = pool.concat(tagWords[t]);
+                        if (typeof extendedTagWords !== 'undefined' && extendedTagWords[t]) pool = pool.concat(extendedTagWords[t]);
+                        if (pool.length > 0) {
+                            const tagWord = pool[Math.floor(Math.random() * pool.length)];
+                            addResult(tagWord, 'イメージから', t);
+                        }
                     }
-                    
-                    addResult(word, choice.method, subtitle);
+                }
+
+                // --- D. 特性（とくせいから）: 70%の確率で試行 ---
+                if ((isAssociationMode || Math.random() < 0.7)) {
+                    // 使える特性をリストアップ（空でないもの）
+                    const abilities = [pkmnData.ability1, pkmnData.ability2, pkmnData.hiddenAbility]
+                        .filter(a => a && a.trim() !== '');
+                    if (abilities.length > 0) {
+                        const chosenAbility = abilities[Math.floor(Math.random() * abilities.length)];
+                        // 特性名をそのまま、または文字数に合わせてカット
+                        let word = chosenAbility;
+                        if (word.length > targetLength && !isAssociationMode) {
+                            word = truncateToNatural(word, targetLength);
+                        }
+                        if (word) addResult(word, 'とくせいから', chosenAbility);
+                    }
                 }
             }
         }
