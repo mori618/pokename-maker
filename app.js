@@ -648,8 +648,11 @@ function generateNicknames() {
         }
     }
 
-    // 優先度順にソートして、上位8件を抽出
-    resultDetails.sort((a, b) => b.priority - a.priority);
+    // ランダムな順番で表示（シャッフル）
+    for (let i = resultDetails.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [resultDetails[i], resultDetails[j]] = [resultDetails[j], resultDetails[i]];
+    }
     const finalResults = resultDetails.slice(0, 10);
 
     renderResults(finalResults);
