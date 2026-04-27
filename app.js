@@ -283,10 +283,27 @@ function generateNicknames() {
         }
         if (/[\u4E00-\u9FFF]/.test(name)) return; // 漢字なしで
 
-        // Limit same method
+        // Limit same method（ポケモン特徴ベースは多めに出せるよう上限を調整）
         let limit = 3;
+        const themeSelected = !selectedThemes.has('random') && selectedThemes.size > 0;
         if (method === 'ランダム' || method === 'アナグラム') {
             limit = specialMethodLimit;
+        } else if (method === 'テーマから') {
+            limit = themeSelected ? 5 : 2; // テーマ選択時は積極的に出す
+        } else if (method === 'タイプつながり') {
+            limit = selectedTypes.size > 0 ? 4 : 2;
+        } else if (method === 'イメージから') {
+            limit = 3; // タグは複数カテゴリがあるので多めに
+        } else if (method === 'とくせいから') {
+            limit = 2; // 特性は最大2個まで
+        } else if (method === 'せかいの名前' || method === 'つながる外国語') {
+            limit = 2; // 外国語は言語ごとに異なる候補が出るので2個まで
+        } else if (method === '外国語') {
+            limit = 2;
+        } else if (method === 'ことばをミックス') {
+            limit = 1; // ことばをミックスは1個まで
+        } else if (method === '和風スタイル') {
+            limit = themeSelected && selectedThemes.has('japanese') ? 5 : 3;
         }
         if ((methodCounts[method] || 0) >= limit) return;
 
@@ -298,15 +315,22 @@ function generateNicknames() {
         if (!results.has(name) && results.size < 16) {
             results.add(name);
             
-            // 優先度の計算
+            // 優先度の計算（テーマ・タイプ選択時はそちらを重視）
+            const themeActive = !selectedThemes.has('random') && selectedThemes.size > 0;
+            const typeActive = selectedTypes.size > 0;
             let priority = 10;
             if (method.includes('AIのイチオシ')) priority = 100;
-            else if (['せかいの名前', 'つながる外国語', 'イメージから'].includes(method)) priority = 90;
-            else if (method === 'ことばをミックス') priority = 80;
-            else if (['タイプつながり', 'テーマから'].includes(method)) priority = 70;
-            else if (['まえにプラス', 'うしろにプラス'].includes(method)) priority = 60;
-            else if (method === '外国語') priority = 50;
-            else if (method === 'アナグラム') priority = 40;
+            else if (method === 'テーマから') priority = themeActive ? 95 : 70;   // テーマ選択中は最上位
+            else if (method === 'タイプつながり') priority = typeActive ? 92 : 68; // タイプ選択中は高優先
+            else if (method === 'イメージから') priority = 85;
+            else if (method === 'とくせいから') priority = 82;
+            else if (method === 'ことばをミックス') priority = 78;
+            else if (method === '和風スタイル') priority = (themeActive && selectedThemes.has('japanese')) ? 94 : 75;
+            else if (method === 'せかいの名前') priority = (themeActive && selectedThemes.has('western')) ? 88 : 65;
+            else if (method === 'つながる外国語') priority = (themeActive && selectedThemes.has('western')) ? 86 : 63;
+            else if (['まえにプラス', 'うしろにプラス'].includes(method)) priority = 58;
+            else if (method === '外国語') priority = (themeActive && selectedThemes.has('western')) ? 85 : 52;
+            else if (method === 'アナグラム') priority = 38;
             else if (method === 'ランダム') priority = 10;
 
             resultDetails.push({ name, method, subtitle, priority });
@@ -356,86 +380,95 @@ function generateNicknames() {
             if (shuffled !== basePokemon) addResult(shuffled, 'アナグラム');
         }
 
-        // 1.5. Specific Pokemon Data (Foreign names, Motifs, Tags)
-        if (basePokemon && (isAssociationMode || Math.random() < 0.5)) {
-            const pkmn = pokemonList.find(p => p.name === basePokemon);
-            if (pkmn) {
-                const specificMethods = [];
-                // Add name readings
-                if (pkmn.nameReading) {
-                    const keys = Object.keys(pkmn.nameReading);
+        // 1.5. ポケモン固有データ（外国語名・モチーフ・タグ・特性）から独立して生成
+        // ※ポケモン名が入力されている場合、各カテゴリを独立して高確率で試行する
+        if (basePokemon) {
+            const pkmnData = pokemonList.find(p => p.name === basePokemon);
+            if (pkmnData) {
+
+                // --- A. 外国語名（せかいの名前）: 80%の確率で試行 ---
+                // 洋風テーマ選択時は確率アップ
+                const nameReadingChance = (!selectedThemes.has('random') && selectedThemes.has('western')) ? 0.85 : 0.6;
+                if ((isAssociationMode || Math.random() < nameReadingChance) && pkmnData.nameReading) {
+                    const keys = Object.keys(pkmnData.nameReading).filter(k => pkmnData.nameReading[k] && pkmnData.nameReading[k].trim() !== '');
                     if (keys.length > 0) {
                         const k = keys[Math.floor(Math.random() * keys.length)];
-                        const originalMap = { en: pkmn.nameEn, la: pkmn.nameLa, de: pkmn.nameDe, fr: pkmn.nameFr };
-                        const originalWord = originalMap[k] || '';
-                        const translation = pkmn.name || '';
-                        specificMethods.push({ 
-                            word: pkmn.nameReading[k], 
-                            method: 'せかいの名前',
-                            subtitle: `${originalWord} (${translation})`
-                        });
-                    }
-                }
-                // Add motif readings
-                if (pkmn.motifReading) {
-                    const keys = Object.keys(pkmn.motifReading);
-                    if (keys.length > 0) {
-                        const k = keys[Math.floor(Math.random() * keys.length)];
-                        const originalMap = { en: pkmn.motifEn, la: pkmn.motifLa, de: pkmn.motifDe, fr: pkmn.motifFr };
-                        const originalWord = originalMap[k] || '';
-                        const translation = pkmn.motif || '';
-                        specificMethods.push({ 
-                            word: pkmn.motifReading[k], 
-                            method: 'つながる外国語',
-                            subtitle: `${originalWord} (${translation})`
-                        });
-                    }
-                }
-                // Add tags
-                if (pkmn.tags && pkmn.tags.length > 0) {
-                    const t = pkmn.tags[Math.floor(Math.random() * pkmn.tags.length)];
-                    let pool = [];
-                    if (tagWords && tagWords[t]) pool = pool.concat(tagWords[t]);
-                    if (typeof extendedTagWords !== 'undefined' && extendedTagWords[t]) pool = pool.concat(extendedTagWords[t]);
-                    
-                    if (pool.length > 0) {
-                        const tagWord = pool[Math.floor(Math.random() * pool.length)];
-                        specificMethods.push({ word: tagWord, method: 'イメージから', subtitle: t });
+                        const originalMap = { en: pkmnData.nameEn, la: pkmnData.nameLa, de: pkmnData.nameDe, fr: pkmnData.nameFr };
+                        let word = pkmnData.nameReading[k];
+                        let subtitle = `${originalMap[k] || ''} (${pkmnData.name || ''})`;
+
+                        if (word.includes('/')) {
+                            const parts = word.split('/');
+                            word = parts[Math.floor(Math.random() * parts.length)];
+                        }
+                        word = word.replace(/（.*?）/g, '').replace(/メガ・/, '');
+                        if (word.length > targetLength && !isAssociationMode) {
+                            word = truncateToNatural(word, targetLength);
+                        }
+                        if (word) addResult(word, 'せかいの名前', subtitle);
                     }
                 }
 
-                if (specificMethods.length > 0) {
-                    const choice = specificMethods[Math.floor(Math.random() * specificMethods.length)];
-                    let word = choice.word;
-                    let subtitle = choice.subtitle;
-                    // Handle slash separated values like "トード/ラフレシア"
-                    if (word.includes('/')) {
-                        const parts = word.split('/');
-                        const idx = Math.floor(Math.random() * parts.length);
-                        word = parts[idx];
-                        
-                        if (subtitle) {
+                // --- B. モチーフ外国語（つながる外国語）: 80%の確率で試行 ---
+                const motifReadingChance = (!selectedThemes.has('random') && selectedThemes.has('western')) ? 0.85 : 0.6;
+                if ((isAssociationMode || Math.random() < motifReadingChance) && pkmnData.motifReading) {
+                    const keys = Object.keys(pkmnData.motifReading).filter(k => pkmnData.motifReading[k] && pkmnData.motifReading[k].trim() !== '');
+                    if (keys.length > 0) {
+                        const k = keys[Math.floor(Math.random() * keys.length)];
+                        const originalMap = { en: pkmnData.motifEn, la: pkmnData.motifLa, de: pkmnData.motifDe, fr: pkmnData.motifFr };
+                        let word = pkmnData.motifReading[k];
+                        let subtitle = `${originalMap[k] || ''} (${pkmnData.motif || ''})`;
+
+                        if (word.includes('/')) {
+                            const parts = word.split('/');
+                            const idx = Math.floor(Math.random() * parts.length);
+                            word = parts[idx];
                             const match = subtitle.match(/^(.*?)\s*\((.*?)\)$/);
                             if (match) {
                                 const origParts = match[1].split('/');
                                 const transParts = match[2].split('/');
-                                const orig = origParts[idx] || origParts[0];
-                                const trans = transParts[idx] || transParts[0];
-                                subtitle = `${orig} (${trans})`;
-                            } else {
-                                const origParts = subtitle.split('/');
-                                subtitle = origParts[idx] || origParts[0];
+                                subtitle = `${origParts[idx] || origParts[0]} (${transParts[idx] || transParts[0]})`;
                             }
                         }
+                        word = word.replace(/（.*?）/g, '').replace(/メガ・/, '');
+                        if (word.length > targetLength && !isAssociationMode) {
+                            word = truncateToNatural(word, targetLength);
+                        }
+                        if (word) addResult(word, 'つながる外国語', subtitle);
                     }
-                    // Extract just the base if it has prefixes like "（アローラフォーム）"
-                    word = word.replace(/（.*?）/g, '').replace(/メガ・/, '');
-                    
-                    if (word.length > targetLength && !isAssociationMode) {
-                        word = truncateToNatural(word, targetLength);
+                }
+
+                // --- C. タグ（イメージから）: 90%の確率で試行（タグが複数ある場合は2つまで） ---
+                if ((isAssociationMode || Math.random() < 0.9) && pkmnData.tags && pkmnData.tags.length > 0) {
+                    // タグをシャッフルして最大2つを試みる
+                    const shuffledTags = [...pkmnData.tags].sort(() => 0.5 - Math.random());
+                    const tagTrials = isAssociationMode ? shuffledTags.length : Math.min(2, shuffledTags.length);
+                    for (let ti = 0; ti < tagTrials; ti++) {
+                        const t = shuffledTags[ti];
+                        let pool = [];
+                        if (tagWords && tagWords[t]) pool = pool.concat(tagWords[t]);
+                        if (typeof extendedTagWords !== 'undefined' && extendedTagWords[t]) pool = pool.concat(extendedTagWords[t]);
+                        if (pool.length > 0) {
+                            const tagWord = pool[Math.floor(Math.random() * pool.length)];
+                            addResult(tagWord, 'イメージから', t);
+                        }
                     }
-                    
-                    addResult(word, choice.method, subtitle);
+                }
+
+                // --- D. 特性（とくせいから）: 70%の確率で試行 ---
+                if ((isAssociationMode || Math.random() < 0.7)) {
+                    // 使える特性をリストアップ（空でないもの）
+                    const abilities = [pkmnData.ability1, pkmnData.ability2, pkmnData.hiddenAbility]
+                        .filter(a => a && a.trim() !== '');
+                    if (abilities.length > 0) {
+                        const chosenAbility = abilities[Math.floor(Math.random() * abilities.length)];
+                        // 特性名をそのまま、または文字数に合わせてカット
+                        let word = chosenAbility;
+                        if (word.length > targetLength && !isAssociationMode) {
+                            word = truncateToNatural(word, targetLength);
+                        }
+                        if (word) addResult(word, 'とくせいから', chosenAbility);
+                    }
                 }
             }
         }
@@ -451,19 +484,25 @@ function generateNicknames() {
             }
         }
 
-        // 3. Theme based
+        // 3. Theme based（テーマ選択中は複数回試行して多く出す）
         if (selectedThemes.size > 0 && !selectedThemes.has('random')) {
             const themesArr = Array.from(selectedThemes);
-            const theme = themesArr[Math.floor(Math.random() * themesArr.length)];
-            if (themes[theme]) {
-                const arr = themes[theme];
-                const word = arr[Math.floor(Math.random() * arr.length)];
-                addResult(word, 'テーマから');
+            // テーマ選択中は1ループで2回試みる（異なるテーマから）
+            const trialCount = themesArr.length > 1 ? 2 : 2;
+            for (let ti = 0; ti < trialCount; ti++) {
+                const theme = themesArr[Math.floor(Math.random() * themesArr.length)];
+                if (themes[theme]) {
+                    const arr = themes[theme];
+                    const word = arr[Math.floor(Math.random() * arr.length)];
+                    addResult(word, 'テーマから');
+                }
             }
         }
 
         // 4. Foreign Language
-        if (Math.random() < 0.2) {
+        // 洋風テーマ選択中は外国語をより多く試行
+        const foreignChance = (!selectedThemes.has('random') && selectedThemes.has('western')) ? 0.6 : 0.35;
+        if (Math.random() < foreignChance) {
             const langs = Object.keys(foreign);
             const lang = langs[Math.floor(Math.random() * langs.length)];
             const arr = foreign[lang];
@@ -525,7 +564,7 @@ function generateNicknames() {
             addResult(res, 'ランダム');
         }
 
-        // 7. Combination
+        // 7. Combination（ことばをミックス）
         if (targetLength >= 4 && Math.random() < 0.4) {
             let len1, len2;
             if (targetLength === 4) {
@@ -549,11 +588,72 @@ function generateNicknames() {
                 }
             }
         }
+
+        // 8. 和風スタイル（ポケモン名・タイプ・タグから和風ニックネームを生成）
+        if (Math.random() < 0.6) {
+            // 和風サフィックス（名前の末尾に付ける）
+            const wafuSuffixes = [
+                'まる', 'ひめ', 'おう', 'かぜ', 'のみ', 'つき', 'ほし', 'やみ',
+                'かみ', 'おに', 'りゅう', 'きし', 'のすけ', 'たろう', 'ざぶろ',
+                'すけ', 'ぼう', 'にゃん', 'ぽん', 'ちゃん', 'くん', 'べえ',
+                'のぬし', 'ざん', 'まる'
+            ];
+            // 和風プレフィックス（名前の先頭に付ける）
+            const wafuPrefixes = [
+                'おお', 'こ', 'しろ', 'くろ', 'あか', 'あお', 'きん', 'ぎん',
+                'ほのお', 'みず', 'かみ', 'やみ', 'ひ', 'かぜ', 'つき', 'たい'
+            ];
+
+            // ベースとなる言葉を選ぶ
+            let wafuBase = '';
+            if (basePokemon && Math.random() < 0.7) {
+                // ポケモン名の最初の2〜3文字（自然な区切りで）
+                const cleanName = basePokemon.replace(/（.*?）/g, '').replace(/メガ/g, '');
+                const baseLen = Math.random() < 0.5 ? 2 : 3;
+                wafuBase = truncateToNatural(cleanName, Math.min(baseLen, cleanName.length));
+            } else if (selectedTypes.size > 0) {
+                // タイプ名の一部
+                const typesArr = Array.from(selectedTypes);
+                const chosenType = typesArr[Math.floor(Math.random() * typesArr.length)];
+                const typeLabel = TYPE_LABELS[chosenType] || '';
+                wafuBase = typeLabel.length > 2 ? typeLabel.substring(0, 2) : typeLabel;
+            } else {
+                // 汎用的な和語ベース
+                const generalBases = [
+                    'はな', 'やま', 'うみ', 'かわ', 'そら', 'ほし', 'つき', 'かぜ',
+                    'ゆき', 'あめ', 'ひ', 'くも', 'もり', 'いわ', 'つち', 'みず'
+                ];
+                wafuBase = generalBases[Math.floor(Math.random() * generalBases.length)];
+            }
+
+            if (wafuBase) {
+                // サフィックス or プレフィックスを付ける（50:50）
+                let wafuName = '';
+                if (Math.random() < 0.6) {
+                    // サフィックス型: ベース + サフィックス
+                    const suffix = wafuSuffixes[Math.floor(Math.random() * wafuSuffixes.length)];
+                    wafuName = wafuBase + suffix;
+                } else {
+                    // プレフィックス型: プレフィックス + ベース
+                    const prefix = wafuPrefixes[Math.floor(Math.random() * wafuPrefixes.length)];
+                    wafuName = prefix + wafuBase;
+                }
+
+                // 長さ調整
+                if (wafuName.length > targetLength && !isAssociationMode) {
+                    wafuName = truncateToNatural(wafuName, targetLength);
+                }
+                addResult(wafuName, '和風スタイル', wafuBase + 'ベース');
+            }
+        }
     }
 
-    // 優先度順にソートして、上位8件を抽出
-    resultDetails.sort((a, b) => b.priority - a.priority);
-    const finalResults = resultDetails.slice(0, 8);
+    // ランダムな順番で表示（シャッフル）
+    for (let i = resultDetails.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [resultDetails[i], resultDetails[j]] = [resultDetails[j], resultDetails[i]];
+    }
+    const finalResults = resultDetails.slice(0, 10);
 
     renderResults(finalResults);
 }
