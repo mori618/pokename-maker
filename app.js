@@ -311,7 +311,8 @@ function generateNicknames() {
             // 優先度の計算（ポケモン特徴ベースを上位に）
             let priority = 10;
             if (method.includes('AIのイチオシ')) priority = 100;
-            else if (['せかいの名前', 'つながる外国語', 'イメージから'].includes(method)) priority = 90;
+            else if (method === 'イメージから') priority = 88;
+            else if (['せかいの名前', 'つながる外国語'].includes(method)) priority = 55;
             else if (method === 'とくせいから') priority = 85;
             else if (method === 'ことばをミックス') priority = 80;
             else if (method === '和風スタイル') priority = 78;
@@ -375,7 +376,7 @@ function generateNicknames() {
             if (pkmnData) {
 
                 // --- A. 外国語名（せかいの名前）: 80%の確率で試行 ---
-                if ((isAssociationMode || Math.random() < 0.8) && pkmnData.nameReading) {
+                if ((isAssociationMode || Math.random() < 0.45) && pkmnData.nameReading) {
                     const keys = Object.keys(pkmnData.nameReading).filter(k => pkmnData.nameReading[k] && pkmnData.nameReading[k].trim() !== '');
                     if (keys.length > 0) {
                         const k = keys[Math.floor(Math.random() * keys.length)];
@@ -396,7 +397,7 @@ function generateNicknames() {
                 }
 
                 // --- B. モチーフ外国語（つながる外国語）: 80%の確率で試行 ---
-                if ((isAssociationMode || Math.random() < 0.8) && pkmnData.motifReading) {
+                if ((isAssociationMode || Math.random() < 0.45) && pkmnData.motifReading) {
                     const keys = Object.keys(pkmnData.motifReading).filter(k => pkmnData.motifReading[k] && pkmnData.motifReading[k].trim() !== '');
                     if (keys.length > 0) {
                         const k = keys[Math.floor(Math.random() * keys.length)];
@@ -629,7 +630,7 @@ function generateNicknames() {
 
     // 優先度順にソートして、上位8件を抽出
     resultDetails.sort((a, b) => b.priority - a.priority);
-    const finalResults = resultDetails.slice(0, 8);
+    const finalResults = resultDetails.slice(0, 10);
 
     renderResults(finalResults);
 }
