@@ -293,6 +293,10 @@ function generateNicknames() {
             limit = 2; // 特性は最大2個まで
         } else if (method === 'せかいの名前' || method === 'つながる外国語') {
             limit = 2; // 外国語は言語ごとに異なる候補が出るので2個まで
+        } else if (method === 'ことばをミックス') {
+            limit = 1; // ことばをミックスは1個まで
+        } else if (method === '和風スタイル') {
+            limit = 3; // 和風スタイルは積極的に出す
         }
         if ((methodCounts[method] || 0) >= limit) return;
 
@@ -310,6 +314,7 @@ function generateNicknames() {
             else if (['せかいの名前', 'つながる外国語', 'イメージから'].includes(method)) priority = 90;
             else if (method === 'とくせいから') priority = 85;
             else if (method === 'ことばをミックス') priority = 80;
+            else if (method === '和風スタイル') priority = 78;
             else if (['タイプつながり', 'テーマから'].includes(method)) priority = 70;
             else if (['まえにプラス', 'うしろにプラス'].includes(method)) priority = 60;
             else if (method === '外国語') priority = 50;
@@ -538,7 +543,7 @@ function generateNicknames() {
             addResult(res, 'ランダム');
         }
 
-        // 7. Combination
+        // 7. Combination（ことばをミックス）
         if (targetLength >= 4 && Math.random() < 0.4) {
             let len1, len2;
             if (targetLength === 4) {
@@ -560,6 +565,64 @@ function generateNicknames() {
                 if (w1 && w2) {
                     addResult(w1 + w2, 'ことばをミックス', `${w1} + ${w2}`);
                 }
+            }
+        }
+
+        // 8. 和風スタイル（ポケモン名・タイプ・タグから和風ニックネームを生成）
+        if (Math.random() < 0.6) {
+            // 和風サフィックス（名前の末尾に付ける）
+            const wafuSuffixes = [
+                'まる', 'ひめ', 'おう', 'かぜ', 'のみ', 'つき', 'ほし', 'やみ',
+                'かみ', 'おに', 'りゅう', 'きし', 'のすけ', 'たろう', 'ざぶろ',
+                'すけ', 'ぼう', 'にゃん', 'ぽん', 'ちゃん', 'くん', 'べえ',
+                'のぬし', 'ざん', 'まる'
+            ];
+            // 和風プレフィックス（名前の先頭に付ける）
+            const wafuPrefixes = [
+                'おお', 'こ', 'しろ', 'くろ', 'あか', 'あお', 'きん', 'ぎん',
+                'ほのお', 'みず', 'かみ', 'やみ', 'ひ', 'かぜ', 'つき', 'たい'
+            ];
+
+            // ベースとなる言葉を選ぶ
+            let wafuBase = '';
+            if (basePokemon && Math.random() < 0.7) {
+                // ポケモン名の最初の2〜3文字（自然な区切りで）
+                const cleanName = basePokemon.replace(/（.*?）/g, '').replace(/メガ/g, '');
+                const baseLen = Math.random() < 0.5 ? 2 : 3;
+                wafuBase = truncateToNatural(cleanName, Math.min(baseLen, cleanName.length));
+            } else if (selectedTypes.size > 0) {
+                // タイプ名の一部
+                const typesArr = Array.from(selectedTypes);
+                const chosenType = typesArr[Math.floor(Math.random() * typesArr.length)];
+                const typeLabel = TYPE_LABELS[chosenType] || '';
+                wafuBase = typeLabel.length > 2 ? typeLabel.substring(0, 2) : typeLabel;
+            } else {
+                // 汎用的な和語ベース
+                const generalBases = [
+                    'はな', 'やま', 'うみ', 'かわ', 'そら', 'ほし', 'つき', 'かぜ',
+                    'ゆき', 'あめ', 'ひ', 'くも', 'もり', 'いわ', 'つち', 'みず'
+                ];
+                wafuBase = generalBases[Math.floor(Math.random() * generalBases.length)];
+            }
+
+            if (wafuBase) {
+                // サフィックス or プレフィックスを付ける（50:50）
+                let wafuName = '';
+                if (Math.random() < 0.6) {
+                    // サフィックス型: ベース + サフィックス
+                    const suffix = wafuSuffixes[Math.floor(Math.random() * wafuSuffixes.length)];
+                    wafuName = wafuBase + suffix;
+                } else {
+                    // プレフィックス型: プレフィックス + ベース
+                    const prefix = wafuPrefixes[Math.floor(Math.random() * wafuPrefixes.length)];
+                    wafuName = prefix + wafuBase;
+                }
+
+                // 長さ調整
+                if (wafuName.length > targetLength && !isAssociationMode) {
+                    wafuName = truncateToNatural(wafuName, targetLength);
+                }
+                addResult(wafuName, '和風スタイル', wafuBase + 'ベース');
             }
         }
     }
