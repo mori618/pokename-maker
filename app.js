@@ -112,6 +112,30 @@ function showInspirationBoard(pkmn) {
     // タグ
     const tagsHtml = (pkmn.tags || []).map(t => `<span class="tag-item">${t}</span>`).join('');
 
+    // ニックネーム例の抽出（2つ）
+    const exampleNames = [];
+    if (pkmn.aiNicknames) {
+        const allAiNames = [];
+        const themesArr = Array.from(selectedThemes);
+        themesArr.forEach(t => {
+            if (t === 'random') {
+                if (pkmn.aiNicknames.general) allAiNames.push(...pkmn.aiNicknames.general);
+            } else if (pkmn.aiNicknames[t]) {
+                allAiNames.push(...pkmn.aiNicknames[t]);
+            }
+        });
+        if (allAiNames.length === 0 && pkmn.aiNicknames.general) {
+            allAiNames.push(...pkmn.aiNicknames.general);
+        }
+        
+        const shuffledAi = [...allAiNames].sort(() => 0.5 - Math.random());
+        if (shuffledAi[0]) exampleNames.push(shuffledAi[0]);
+        if (shuffledAi[1]) exampleNames.push(shuffledAi[1]);
+    }
+    const examplesHtml = exampleNames.length > 0
+        ? exampleNames.map(name => `<li style="font-size:1.15rem;font-weight:900;color:var(--primary-dark);justify-content:center;border-bottom:none;padding-bottom:0;">${name}</li>`).join('')
+        : '<li style="color:var(--text-muted);justify-content:center;border-bottom:none;">データなし</li>';
+
     inspirationBoard.innerHTML = `
         <h3><span class="material-icons-round">lightbulb</span>「${pkmn.name}」のインスピレーションボード</h3>
         <div class="inspiration-grid">
@@ -140,12 +164,25 @@ function showInspirationBoard(pkmn) {
                 </ul>
             </div>
 
-            <!-- イメージタグ -->
-            <div class="inspiration-card accent-tags">
-                <h4><span class="material-icons-round">local_offer</span>イメージワード</h4>
-                <div class="badge-container" style="margin-top:0.5rem;">
-                    ${tagsHtml || '<span style="font-size:0.85rem;color:var(--text-muted);">なし</span>'}
+            <!-- ニックネームの例 -->
+            <div class="inspiration-card accent-examples" style="border-top-color: #3b4cca; background: rgba(59, 76, 202, 0.03);">
+                <h4><span class="material-icons-round">casino</span>こんな名前にしてみる？</h4>
+                <ul style="display:flex;flex-direction:column;gap:0.4rem;align-items:center;padding:0.2rem 0;">
+                    ${examplesHtml}
+                </ul>
+                <div style="font-size:0.7rem;color:var(--text-muted);text-align:center;margin-top:0.4rem;border-top:1px solid #edf2f7;padding-top:0.3rem;width:100%;">
+                    ※これらをヒントに独自のニックネームを作ってみましょう！
                 </div>
+            </div>
+        </div>
+
+        <!-- イメージタグ（グリッドの外で幅広に表示） -->
+        <div style="margin-top: 1.25rem; padding-top: 1rem; border-top: 1px dashed #cbd5e1;">
+            <h4 style="font-size: 0.85rem; color: var(--text-main); font-weight: 700; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.3rem;">
+                <span class="material-icons-round" style="font-size: 1.1rem; color: var(--text-muted);">local_offer</span>イメージワード
+            </h4>
+            <div class="badge-container" style="display: flex; flex-wrap: wrap; gap: 0.4rem;">
+                ${tagsHtml || '<span style="font-size:0.85rem;color:var(--text-muted);">なし</span>'}
             </div>
         </div>
     `;
