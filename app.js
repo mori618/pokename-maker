@@ -11,6 +11,7 @@ let selectedTypes = new Set();
 const pokemonTypeBadges = document.getElementById('pokemon-type-badges');
 const pokemonTypeGroup = document.getElementById('pokemon-type-group');
 const inspirationBoard = document.getElementById('inspiration-board');
+const examplesBoard = document.getElementById('examples-board');
 const themeTags = document.getElementById('theme-tags');
 const pokemonInput = document.getElementById('pokemon-input');
 const suggestionsList = document.getElementById('suggestions-list');
@@ -78,6 +79,66 @@ function showPokemonTypeBadges(typeKeys) {
  * インスピレーションボードに描画する
  * @param {Object} pkmn - ポケモンオブジェクト
  */
+/**
+ * ポケモン選択時にそのポケモンのニックネーム完成例を2つ抽出して
+ * 独立したボード（#examples-board）に描画する
+ * @param {Object} pkmn - ポケモンオブジェクト
+ */
+function showExamplesBoard(pkmn) {
+    if (!pkmn) {
+        examplesBoard.innerHTML = '';
+        examplesBoard.classList.add('hidden');
+        return;
+    }
+
+    // ニックネーム例の抽出（2つ）
+    const exampleNames = [];
+    if (pkmn.aiNicknames) {
+        const allAiNames = [];
+        const themesArr = Array.from(selectedThemes);
+        themesArr.forEach(t => {
+            if (t === 'random') {
+                if (pkmn.aiNicknames.general) allAiNames.push(...pkmn.aiNicknames.general);
+            } else if (pkmn.aiNicknames[t]) {
+                allAiNames.push(...pkmn.aiNicknames[t]);
+            }
+        });
+        if (allAiNames.length === 0 && pkmn.aiNicknames.general) {
+            allAiNames.push(...pkmn.aiNicknames.general);
+        }
+        
+        const shuffledAi = [...allAiNames].sort(() => 0.5 - Math.random());
+        if (shuffledAi[0]) exampleNames.push(shuffledAi[0]);
+        if (shuffledAi[1]) exampleNames.push(shuffledAi[1]);
+    }
+
+    if (exampleNames.length === 0) {
+        examplesBoard.innerHTML = '';
+        examplesBoard.classList.add('hidden');
+        return;
+    }
+
+    const examplesHtml = exampleNames
+        .map(name => `<li class="example-item">${name}</li>`)
+        .join('');
+
+    examplesBoard.innerHTML = `
+        <h3><span class="material-icons-round">casino</span>こんな名前にしてみる？</h3>
+        <ul class="examples-list">
+            ${examplesHtml}
+        </ul>
+        <div class="examples-note">
+            ※これら完成例をヒントに、文字を削ったり組み合わせたりして独自のニックネームを作ってみましょう！
+        </div>
+    `;
+    examplesBoard.classList.remove('hidden');
+}
+
+/**
+ * ポケモン選択時にそのポケモンのプロファイル（多国語名、モチーフ、特性、タグ）を
+ * インスピレーションボードに描画する
+ * @param {Object} pkmn - ポケモンオブジェクト
+ */
 function showInspirationBoard(pkmn) {
     if (!pkmn) {
         inspirationBoard.innerHTML = '';
@@ -112,30 +173,6 @@ function showInspirationBoard(pkmn) {
     // タグ
     const tagsHtml = (pkmn.tags || []).map(t => `<span class="tag-item">${t}</span>`).join('');
 
-    // ニックネーム例の抽出（2つ）
-    const exampleNames = [];
-    if (pkmn.aiNicknames) {
-        const allAiNames = [];
-        const themesArr = Array.from(selectedThemes);
-        themesArr.forEach(t => {
-            if (t === 'random') {
-                if (pkmn.aiNicknames.general) allAiNames.push(...pkmn.aiNicknames.general);
-            } else if (pkmn.aiNicknames[t]) {
-                allAiNames.push(...pkmn.aiNicknames[t]);
-            }
-        });
-        if (allAiNames.length === 0 && pkmn.aiNicknames.general) {
-            allAiNames.push(...pkmn.aiNicknames.general);
-        }
-        
-        const shuffledAi = [...allAiNames].sort(() => 0.5 - Math.random());
-        if (shuffledAi[0]) exampleNames.push(shuffledAi[0]);
-        if (shuffledAi[1]) exampleNames.push(shuffledAi[1]);
-    }
-    const examplesHtml = exampleNames.length > 0
-        ? exampleNames.map(name => `<li style="font-size:1.15rem;font-weight:900;color:var(--primary-dark);justify-content:center;border-bottom:none;padding-bottom:0;">${name}</li>`).join('')
-        : '<li style="color:var(--text-muted);justify-content:center;border-bottom:none;">データなし</li>';
-
     inspirationBoard.innerHTML = `
         <h3><span class="material-icons-round">lightbulb</span>「${pkmn.name}」のインスピレーションボード</h3>
         <div class="inspiration-grid">
@@ -162,17 +199,6 @@ function showInspirationBoard(pkmn) {
                     <li><span class="lang-label">タイプ</span> <span class="lang-val">${typesStr || 'なし'}</span></li>
                     ${abilities.join('')}
                 </ul>
-            </div>
-
-            <!-- ニックネームの例 -->
-            <div class="inspiration-card accent-examples" style="border-top-color: #3b4cca; background: rgba(59, 76, 202, 0.03);">
-                <h4><span class="material-icons-round">casino</span>こんな名前にしてみる？</h4>
-                <ul style="display:flex;flex-direction:column;gap:0.4rem;align-items:center;padding:0.2rem 0;">
-                    ${examplesHtml}
-                </ul>
-                <div style="font-size:0.7rem;color:var(--text-muted);text-align:center;margin-top:0.4rem;border-top:1px solid #edf2f7;padding-top:0.3rem;width:100%;">
-                    ※これらをヒントに独自のニックネームを作ってみましょう！
-                </div>
             </div>
         </div>
 
@@ -229,6 +255,7 @@ function setupEventListeners() {
             // 入力が空になったらタイプバッジとボードをリセット
             selectedTypes.clear();
             showPokemonTypeBadges([]);
+            showExamplesBoard(null);
             showInspirationBoard(null);
             return;
         }
@@ -265,6 +292,7 @@ function setupEventListeners() {
 
                     // タイプバッジとインスピレーションボードを更新
                     showPokemonTypeBadges(typeKeys);
+                    showExamplesBoard(p);
                     showInspirationBoard(p);
                 });
                 suggestionsList.appendChild(li);
