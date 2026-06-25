@@ -10,16 +10,14 @@ let selectedTypes = new Set();
 // --- DOM Elements ---
 const pokemonTypeBadges = document.getElementById('pokemon-type-badges');
 const pokemonTypeGroup = document.getElementById('pokemon-type-group');
+const inspirationBoard = document.getElementById('inspiration-board');
 const themeTags = document.getElementById('theme-tags');
 const pokemonInput = document.getElementById('pokemon-input');
 const suggestionsList = document.getElementById('suggestions-list');
-const lengthSlider = document.getElementById('length-slider');
-const lengthVal = document.getElementById('length-val');
 const generateBtn = document.getElementById('generate-btn');
 const regenerateBtn = document.getElementById('regenerate-btn');
 const resultsGrid = document.getElementById('results-grid');
 const toast = document.getElementById('toast');
-const associationToggle = document.getElementById('association-toggle');
 
 // --- Initialization ---
 function init() {
@@ -75,13 +73,87 @@ function showPokemonTypeBadges(typeKeys) {
     pokemonTypeGroup.style.display = '';
 }
 
+/**
+ * ポケモン選択時にそのポケモンのプロファイル（多国語名、モチーフ、特性、タグ）を
+ * インスピレーションボードに描画する
+ * @param {Object} pkmn - ポケモンオブジェクト
+ */
+function showInspirationBoard(pkmn) {
+    if (!pkmn) {
+        inspirationBoard.innerHTML = '';
+        inspirationBoard.classList.add('hidden');
+        return;
+    }
+
+    // 多国語名リスト
+    const langNames = [];
+    if (pkmn.nameEn) langNames.push(`<li><span class="lang-label">英語</span> <span class="lang-val">${pkmn.nameEn}${pkmn.nameReading?.en ? ` (${pkmn.nameReading.en})` : ''}</span></li>`);
+    if (pkmn.nameLa) langNames.push(`<li><span class="lang-label">ラテン語</span> <span class="lang-val">${pkmn.nameLa}${pkmn.nameReading?.la ? ` (${pkmn.nameReading.la})` : ''}</span></li>`);
+    if (pkmn.nameDe) langNames.push(`<li><span class="lang-label">ドイツ語</span> <span class="lang-val">${pkmn.nameDe}${pkmn.nameReading?.de ? ` (${pkmn.nameReading.de})` : ''}</span></li>`);
+    if (pkmn.nameFr) langNames.push(`<li><span class="lang-label">フランス語</span> <span class="lang-val">${pkmn.nameFr}${pkmn.nameReading?.fr ? ` (${pkmn.nameReading.fr})` : ''}</span></li>`);
+
+    // モチーフ多国語
+    const langMotifs = [];
+    if (pkmn.motif) langMotifs.push(`<li><span class="lang-label">日本語</span> <span class="lang-val">${pkmn.motif}</span></li>`);
+    if (pkmn.motifEn) langMotifs.push(`<li><span class="lang-label">英語</span> <span class="lang-val">${pkmn.motifEn}${pkmn.motifReading?.en ? ` (${pkmn.motifReading.en})` : ''}</span></li>`);
+    if (pkmn.motifLa) langMotifs.push(`<li><span class="lang-label">ラテン語</span> <span class="lang-val">${pkmn.motifLa}${pkmn.motifReading?.la ? ` (${pkmn.motifReading.la})` : ''}</span></li>`);
+    if (pkmn.motifDe) langMotifs.push(`<li><span class="lang-label">ドイツ語</span> <span class="lang-val">${pkmn.motifDe}${pkmn.motifReading?.de ? ` (${pkmn.motifReading.de})` : ''}</span></li>`);
+    if (pkmn.motifFr) langMotifs.push(`<li><span class="lang-label">フランス語</span> <span class="lang-val">${pkmn.motifFr}${pkmn.motifReading?.fr ? ` (${pkmn.motifReading.fr})` : ''}</span></li>`);
+
+    // 特性
+    const abilities = [];
+    if (pkmn.ability1) abilities.push(`<li><span class="lang-label">特性1</span> <span class="lang-val">${pkmn.ability1}</span></li>`);
+    if (pkmn.ability2) abilities.push(`<li><span class="lang-label">特性2</span> <span class="lang-val">${pkmn.ability2}</span></li>`);
+    if (pkmn.hiddenAbility) abilities.push(`<li><span class="lang-label">夢特性</span> <span class="lang-val">${pkmn.hiddenAbility}</span></li>`);
+
+    // タイプ名表示（バッジと別にボード用にもテキストで）
+    const typesStr = [pkmn.type1, pkmn.type2].filter(Boolean).join(' / ');
+
+    // タグ
+    const tagsHtml = (pkmn.tags || []).map(t => `<span class="tag-item">${t}</span>`).join('');
+
+    inspirationBoard.innerHTML = `
+        <h3><span class="material-icons-round">lightbulb</span>「${pkmn.name}」のインスピレーションボード</h3>
+        <div class="inspiration-grid">
+            <!-- 多国語名 -->
+            <div class="inspiration-card">
+                <h4><span class="material-icons-round">translate</span>世界での名前</h4>
+                <ul>
+                    ${langNames.length > 0 ? langNames.join('') : '<li>データなし</li>'}
+                </ul>
+            </div>
+            
+            <!-- モチーフ -->
+            <div class="inspiration-card accent-type">
+                <h4><span class="material-icons-round">pets</span>由来・モチーフ</h4>
+                <ul>
+                    ${langMotifs.length > 0 ? langMotifs.join('') : '<li>データなし</li>'}
+                </ul>
+            </div>
+
+            <!-- 特性・タイプ -->
+            <div class="inspiration-card accent-abilities">
+                <h4><span class="material-icons-round">flash_on</span>タイプ・特性</h4>
+                <ul>
+                    <li><span class="lang-label">タイプ</span> <span class="lang-val">${typesStr || 'なし'}</span></li>
+                    ${abilities.join('')}
+                </ul>
+            </div>
+
+            <!-- イメージタグ -->
+            <div class="inspiration-card accent-tags">
+                <h4><span class="material-icons-round">local_offer</span>イメージワード</h4>
+                <div class="badge-container" style="margin-top:0.5rem;">
+                    ${tagsHtml || '<span style="font-size:0.85rem;color:var(--text-muted);">なし</span>'}
+                </div>
+            </div>
+        </div>
+    `;
+    inspirationBoard.classList.remove('hidden');
+}
+
 // --- Event Listeners ---
 function setupEventListeners() {
-    // Slider
-    lengthSlider.addEventListener('input', (e) => {
-        const val = parseInt(e.target.value);
-        lengthVal.textContent = `${val}文字`;
-    });
 
     // Themes
     themeTags.addEventListener('click', (e) => {
@@ -117,9 +189,10 @@ function setupEventListeners() {
         const val = e.target.value.trim();
         if (val.length < 1) {
             suggestionsList.classList.add('hidden');
-            // 入力が空になったらタイプバッジをリセット
+            // 入力が空になったらタイプバッジとボードをリセット
             selectedTypes.clear();
             showPokemonTypeBadges([]);
+            showInspirationBoard(null);
             return;
         }
         
@@ -153,8 +226,9 @@ function setupEventListeners() {
                         }
                     }
 
-                    // タイプバッジを更新
+                    // タイプバッジとインスピレーションボードを更新
                     showPokemonTypeBadges(typeKeys);
+                    showInspirationBoard(p);
                 });
                 suggestionsList.appendChild(li);
             });
@@ -173,17 +247,6 @@ function setupEventListeners() {
     // Generate
     generateBtn.addEventListener('click', () => generateNicknames());
     regenerateBtn.addEventListener('click', () => generateNicknames());
-
-    // Mode Toggle
-    associationToggle.addEventListener('change', (e) => {
-        if (e.target.checked) {
-            generateBtn.classList.add('association-mode');
-            generateBtn.innerHTML = 'インスピレーションを得る';
-        } else {
-            generateBtn.classList.remove('association-mode');
-            generateBtn.textContent = 'ニックネームを作成！';
-        }
-    });
 }
 
 // --- Natural Truncation for Kana ---
@@ -234,21 +297,22 @@ function truncateToNatural(word, targetLength) {
 
 // --- Generation Logic ---
 function generateNicknames() {
-    const targetLength = parseInt(lengthSlider.value);
+    const targetLength = 6; // 互換性用のダミー（isAssociationMode=trueのため参照されません）
     const basePokemon = pokemonInput.value.trim();
-    const isAssociationMode = associationToggle.checked;
+    const isAssociationMode = true; // 常にインスピレーション（アイデア）モード
     
     let results = new Set();
     const resultDetails = [];
 
     // --- Prepare pool for Combinations ---
-    const wordsByLength = {2: [], 3: [], 4: [], 5: [], 6: []};
+    const wordsByLength = {2: [], 3: [], 4: [], 5: [], 6: [], 7: [], 8: [], 9: [], 10: []};
     const addWordsToPool = (arr) => {
         arr.forEach(w => {
             if (!w) return;
             const cleanWord = w.replace(/・/g, '').replace(/（.*?）/g, '');
             const clen = cleanWord.length;
-            if (clen >= 2 && clen <= 6) {
+            if (clen >= 2 && clen <= 10) {
+                if (!wordsByLength[clen]) wordsByLength[clen] = [];
                 wordsByLength[clen].push(cleanWord);
             }
         });
@@ -281,7 +345,7 @@ function generateNicknames() {
         }
 
         // ・を消して、その後の文字数で判断
-        name = isAssociationMode ? name : name.replace(/・/g, '');
+        name = isAssociationMode ? name : name.replace(/·/g, '');
 
         // filter by length rules
         if (name.length < 1) return;
@@ -295,7 +359,7 @@ function generateNicknames() {
         }
         if (/[\u4E00-\u9FFF]/.test(name)) return; // 漢字なしで
 
-        // Limit same method（ポケモン特徴ベースは多めに出せるよう上限を調整）
+        // Limit same method
         let limit = 3;
         const themeSelected = !selectedThemes.has('random') && selectedThemes.size > 0;
         if (method === 'ランダム' || method === 'アナグラム') {
@@ -305,15 +369,15 @@ function generateNicknames() {
         } else if (method === 'タイプつながり') {
             limit = selectedTypes.size > 0 ? 4 : 2;
         } else if (method === 'イメージから') {
-            limit = 3; // タグは複数カテゴリがあるので多めに
+            limit = 4; // タグは複数カテゴリがあるので多めに
         } else if (method === 'とくせいから') {
-            limit = 2; // 特性は最大2個まで
+            limit = 3; // 特性は最大3個まで
         } else if (method === 'せかいの名前' || method === 'つながる外国語') {
-            limit = 2; // 外国語は言語ごとに異なる候補が出るので2個まで
+            limit = 4; // 外国語は言語ごとに異なる候補が出るので4個まで
         } else if (method === '外国語') {
-            limit = 2;
+            limit = 3;
         } else if (method === 'ことばをミックス') {
-            limit = 1; // ことばをミックスは1個まで
+            limit = 2; // ことばをミックスは2個まで
         } else if (method === '和風スタイル') {
             limit = themeSelected && selectedThemes.has('japanese') ? 5 : 3;
         }
@@ -321,7 +385,7 @@ function generateNicknames() {
 
         const isAlphabet = /^[a-zA-Z\s\-\ä\ö\ü\ß\é\è\ê\ë\à\â\ç\î\ï\ô\ù\û]+$/i.test(name);
         if (isAlphabet) {
-            if (alphabetCount >= 1) return;
+            if (alphabetCount >= 3) return; // アルファベット候補数を最大3つまでに増やす
         }
 
         if (!results.has(name) && results.size < 16) {
@@ -360,8 +424,8 @@ function generateNicknames() {
         attempts++;
         
         // 0. AI Generated
-        // インスピレーションモード以外かつ、最初の試行ではAIニックネームがあれば必ず追加を試みる
-        if (!isAssociationMode && pkmn && pkmn.aiNicknames && (attempts === 1 || Math.random() < 0.6)) {
+        // 最初の試行ではAIニックネームがあれば必ず追加を試みる
+        if (pkmn && pkmn.aiNicknames && (attempts === 1 || Math.random() < 0.6)) {
             const availableAiNames = [];
             const themesArr = Array.from(selectedThemes);
             
@@ -381,15 +445,14 @@ function generateNicknames() {
 
                 if (availableAiNames.length > 0) {
                     const choice = availableAiNames[Math.floor(Math.random() * availableAiNames.length)];
-                    // ignoreLength を true にして長さを無視して表示する
-                    addResult(choice.name, choice.method, 'AI厳選', true);
+                    addResult(choice.name, choice.method, 'AIが厳選したニックネーム例', true);
                 }
             }
 
         // 1. Anagram if base pokemon exists
-        if (basePokemon && Math.random() < 0.2) {
+        if (basePokemon && Math.random() < 0.3) {
             const shuffled = basePokemon.split('').sort(() => 0.5 - Math.random()).join('');
-            if (shuffled !== basePokemon) addResult(shuffled, 'アナグラム');
+            if (shuffled !== basePokemon) addResult(shuffled, 'アナグラム', `「${basePokemon}」の文字を並び替え`);
         }
 
         // 1.5. ポケモン固有データ（外国語名・モチーフ・タグ・特性）から独立して生成
@@ -399,15 +462,16 @@ function generateNicknames() {
             if (pkmnData) {
 
                 // --- A. 外国語名（せかいの名前）: 80%の確率で試行 ---
-                // 洋風テーマ選択時は確率アップ
-                const nameReadingChance = (!selectedThemes.has('random') && selectedThemes.has('western')) ? 0.85 : 0.6;
+                const nameReadingChance = (!selectedThemes.has('random') && selectedThemes.has('western')) ? 0.9 : 0.75;
                 if ((isAssociationMode || Math.random() < nameReadingChance) && pkmnData.nameReading) {
                     const keys = Object.keys(pkmnData.nameReading).filter(k => pkmnData.nameReading[k] && pkmnData.nameReading[k].trim() !== '');
                     if (keys.length > 0) {
                         const k = keys[Math.floor(Math.random() * keys.length)];
                         const originalMap = { en: pkmnData.nameEn, la: pkmnData.nameLa, de: pkmnData.nameDe, fr: pkmnData.nameFr };
+                        const langLabelMap = { en: '英語', la: 'ラテン語', de: 'ドイツ語', fr: 'フランス語' };
+                        const langLabel = langLabelMap[k] || k;
                         let word = pkmnData.nameReading[k];
-                        let subtitle = `${originalMap[k] || ''} (${pkmnData.name || ''})`;
+                        let originalName = originalMap[k] || '';
 
                         if (word.includes('/')) {
                             const parts = word.split('/');
@@ -417,35 +481,41 @@ function generateNicknames() {
                         if (word.length > targetLength && !isAssociationMode) {
                             word = truncateToNatural(word, targetLength);
                         }
+                        let subtitle = `${originalName} （${pkmnData.name}の${langLabel}名）`;
                         if (word) addResult(word, 'せかいの名前', subtitle);
                     }
                 }
 
                 // --- B. モチーフ外国語（つながる外国語）: 80%の確率で試行 ---
-                const motifReadingChance = (!selectedThemes.has('random') && selectedThemes.has('western')) ? 0.85 : 0.6;
+                const motifReadingChance = (!selectedThemes.has('random') && selectedThemes.has('western')) ? 0.9 : 0.75;
                 if ((isAssociationMode || Math.random() < motifReadingChance) && pkmnData.motifReading) {
                     const keys = Object.keys(pkmnData.motifReading).filter(k => pkmnData.motifReading[k] && pkmnData.motifReading[k].trim() !== '');
                     if (keys.length > 0) {
                         const k = keys[Math.floor(Math.random() * keys.length)];
                         const originalMap = { en: pkmnData.motifEn, la: pkmnData.motifLa, de: pkmnData.motifDe, fr: pkmnData.motifFr };
+                        const langLabelMap = { en: '英語', la: 'ラテン語', de: 'ドイツ語', fr: 'フランス語' };
+                        const langLabel = langLabelMap[k] || k;
                         let word = pkmnData.motifReading[k];
-                        let subtitle = `${originalMap[k] || ''} (${pkmnData.motif || ''})`;
+                        let baseMotif = pkmnData.motif || '';
+                        let originalWord = originalMap[k] || '';
 
+                        let idx = 0;
                         if (word.includes('/')) {
                             const parts = word.split('/');
-                            const idx = Math.floor(Math.random() * parts.length);
+                            idx = Math.floor(Math.random() * parts.length);
                             word = parts[idx];
-                            const match = subtitle.match(/^(.*?)\s*\((.*?)\)$/);
-                            if (match) {
-                                const origParts = match[1].split('/');
-                                const transParts = match[2].split('/');
-                                subtitle = `${origParts[idx] || origParts[0]} (${transParts[idx] || transParts[0]})`;
-                            }
+                            
+                            const motifParts = baseMotif.split('/');
+                            baseMotif = motifParts[idx] || motifParts[0];
+
+                            const origParts = originalWord.split('/');
+                            originalWord = origParts[idx] || origParts[0];
                         }
                         word = word.replace(/（.*?）/g, '').replace(/メガ・/, '');
                         if (word.length > targetLength && !isAssociationMode) {
                             word = truncateToNatural(word, targetLength);
                         }
+                        let subtitle = `${originalWord} （モチーフ「${baseMotif}」の${langLabel}訳）`;
                         if (word) addResult(word, 'つながる外国語', subtitle);
                     }
                 }
@@ -692,19 +762,24 @@ function renderResults(details) {
         card.innerHTML = `
             <span class="method-tag">${d.method}</span>
             <div class="nickname-display">${d.name}</div>
-            ${d.subtitle ? `<div class="nickname-subtitle" style="font-size: 0.8rem; color: #666; margin-top: -10px; margin-bottom: 10px; text-align: center;">${d.subtitle}</div>` : ''}
+            ${d.subtitle ? `
+            <div class="origin-info">
+                <span class="origin-label">発想・由来</span>
+                <span class="origin-val">${d.subtitle}</span>
+            </div>
+            ` : ''}
             <div class="card-actions">
                 <button class="action-btn copy-btn" data-name="${d.name}">
                     <span class="material-icons-round">content_copy</span>
                     コピー
                 </button>
-                <button class="action-btn anagram-btn" title="アナグラム">
+                <button class="action-btn anagram-btn" title="文字をシャッフル">
                     <span class="material-icons-round">shuffle</span>
-                    アナグラム
+                    シャッフル
                 </button>
                 <button class="action-btn revert-btn hidden" data-original="${d.name}" title="元に戻す">
                     <span class="material-icons-round">undo</span>
-                    元に戻す
+                    戻す
                 </button>
             </div>
         `;

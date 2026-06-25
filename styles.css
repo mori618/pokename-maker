@@ -323,52 +323,123 @@ input[type="text"]:focus {
     box-shadow: var(--shadow-sm);
 }
 
-/* Slider */
-.slider-container {
+/* ポケモンの設定・多国語モチーフなどのダッシュボード */
+.inspiration-board {
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(241, 245, 249, 0.95));
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-md);
+    animation: fadeUp 0.4s ease forwards;
+}
+
+.inspiration-board h3 {
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+    color: var(--primary-dark);
+    border-bottom: 2px solid var(--primary-light);
+    padding-bottom: 0.3rem;
     display: flex;
     align-items: center;
+    gap: 0.5rem;
+}
+
+.inspiration-board h3 .material-icons-round {
+    font-size: 1.3rem;
+}
+
+.inspiration-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 1rem;
 }
 
-.slider {
-    flex: 1;
-    -webkit-appearance: none;
-    height: 6px;
+.inspiration-card {
+    background: white;
+    border-radius: var(--radius-sm);
+    padding: 1rem;
+    box-shadow: var(--shadow-sm);
+    border-top: 4px solid var(--secondary-color);
+}
+
+.inspiration-card.accent-type {
+    border-top-color: var(--primary-color);
+}
+
+.inspiration-card.accent-abilities {
+    border-top-color: #10b981;
+}
+
+.inspiration-card.accent-tags {
+    border-top-color: var(--accent-color);
+}
+
+.inspiration-card h4 {
+    font-size: 0.9rem;
+    color: var(--text-main);
+    margin-bottom: 0.8rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+.inspiration-card h4 .material-icons-round {
+    font-size: 1.1rem;
+    color: var(--text-muted);
+}
+
+.inspiration-card ul {
+    list-style: none;
+    font-size: 0.85rem;
+    padding: 0;
+    margin: 0;
+}
+
+.inspiration-card li {
+    margin-bottom: 0.4rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.5rem;
+    border-bottom: 1px dashed #f1f5f9;
+    padding-bottom: 0.2rem;
+}
+
+.inspiration-card li:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.inspiration-card .lang-label {
+    color: var(--text-muted);
+    font-size: 0.7rem;
+    background: #f1f5f9;
+    padding: 0.1rem 0.3rem;
     border-radius: 3px;
-    background: #e2e8f0;
-    outline: none;
-}
-
-.slider::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    appearance: none;
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    background: var(--primary-color);
-    cursor: pointer;
-    transition: var(--transition-fast);
-}
-
-.slider::-webkit-slider-thumb:hover {
-    transform: scale(1.2);
-}
-
-.slider-val {
     font-weight: bold;
-    color: var(--primary-color);
-    min-width: 60px;
-    text-align: center;
-    background: #ffebee;
+}
+
+.inspiration-card .lang-val {
+    font-weight: 500;
+    text-align: right;
+}
+
+.inspiration-card .badge-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+}
+
+.inspiration-card .tag-item {
+    font-size: 0.75rem;
+    background: #f1f5f9;
     padding: 0.2rem 0.5rem;
     border-radius: var(--radius-pill);
-    font-size: 0.85rem;
-}
-
-.hint {
-    font-size: 0.75rem;
-    color: var(--text-muted);
-    margin-top: 0.5rem;
+    color: var(--text-main);
+    font-weight: 500;
 }
 
 /* Generate Button */
@@ -481,22 +552,24 @@ input[type="text"]:focus {
 }
 
 .nickname-display {
-    font-size: 1.4rem;
+    font-size: 1.25rem;
     font-weight: 900;
     color: var(--primary-dark);
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.4rem;
     text-align: center;
     word-break: break-word;
+    letter-spacing: 0.5px;
 }
 
 .method-tag {
     align-self: center;
-    font-size: 0.7rem;
-    background: #f1f5f9;
-    padding: 0.2rem 0.5rem;
+    font-size: 0.75rem;
+    background: #ffebee;
+    padding: 0.25rem 0.6rem;
     border-radius: var(--radius-pill);
-    color: var(--text-muted);
-    margin-bottom: 1rem;
+    color: var(--primary-dark);
+    margin-bottom: 0.6rem;
+    font-weight: bold;
 }
 
 .card-actions {
@@ -591,80 +664,29 @@ input[type="text"]:focus {
     }
 }
 
-/* Association Mode Toggle */
-.mode-toggle-group {
-    background: #f8fafc;
-    padding: 0.8rem 1rem;
-    border-radius: var(--radius-sm);
-    border: 1px solid #e2e8f0;
-}
-
-.toggle-label {
-    display: flex;
-    align-items: center;
-    cursor: pointer;
-    gap: 0.8rem;
-    margin: 0 !important;
-}
-
-.toggle-checkbox {
-    display: none;
-}
-
-.toggle-switch {
-    position: relative;
-    width: 44px;
-    height: 24px;
-    background-color: #cbd5e1;
-    border-radius: 24px;
-    transition: var(--transition-fast);
-    flex-shrink: 0;
-}
-
-.toggle-switch::after {
-    content: '';
-    position: absolute;
-    top: 2px;
-    left: 2px;
-    width: 20px;
-    height: 20px;
-    background-color: white;
-    border-radius: 50%;
-    transition: var(--transition-fast);
-}
-
-.toggle-checkbox:checked + .toggle-switch {
-    background-color: #10b981;
-}
-
-.toggle-checkbox:checked + .toggle-switch::after {
-    transform: translateX(20px);
-}
-
-.toggle-text {
-    font-weight: bold;
-    font-size: 0.9rem;
+/* アイデアカードの語源情報 */
+.origin-info {
+    font-size: 0.8rem;
     color: var(--text-main);
+    background: #f8fafc;
+    padding: 0.6rem;
+    border-radius: var(--radius-sm);
+    border: 1px solid #edf2f7;
+    margin-bottom: 0.8rem;
+    line-height: 1.4;
+    word-break: break-all;
 }
 
-/* Green Generate Button */
-.generate-btn.association-mode {
-    background: #10b981;
-    box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
-    color: white;
+.origin-label {
+    display: block;
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    font-weight: bold;
+    margin-bottom: 0.25rem;
+    border-bottom: 1px solid #edf2f7;
+    padding-bottom: 0.15rem;
 }
 
-.generate-btn.association-mode:hover {
-    box-shadow: 0 6px 20px rgba(16, 185, 129, 0.6);
-    filter: brightness(1.05);
-}
-
-.generate-btn.association-mode.pulse-anim {
-    animation: pulse-green 2s infinite;
-}
-
-@keyframes pulse-green {
-    0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
-    70% { box-shadow: 0 0 0 10px rgba(16, 185, 129, 0); }
-    100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+.origin-val {
+    font-weight: 500;
 }

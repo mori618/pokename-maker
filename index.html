@@ -4,23 +4,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ポケモン ニックネームメーカー｜最高にかわいい・かっこいい名前を自動生成</title>
+    <title>ポケモン ニックネームアイデアジェネレーター｜自分で決めるための発想・由来ツール</title>
     <meta name="description"
-        content="ポケモンのニックネーム（名前）を自動生成するツールです。かっこいい、かわいい、和風、おしゃれな外国語風など、豊富なテーマからあなただけの特別なニックネームが見つかります。名前の決め方に迷った時や、おすすめの名前を探している時に最適です。">
-    <meta name="keywords" content="ポケモン,ニックネーム,名前,メーカー,ジェネレーター,かっこいい,かわいい,おしゃれ,和風,自動生成,決め方,おすすめ">
+        content="ポケモンのニックネーム（名前）を決めるためのアイデア・発想ツールです。モチーフの多国語訳、特性、イメージタグなどから、自分だけの特別なニックネームを考えるための「言葉の種」を提供します。">
+    <meta name="keywords" content="ポケモン,ニックネーム,名前,アイデア,ジェネレーター,発想,由来,かっこいい,かわいい,おしゃれ,和風,語源">
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://yurand.com/nickname/"> <!-- 必要に応じて修正してください -->
-    <meta property="og:title" content="ポケモン ニックネームメーカー｜最高にかわいい・かっこいい名前を自動生成">
-    <meta property="og:description" content="ポケモンの最高なニックネームをあなたのパートナーに。テーマに合わせて自動生成！決め方に迷ったらこちら。">
+    <meta property="og:title" content="ポケモン ニックネームアイデアジェネレーター｜自分で決めるための発想・由来ツール">
+    <meta property="og:description" content="ポケモンのニックネーム（名前）のアイデアをあなたのパートナーに。設定やモチーフから言葉の種を自動提案！">
     <meta property="og:image" content="https://yurand.com/nickname/og-image.png"> <!-- 画像がある場合は配置してください -->
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="https://yurand.com/nickname/">
-    <meta property="twitter:title" content="ポケモン ニックネームメーカー｜最高にかわいい・かっこいい名前を自動生成">
-    <meta property="twitter:description" content="ポケモンの最高なニックネームをあなたのパートナーに。テーマに合わせて自動生成！決め方に迷ったらこちら。">
+    <meta property="twitter:title" content="ポケモン ニックネームアイデアジェネレーター｜自分で決めるための発想・由来ツール">
+    <meta property="twitter:description" content="ポケモンのニックネーム（名前）のアイデアをあなたのパートナーに。設定やモチーフから言葉の種を自動提案！">
     <meta property="twitter:image" content="https://yurand.com/nickname/og-image.png">
 
     <!-- Canonical URL -->
@@ -38,9 +38,9 @@
     {
       "@context": "https://schema.org",
       "@type": "WebApplication",
-      "name": "ポケモン ニックネームメーカー",
+      "name": "ポケモン ニックネームアイデアジェネレーター",
       "url": "https://yurand.com/nickname/",
-      "description": "ポケモンのニックネーム（名前）を自動生成するツール。かっこいい、かわいい、和風、おしゃれな外国語風など豊富なテーマが選択可能。",
+      "description": "ポケモンのニックネームを決めるためのアイデア発想ツール。多国語名、モチーフ、特性、イメージタグなどから言葉の種を提案。",
       "applicationCategory": "Utility",
       "operatingSystem": "All"
     }
@@ -56,8 +56,8 @@
         <div class="header-container">
             <div class="logo">
                 <h1>
-                    <span>ニックネームメーカー</span>
-                    <span class="logo-sub">チャンピオンズ用 / for champions</span>
+                    <span>ニックネームアイデア</span>
+                    <span class="logo-sub">インスピレーションボード / for champions</span>
                 </h1>
             </div>
             <nav class="header-nav">
@@ -107,43 +107,29 @@
                 </div>
             </div>
 
-            <div class="form-group">
-                <label for="length-slider">
-                    <span class="material-icons-round">straighten</span>
-                    文字数目安 (1〜6文字)
-                </label>
-                <div class="slider-container">
-                    <input type="range" id="length-slider" min="1" max="6" value="6" class="slider">
-                    <span id="length-val" class="slider-val">6文字</span>
-                </div>
-            </div>
-
-            <div class="form-group mode-toggle-group">
-                <label class="toggle-label" for="association-toggle">
-                    <input type="checkbox" id="association-toggle" class="toggle-checkbox">
-                    <div class="toggle-switch"></div>
-                    <span class="toggle-text">インスピレーションモード (自分で考えるヒントを表示)</span>
-                </label>
-            </div>
-
             <button id="generate-btn" class="generate-btn primary-btn pulse-anim">
-                ニックネームを作成！
+                アイデアの種を作成！
             </button>
         </section>
 
         <section class="results-section">
+            <!-- ポケモンの設定・多国語モチーフなどを可視化するダッシュボード（初期状態は非表示） -->
+            <div id="inspiration-board" class="inspiration-board hidden">
+                <!-- ここに動的にHTMLが追加されます -->
+            </div>
+
             <div class="results-header">
-                <h2>生成結果</h2>
+                <h2>提案されるアイデアの種</h2>
                 <div class="results-actions">
-                    <button id="regenerate-btn" class="icon-btn tooltip" data-tooltip="再生成">
+                    <button id="regenerate-btn" class="icon-btn tooltip" data-tooltip="再提案">
                         <span class="material-icons-round">refresh</span>
                     </button>
                 </div>
             </div>
             <div id="results-grid" class="results-grid">
                 <div class="empty-state">
-                    <span class="material-icons-round huge-icon">cruelty_free</span>
-                    <p>条件を指定して「生成」ボタンを押してください</p>
+                    <span class="material-icons-round huge-icon">tips_and_updates</span>
+                    <p>ポケモンを入力、またはテーマを選んで「アイデアの種を作成」ボタンを押してください</p>
                 </div>
             </div>
         </section>
@@ -156,7 +142,7 @@
 
     <footer class="app-footer">
         <div class="footer-container">
-            <p>&copy; 2026 ポケモン ニックネームメーカー</p>
+            <p>&copy; 2026 ポケモン ニックネームアイデアジェネレーター</p>
             <nav class="footer-nav">
                 <a href="privacy.html">プライバシーポリシー</a>
             </nav>
