@@ -80,13 +80,14 @@
                 </div>
             </div>
 
-            <div class="form-group">
+            <!-- ポケモン選択時にタイプを表示するエリア（非選択時は非表示） -->
+            <div class="form-group" id="pokemon-type-group" style="display:none">
                 <label>
                     <span class="material-icons-round">category</span>
-                    タイプ (任意)
+                    タイプ
                 </label>
-                <div class="type-grid" id="type-grid">
-                    <!-- Types will be injected here -->
+                <div class="pokemon-type-badges" id="pokemon-type-badges">
+                    <!-- ポケモン選択時にタイプバッジがここに表示される -->
                 </div>
             </div>
 

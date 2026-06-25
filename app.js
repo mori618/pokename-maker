@@ -8,7 +8,8 @@ let selectedTypes = new Set();
 
 
 // --- DOM Elements ---
-const typeGrid = document.getElementById('type-grid');
+const pokemonTypeBadges = document.getElementById('pokemon-type-badges');
+const pokemonTypeGroup = document.getElementById('pokemon-type-group');
 const themeTags = document.getElementById('theme-tags');
 const pokemonInput = document.getElementById('pokemon-input');
 const suggestionsList = document.getElementById('suggestions-list');
@@ -22,7 +23,6 @@ const associationToggle = document.getElementById('association-toggle');
 
 // --- Initialization ---
 function init() {
-    renderTypes();
     setupEventListeners();
 }
 
@@ -43,30 +43,36 @@ const TYPE_LABELS = {
     "steel": "はがね", "fairy": "フェアリー"
 };
 
-function renderTypes() {
-    for (const [key, label] of Object.entries(TYPE_LABELS)) {
-        const btn = document.createElement('button');
-        btn.className = 'type-btn';
-        btn.textContent = label;
-        btn.dataset.type = key;
-        btn.style.backgroundColor = TYPE_COLORS[key];
-        
-        btn.addEventListener('click', () => {
-            if (selectedTypes.has(key)) {
-                selectedTypes.delete(key);
-                btn.classList.remove('active');
-            } else {
-                if (selectedTypes.size >= 2) {
-                    const first = selectedTypes.values().next().value;
-                    selectedTypes.delete(first);
-                    document.querySelector(`.type-btn[data-type="${first}"]`).classList.remove('active');
-                }
-                selectedTypes.add(key);
-                btn.classList.add('active');
-            }
-        });
-        typeGrid.appendChild(btn);
+// 背景色に応じて読みやすい文字色（白 or 暗色）を返す
+const TYPE_DARK_TEXT = new Set(['electric', 'ice', 'ground', 'steel', 'normal', 'bug']);
+
+/**
+ * ポケモン選択時にそのタイプをバッジとして表示する
+ * @param {string[]} typeKeys - タイプキーの配列（例: ['fire', 'flying']）
+ */
+function showPokemonTypeBadges(typeKeys) {
+    // バッジエリアをクリア
+    pokemonTypeBadges.innerHTML = '';
+
+    if (typeKeys.length === 0) {
+        // タイプなしの場合は非表示
+        pokemonTypeGroup.style.display = 'none';
+        return;
     }
+
+    // 各タイプのバッジを作成
+    typeKeys.forEach(key => {
+        const badge = document.createElement('span');
+        badge.className = 'type-badge';
+        badge.textContent = TYPE_LABELS[key] || key;
+        badge.style.backgroundColor = TYPE_COLORS[key] || '#999';
+        // 明るい背景色のタイプは文字色を暗くして読みやすくする
+        badge.style.color = TYPE_DARK_TEXT.has(key) ? '#2c3e50' : 'white';
+        pokemonTypeBadges.appendChild(badge);
+    });
+
+    // バッジエリアを表示
+    pokemonTypeGroup.style.display = '';
 }
 
 // --- Event Listeners ---
@@ -111,6 +117,9 @@ function setupEventListeners() {
         const val = e.target.value.trim();
         if (val.length < 1) {
             suggestionsList.classList.add('hidden');
+            // 入力が空になったらタイプバッジをリセット
+            selectedTypes.clear();
+            showPokemonTypeBadges([]);
             return;
         }
         
@@ -124,25 +133,28 @@ function setupEventListeners() {
                 li.addEventListener('click', () => {
                     pokemonInput.value = p.name;
                     suggestionsList.classList.add('hidden');
-                    // Automatically select type if matched
+                    // ポケモンのタイプを selectedTypes に反映し、バッジ表示する
                     const pType1Label = p.type1;
                     const pType2Label = p.type2;
-                    
-                    document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('active'));
+
                     selectedTypes.clear();
+                    const typeKeys = [];
 
                     const type1Key = Object.keys(TYPE_LABELS).find(k => TYPE_LABELS[k] === pType1Label);
                     if (type1Key) {
                         selectedTypes.add(type1Key);
-                        document.querySelector(`[data-type="${type1Key}"]`).classList.add('active');
+                        typeKeys.push(type1Key);
                     }
                     if (pType2Label) {
                         const type2Key = Object.keys(TYPE_LABELS).find(k => TYPE_LABELS[k] === pType2Label);
                         if (type2Key) {
                             selectedTypes.add(type2Key);
-                            document.querySelector(`[data-type="${type2Key}"]`).classList.add('active');
+                            typeKeys.push(type2Key);
                         }
                     }
+
+                    // タイプバッジを更新
+                    showPokemonTypeBadges(typeKeys);
                 });
                 suggestionsList.appendChild(li);
             });

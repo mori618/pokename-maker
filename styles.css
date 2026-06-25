@@ -258,40 +258,38 @@ input[type="text"]:focus {
     color: var(--primary-color);
 }
 
-/* Type Grid */
+/* Type Grid（非表示・不使用） */
 .type-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 0.5rem;
+    display: none;
 }
 
-.type-btn {
-    padding: 0.4rem;
-    border: 2px solid transparent;
+/* ポケモン選択時に表示されるタイプバッジ */
+.pokemon-type-badges {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.type-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.3rem 0.9rem;
     border-radius: var(--radius-pill);
-    font-size: 0.8rem;
+    font-size: 0.85rem;
     font-weight: bold;
     color: white;
-    cursor: pointer;
-    transition: var(--transition-normal);
-    opacity: 0.4;
-    filter: grayscale(0.9);
-    font-family: inherit;
+    letter-spacing: 0.5px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    /* 表示専用なのでポインターイベントなし */
+    pointer-events: none;
+    user-select: none;
+    /* フェードインアニメーション */
+    animation: badgeFadeIn 0.3s ease forwards;
 }
 
-.type-btn:hover {
-    opacity: 0.8;
-    filter: grayscale(0.5);
-    transform: translateY(-2px);
-}
-
-.type-btn.active {
-    opacity: 1;
-    filter: grayscale(0);
-    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-    transform: scale(1.05);
-    border: 2px solid #fff;
-    outline: 2px solid var(--text-main);
+@keyframes badgeFadeIn {
+    from { opacity: 0; transform: scale(0.85); }
+    to   { opacity: 1; transform: scale(1); }
 }
 
 /* Theme Tags */
