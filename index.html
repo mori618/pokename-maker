@@ -4,23 +4,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ポケモン ニックネームメーカー｜最高にかわいい・かっこいい名前を自動生成</title>
+    <title>ポケモンニックネームの種｜自分で決めるための発想・由来ニックネームメーカー</title>
     <meta name="description"
-        content="ポケモンのニックネーム（名前）を自動生成するツールです。かっこいい、かわいい、和風、おしゃれな外国語風など、豊富なテーマからあなただけの特別なニックネームが見つかります。名前の決め方に迷った時や、おすすめの名前を探している時に最適です。">
-    <meta name="keywords" content="ポケモン,ニックネーム,名前,メーカー,ジェネレーター,かっこいい,かわいい,おしゃれ,和風,自動生成,決め方,おすすめ">
+        content="ポケモンのニックネーム（名前）を決めるためのアイデア発想ツール（ニックネームメーカー）です。モチーフの多国語訳、特性、イメージタグなどから、自分だけの特別なニックネームを考えるための「言葉の種」を提供します。">
+    <meta name="keywords" content="ポケモン,ニックネームの種,ニックネームメーカー,名前,アイデア,ジェネレーター,発想,由来,かっこいい,かわいい,おしゃれ,和風,語源">
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://yurand.com/nickname/"> <!-- 必要に応じて修正してください -->
-    <meta property="og:title" content="ポケモン ニックネームメーカー｜最高にかわいい・かっこいい名前を自動生成">
-    <meta property="og:description" content="ポケモンの最高なニックネームをあなたのパートナーに。テーマに合わせて自動生成！決め方に迷ったらこちら。">
+    <meta property="og:title" content="ポケモンニックネームの種｜自分で決めるための発想・由来ニックネームメーカー">
+    <meta property="og:description" content="ポケモンニックネームの種。設定やモチーフから、ニックネームのアイデアとなる言葉の種を自動提案！">
     <meta property="og:image" content="https://yurand.com/nickname/og-image.png"> <!-- 画像がある場合は配置してください -->
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="https://yurand.com/nickname/">
-    <meta property="twitter:title" content="ポケモン ニックネームメーカー｜最高にかわいい・かっこいい名前を自動生成">
-    <meta property="twitter:description" content="ポケモンの最高なニックネームをあなたのパートナーに。テーマに合わせて自動生成！決め方に迷ったらこちら。">
+    <meta property="twitter:title" content="ポケモンニックネームの種｜自分で決めるための発想・由来ニックネームメーカー">
+    <meta property="twitter:description" content="ポケモンニックネームの種。設定やモチーフから、ニックネームのアイデアとなる言葉の種を自動提案！">
     <meta property="twitter:image" content="https://yurand.com/nickname/og-image.png">
 
     <!-- Canonical URL -->
@@ -38,16 +38,17 @@
     {
       "@context": "https://schema.org",
       "@type": "WebApplication",
-      "name": "ポケモン ニックネームメーカー",
+      "name": "ポケモンニックネームの種",
       "url": "https://yurand.com/nickname/",
-      "description": "ポケモンのニックネーム（名前）を自動生成するツール。かっこいい、かわいい、和風、おしゃれな外国語風など豊富なテーマが選択可能。",
+      "description": "ポケモンのニックネームを決めるためのアイデア発想ニックネームメーカー。多国語名、モチーフ、特性、イメージタグなどから言葉の種を提案。",
       "applicationCategory": "Utility",
       "operatingSystem": "All"
     }
     </script>
 
     <!-- Google AdSense Code -->
-    <!-- 審査に申し込む際、ここに発行されたコードを貼り付けてください -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8223576768449365"
+         crossorigin="anonymous"></script>
 </head>
 
 <body>
@@ -55,8 +56,8 @@
         <div class="header-container">
             <div class="logo">
                 <h1>
-                    <span>ニックネームメーカー</span>
-                    <span class="logo-sub">チャンピオンズ用 / for champions</span>
+                    <span>ポケモンニックネームの種</span>
+                    <span class="logo-sub">ニックネームメーカー / for champions</span>
                 </h1>
             </div>
             <nav class="header-nav">
@@ -79,13 +80,14 @@
                 </div>
             </div>
 
-            <div class="form-group">
+            <!-- ポケモン選択時にタイプを表示するエリア（非選択時は非表示） -->
+            <div class="form-group" id="pokemon-type-group" style="display:none">
                 <label>
                     <span class="material-icons-round">category</span>
-                    タイプ (任意)
+                    タイプ
                 </label>
-                <div class="type-grid" id="type-grid">
-                    <!-- Types will be injected here -->
+                <div class="pokemon-type-badges" id="pokemon-type-badges">
+                    <!-- ポケモン選択時にタイプバッジがここに表示される -->
                 </div>
             </div>
 
@@ -105,57 +107,108 @@
                 </div>
             </div>
 
-            <div class="form-group">
-                <label for="length-slider">
-                    <span class="material-icons-round">straighten</span>
-                    文字数目安 (1〜6文字)
-                </label>
-                <div class="slider-container">
-                    <input type="range" id="length-slider" min="1" max="6" value="6" class="slider">
-                    <span id="length-val" class="slider-val">6文字</span>
-                </div>
-            </div>
-
-            <div class="form-group mode-toggle-group">
-                <label class="toggle-label" for="association-toggle">
-                    <input type="checkbox" id="association-toggle" class="toggle-checkbox">
-                    <div class="toggle-switch"></div>
-                    <span class="toggle-text">インスピレーションモード (自分で考えるヒントを表示)</span>
-                </label>
-            </div>
-
             <button id="generate-btn" class="generate-btn primary-btn pulse-anim">
-                ニックネームを作成！
+                アイデアの種を作成！
             </button>
         </section>
 
         <section class="results-section">
             <div class="results-header">
-                <h2>生成結果</h2>
+                <h2>提案されるアイデアの種</h2>
                 <div class="results-actions">
-                    <button id="regenerate-btn" class="icon-btn tooltip" data-tooltip="再生成">
+                    <button id="regenerate-btn" class="icon-btn tooltip" data-tooltip="再提案">
                         <span class="material-icons-round">refresh</span>
                     </button>
                 </div>
             </div>
             <div id="results-grid" class="results-grid">
-                <div class="empty-state">
-                    <span class="material-icons-round huge-icon">cruelty_free</span>
-                    <p>条件を指定して「生成」ボタンを押してください</p>
+                <!-- AdSense対策のため初期表示を静的なテキストに置き換えます -->
+                <div class="result-card static-result">
+                    <h3 class="result-word">エレキテル</h3>
+                    <div class="result-meta">
+                        <span class="theme-badge" style="background-color: var(--theme-japanese)">和風</span>
+                    </div>
+                    <p class="result-desc">「電気（エレキ）」を意味する古風な表現。ピカチュウやサンダースなど、でんきタイプのポケモンにおすすめです。</p>
                 </div>
+                <div class="result-card static-result">
+                    <h3 class="result-word">トパーズ</h3>
+                    <div class="result-meta">
+                        <span class="theme-badge" style="background-color: var(--theme-cool)">かっこいい</span>
+                    </div>
+                    <p class="result-desc">11月の誕生石である黄玉（おうぎょく）。黄金色に輝くイメージから、黄色いポケモンや金色の色違いポケモンに。</p>
+                </div>
+                <div class="result-card static-result">
+                    <h3 class="result-word">Stella（ステラ）</h3>
+                    <div class="result-meta">
+                        <span class="theme-badge" style="background-color: var(--theme-western)">洋風</span>
+                    </div>
+                    <p class="result-desc">ラテン語・イタリア語で「星」を意味する言葉。テラスタルするポケモンや、輝くような魅力を持つポケモンにぴったりです。</p>
+                </div>
+                <div class="result-card static-result">
+                    <h3 class="result-word">ぽんず</h3>
+                    <div class="result-meta">
+                        <span class="theme-badge" style="background-color: var(--theme-cute)">かわいい</span>
+                    </div>
+                    <p class="result-desc">食べ物の名前をつける王道パターン。丸っこくて可愛いポケモンや、愛嬌のある相棒に親しみを込めて。</p>
+                </div>
+            </div>
+
+            <!-- 2. こんな名前にしてみる？ (ニックネームの完成例) -->
+            <div id="examples-board" class="examples-board hidden">
+                <!-- JSで動的に追加されます -->
+            </div>
+
+            <!-- 3. ポケモンの設定・多国語モチーフなどを可視化するダッシュボード -->
+            <div id="inspiration-board" class="inspiration-board hidden">
+                <!-- ここに動的にHTMLが追加されます -->
             </div>
         </section>
     </main>
 
+    <!-- AdSense / SEO 対策用のテキストコンテンツエリア -->
+    <article class="article-section glass-panel">
+        <div class="article-container">
+            <h2>ポケモンニックネームの種とは？</h2>
+            <p>「ポケモンニックネームの種」は、あなたの大切な相棒であるポケモンに、より愛着の湧く特別な名前（ニックネーム）をつけるためのアイデア発想サポートツールです。「おまかせ」「かっこいい」「かわいい」「和風」「洋風」など様々なテーマから、名付けのインスピレーションとなる「言葉の種」を自動で提案します。</p>
 
+            <h3>こんな時におすすめ！</h3>
+            <ul>
+                <li>いつも同じようなニックネームになってしまってマンネリ化している</li>
+                <li>ランクマッチや大会で使う対戦用のポケモンに、強そうでかっこいい名前をつけたい</li>
+                <li>そのポケモンのタイプ、特性、図鑑説明などの公式設定にちなんだ、意味のある名前を考えたい</li>
+                <li>「ピカチュウ」や「イーブイ」のような人気のポケモンに、他の人とは違うオリジナリティ溢れる名前をつけたい</li>
+            </ul>
+
+            <h3>効果的な名付けのコツ・アイデア</h3>
+            <p>ポケモンの名付けにはいくつかの王道パターンがあります。当ジェネレーターで提案された単語をそのまま使うだけでなく、少しアレンジを加えることで、さらにオリジナリティ溢れる名前を作ることができます。ここでは代表的な名付けのコツをいくつかご紹介します。</p>
+            
+            <h4>1. 神話や伝説から引用する</h4>
+            <p>ギリシャ神話、北欧神話、ケルト神話などに登場する神々や武器の名前は、伝説のポケモンや強力なエースポケモンにぴったりです。例えば、雷を操るポケモンには「トール」や「ゼウス」、炎を操るポケモンには「イフリート」や「プロメテウス」といった名前がよく似合います。神話の背景を知ることで、より深くポケモンに感情移入できるでしょう。</p>
+
+            <h4>2. 外国語を組み合わせる</h4>
+            <p>英語、フランス語、ドイツ語、ラテン語などで、ポケモンの「色」や「モチーフ」を翻訳してみましょう。例えば、青いポケモンにフランス語の「Bleu（ブルー）」、鋭い爪を持つポケモンにドイツ語の「Kralle（クラレ）」など。2つの言葉を組み合わせると、よりスタイリッシュで他にはない響きになります。</p>
+
+            <h4>3. 和風の言葉を用いる</h4>
+            <p>古語や季語、和色（日本の伝統色）の名前は、和風デザインのポケモンに美しく馴染みます。「瑠璃（るり）」「琥珀（こはく）」といった宝石の名前や、「東雲（しののめ）」「時雨（しぐれ）」といった自然現象の言葉は、響きが美しく、日本らしさを表現するのに最適です。</p>
+
+            <h4>4. 食べ物や身近なものの名前をつける</h4>
+            <p>あえて「きなこ」「だいふく」「ポチ」など、日常的で親しみやすい名前をつけるのも人気の手法です。進化して見た目がカッコよくなっても、あえて可愛い名前のままでいるというギャップ萌えを楽しむことができます。</p>
+            
+            <p>ぜひ、このツールを使って、世界に一匹だけの素晴らしいニックネームを見つけてください！あなたのポケモンとの冒険が、より素晴らしいものになることを願っています。</p>
+        </div>
+    </article>
 
     <!-- Toast Notification -->
     <div id="toast" class="toast hidden"></div>
 
     <footer class="app-footer">
         <div class="footer-container">
-            <p>&copy; 2026 ポケモン ニックネームメーカー</p>
+            <p>&copy; 2026 ポケモンニックネームの種</p>
             <nav class="footer-nav">
+                <a href="blog/index.html">ブログ</a>
+                <a href="portfolio/index.html">運営者情報</a>
+                <a href="contact.html">お問い合わせ</a>
+                <a href="terms.html">利用規約・免責事項</a>
                 <a href="privacy.html">プライバシーポリシー</a>
             </nav>
         </div>
