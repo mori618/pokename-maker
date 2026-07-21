@@ -1,0 +1,46 @@
+[
+  {
+    "id": "fishing",
+    "title": "フィッシング・エボリューション",
+    "category": "game",
+    "description_short": "魚を釣って売り、釣り竿を強化していく成長型釣りゲーム。35種の魚と豊富なスキルビルドが楽しめる。",
+    "thumbnail": "./images/fishing-thumb.jpg",
+    "detail_url": "./projects/fishing.html",
+    "tags": ["ゲーム", "シミュレーション", "放置", "JavaScript"],
+    "created_at": "2025-01-01",
+    "in_development": true,
+    "disabled": true
+  },
+  {
+    "id": "ggdemon",
+    "title": "GG Demon - Battle Charge",
+    "category": "game",
+    "description_short": "エネルギー管理と読み合いが鍵のターン制戦略バトルゲーム。タワーを登るサバイバルモードに挑め。",
+    "thumbnail": "./images/ggdemon-thumb.jpg",
+    "detail_url": "./projects/ggdemon.html",
+    "tags": ["ゲーム", "ターン制", "ストラテジー", "JavaScript"],
+    "created_at": "2024-12-01",
+    "in_development": true
+  },
+  {
+    "id": "swing-jump",
+    "title": "スウィングジャンプ",
+    "category": "game",
+    "description_short": "ブランコを使って飛距離を競うチャレンジゲーム。タイミングよく離して最高記録を目指そう！",
+    "thumbnail": "./images/swing-jump-thumb.jpg",
+    "detail_url": "./projects/swing-jump.html",
+    "tags": ["ゲーム", "アクション", "カジュアル", "JavaScript"],
+    "created_at": "2024-06-01"
+  },
+  {
+    "id": "puzzle-rogue",
+    "title": "Puzzle Rogue",
+    "category": "game",
+    "description_short": "ブラウザで遊べるパズル×ローグライクゲーム。コンボを繋いで強力なトークンを獲得しよう！",
+    "thumbnail": "./images/puzzle-rogue-thumb.jpg",
+    "detail_url": "./projects/puzzle-rogue.html",
+    "tags": ["ゲーム", "パズル", "ローグライク", "React", "JavaScript"],
+    "created_at": "2024-04-01",
+    "in_development": true
+  }
+]

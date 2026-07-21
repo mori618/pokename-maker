@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>スウィングジャンプ | 遊んでみよう！</title>
+  <meta name="description" content="空高く舞い上がれ！ブランコの反動を使って飛距離を競う爽快アクションゲーム。君はどこまで飛べるか！？" />
+  <meta property="og:title" content="スウィングジャンプ | 爽快ジャンプアクション！" />
+  <meta property="og:description" content="空高く舞い上がれ！ブランコの反動を使って飛距離を競う爽快アクションゲーム。君はどこまで飛べるか！？" />
+  <meta property="og:image" content="../images/swing-jump-thumb.jpg" />
+  <meta property="og:type" content="website" />
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: { sans: ['"Noto Sans JP"', 'Inter', 'sans-serif'] },
+          colors: {
+            game: {
+              primary: '#0ea5e9',   /* Sky 500 */
+              primaryGlow: '#38bdf8', /* Sky 400 */
+              secondary: '#10b981', /* Emerald 500 */
+              accent: '#f59e0b',    /* Amber 500 */
+              dark: '#020617',      /* Slate 950 */
+              surface: '#0f172a'    /* Slate 900 */
+            }
+          },
+          animation: {
+            'float': 'float 4s ease-in-out infinite',
+            'float-delayed': 'float 4s ease-in-out 2s infinite',
+            'blob': 'blob 15s infinite alternate ease-in-out',
+            'shimmer': 'shimmer 2.5s infinite linear',
+            'pulse-glow': 'pulse-glow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+          },
+          keyframes: {
+            float: {
+              '0%, 100%': { transform: 'translateY(0)' },
+              '50%': { transform: 'translateY(-15px)' },
+            },
+            blob: {
+              '0%': { transform: 'translate(0px, 0px) scale(1)' },
+              '33%': { transform: 'translate(30px, -50px) scale(1.1)' },
+              '66%': { transform: 'translate(-20px, 20px) scale(0.9)' },
+              '100%': { transform: 'translate(0px, 0px) scale(1)' },
+            },
+            shimmer: {
+              '0%': { transform: 'translateX(-100%) skewX(-15deg)' },
+              '100%': { transform: 'translateX(200%) skewX(-15deg)' },
+            },
+            'pulse-glow': {
+              '0%, 100%': { opacity: 1, filter: 'drop-shadow(0 0 10px rgba(14,165,233,0.5))' },
+              '50%': { opacity: 0.7, filter: 'drop-shadow(0 0 25px rgba(14,165,233,0.9))' },
+            }
+          }
+        },
+      },
+    };
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Noto+Sans+JP:wght@400;700;900&display=swap"
+    rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <style>
+    /* スクロールバーを非表示 */
+    ::-webkit-scrollbar { display: none; }
+    * { scrollbar-width: none; -ms-overflow-style: none; }
+
+    body {
+      background-color: #020617;
+      color: #f8fafc;
+      overflow-x: hidden;
+    }
+
+    /* ゲーミング背景グリッド */
+    .bg-grid-pattern {
+      background-size: 40px 40px;
+      background-image: linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+      mask-image: linear-gradient(to bottom, black 20%, transparent 100%);
+      -webkit-mask-image: linear-gradient(to bottom, black 20%, transparent 100%);
+    }
+
+    /* ネオンテキストエフェクト */
+    .neon-text-title {
+      text-shadow: 0 0 20px rgba(14, 165, 233, 0.6), 0 0 40px rgba(14, 165, 233, 0.3);
+    }
+
+    /* メインボタンの立体感とグロー */
+    .btn-gaming {
+      background: linear-gradient(135deg, #0ea5e9, #1d4ed8);
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.3),
+        0 0 20px -5px rgba(14, 165, 233, 0.5),
+        0 10px 25px -5px rgba(29, 78, 216, 0.6);
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .btn-gaming:hover {
+      transform: translateY(-4px) scale(1.02);
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.4),
+        0 0 30px 0px rgba(14, 165, 233, 0.7),
+        0 15px 35px -5px rgba(29, 78, 216, 0.7);
+    }
+
+    .btn-gaming:active {
+      transform: translateY(2px) scale(0.98);
+    }
+
+    /* グラスモーフィズムカードの微調整 */
+    .glass-card {
+      background: linear-gradient(145deg, rgba(15, 23, 42, 0.6) 0%, rgba(2, 6, 23, 0.8) 100%);
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.05);
+    }
+  </style>
+    <!-- Google AdSense Code -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8223576768449365" crossorigin="anonymous"></script>
+</head>
+
+<body class="font-sans min-h-screen relative selection:bg-game-primary selection:text-white">
+
+  <!-- 背景のアニメーションオーブとグリッド -->
+  <div class="fixed inset-0 z-[-1] overflow-hidden pointer-events-none">
+    <div class="absolute inset-0 bg-grid-pattern"></div>
+    <div
+      class="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] rounded-full bg-game-primary/20 blur-[120px] animate-blob">
+    </div>
+    <div class="absolute top-[20%] right-[-10%] w-[40%] h-[60%] rounded-full bg-indigo-600/20 blur-[120px] animate-blob"
+      style="animation-delay: 3s;"></div>
+    <div
+      class="absolute bottom-[-20%] left-[10%] w-[60%] h-[50%] rounded-full bg-game-secondary/10 blur-[120px] animate-blob"
+      style="animation-delay: 6s;"></div>
+  </div>
+
+  <div class="max-w-5xl mx-auto px-4 py-8 md:py-12 relative z-10">
+
+
+
+    <!-- ヒーローセクション -->
+    <header class="text-center mb-24 relative">
+      <div class="inline-block animate-float mb-6 relative">
+        <div class="absolute inset-0 bg-white/20 blur-xl rounded-full"></div>
+        <span class="material-icons text-7xl relative z-10 drop-shadow-[0_0_15px_rgba(255,255,255,0.3)]">flight_takeoff</span>
+      </div>
+
+      <h1
+        class="text-5xl md:text-7xl lg:text-8xl font-black mb-8 tracking-tighter text-transparent bg-clip-text bg-gradient-to-b from-white via-sky-100 to-sky-300 neon-text-title pb-2">
+        </h1>
+      <script>document.currentScript.previousElementSibling.setAttribute("data-text", "swingjump.hero.title"); document.currentScript.previousElementSibling.innerHTML = "";</script>
+
+      <p class="text-lg md:text-2xl font-bold text-sky-200/90 mb-12 max-w-3xl mx-auto leading-relaxed drop-shadow-md">
+        </p>
+      <script>document.currentScript.previousElementSibling.setAttribute("data-text", "swingjump.hero.subtitle"); document.currentScript.previousElementSibling.innerHTML = "";</script>
+
+      <!-- プレイボタン -->
+      <div class="flex justify-center mb-16 relative z-20">
+        <div class="relative group">
+          <!-- ボタンの背後の強いグロー -->
+          <div
+            class="absolute -inset-1 bg-gradient-to-r from-game-primary via-blue-500 to-purple-600 rounded-[2rem] blur opacity-40 group-hover:opacity-75 transition duration-500 group-hover:duration-200">
+          </div>
+
+          <a href="https://swing.yurand.com/" target="_blank" rel="noopener noreferrer"
+            class="btn-gaming relative px-10 md:px-14 py-5 md:py-6 rounded-[1.5rem] text-white font-black text-2xl md:text-3xl flex items-center gap-4 overflow-hidden border border-white/10">
+            <!-- シマーエフェクト（光の反射） -->
+            <div
+              class="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent translate-x-[-150%] skew-x-[-20deg] group-hover:animate-shimmer pointer-events-none">
+            </div>
+
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 md:w-10 md:h-10 animate-pulse-glow"
+              fill="currentColor" viewBox="0 0 24 24">
+              <path d="M8 5v14l11-7z" />
+            </svg>
+            <span data-text="swingjump.hero.play_btn"></span></a>
+        </div>
+      </div>
+
+      <!-- メイン画像（サイバーフレーム） -->
+      <div class="relative max-w-4xl mx-auto group perspective-1000">
+        <!-- アウターグローフレーム -->
+        <div
+          class="absolute -inset-0.5 bg-gradient-to-br from-game-primary/50 via-slate-800 to-indigo-600/50 rounded-3xl blur-md opacity-50 group-hover:opacity-100 transition-opacity duration-700">
+        </div>
+
+        <div class="relative rounded-[1.5rem] overflow-hidden border border-slate-700/60 bg-slate-900 shadow-2xl">
+          <img src="../images/swing-jump-thumb.jpg" alt="スウィングジャンプのプレイ画面"
+            class="w-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
+            onerror="this.style.display='none'; this.parentElement.innerHTML='<div class=\'w-full aspect-video bg-gradient-to-br from-slate-900 via-sky-900 to-indigo-950 flex flex-col items-center justify-center text-white gap-6\'><span class=\'material-icons text-8xl animate-float\'>flight_takeoff</span><span class=\'text-4xl font-black tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-sky-400 to-indigo-400\'>SWING JUMP</span></div>'" />
+
+          <!-- ホバー時のガラスオーバーレイ -->
+          <div
+            class="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none">
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- 遊び方と特徴 -->
+    <main class="grid lg:grid-cols-2 gap-8 lg:gap-10 mb-24 relative z-10">
+
+      <!-- 特徴セクション -->
+      <section
+        class="glass-card backdrop-blur-xl rounded-[2rem] p-8 md:p-10 border border-slate-700/50 group hover:border-sky-500/30 transition-colors duration-500 relative overflow-hidden">
+        <div
+          class="absolute top-0 right-0 w-32 h-32 bg-sky-500/10 rounded-full blur-3xl group-hover:bg-sky-500/20 transition-colors duration-500">
+        </div>
+
+        <h2 class="text-3xl font-black mb-8 flex items-center gap-3 text-white">
+          <span class="material-icons text-4xl drop-shadow-[0_0_10px_rgba(239,68,68,0.5)]">whatshot</span> <span data-text="swingjump.point.title"></span>
+        </h2>
+        <div class="space-y-6 relative z-10">
+          <p class="text-xl text-sky-300 font-bold leading-relaxed border-l-4 border-sky-500 pl-4">
+            </p>
+          <script>document.currentScript.previousElementSibling.setAttribute("data-text", "swingjump.point.desc1"); document.currentScript.previousElementSibling.innerHTML = "";</script>
+          <p class="text-slate-300 leading-relaxed font-medium">
+            </p>
+          <script>document.currentScript.previousElementSibling.setAttribute("data-text", "swingjump.point.desc2"); document.currentScript.previousElementSibling.innerHTML = "";</script>
+          <p class="text-slate-300 leading-relaxed font-medium">
+            </p>
+          <script>document.currentScript.previousElementSibling.setAttribute("data-text", "swingjump.point.desc3"); document.currentScript.previousElementSibling.innerHTML = "";</script>
+        </div>
+      </section>
+
+      <!-- 遊び方ステップセクション -->
+      <section
+        class="glass-card backdrop-blur-xl rounded-[2rem] p-8 md:p-10 border border-slate-700/50 group hover:border-emerald-500/30 transition-colors duration-500 relative overflow-hidden">
+        <div
+          class="absolute bottom-0 left-0 w-32 h-32 bg-emerald-500/10 rounded-full blur-3xl group-hover:bg-emerald-500/20 transition-colors duration-500">
+        </div>
+
+        <h2 class="text-3xl font-black mb-8 flex items-center gap-3 text-white">
+          <span class="material-icons text-4xl drop-shadow-[0_0_10px_rgba(16,185,129,0.5)]">sports_esports</span> <span data-text="swingjump.steps.title"></span>
+        </h2>
+        <div class="space-y-8 relative z-10">
+
+          <!-- Step 1 -->
+          <div class="flex items-start gap-5 group/step">
+            <div
+              class="w-14 h-14 rounded-2xl bg-sky-500/10 text-sky-400 flex flex-col justify-center items-center font-black text-2xl border border-sky-500/30 shadow-[0_0_15px_rgba(14,165,233,0.15)] shrink-0 group-hover/step:scale-110 group-hover/step:bg-sky-500/20 group-hover/step:shadow-[0_0_20px_rgba(14,165,233,0.4)] group-hover/step:border-sky-400 transition-all duration-300">
+              1</div>
+            <div class="pt-1">
+              <h3 class="font-bold text-xl mb-2 text-white group-hover/step:text-sky-300 transition-colors" data-text="swingjump.steps.step1_title"></h3>
+              <p class="text-slate-400 font-medium" data-text="swingjump.steps.step1_desc"></p>
+            </div>
+          </div>
+
+          <!-- Step 2 -->
+          <div class="flex items-start gap-5 group/step">
+            <div
+              class="w-14 h-14 rounded-2xl bg-emerald-500/10 text-emerald-400 flex flex-col justify-center items-center font-black text-2xl border border-emerald-500/30 shadow-[0_0_15px_rgba(16,185,129,0.15)] shrink-0 group-hover/step:scale-110 group-hover/step:bg-emerald-500/20 group-hover/step:shadow-[0_0_20px_rgba(16,185,129,0.4)] group-hover/step:border-emerald-400 transition-all duration-300">
+              2</div>
+            <div class="pt-1">
+              <h3 class="font-bold text-xl mb-2 text-white group-hover/step:text-emerald-300 transition-colors"></h3>
+              <script>document.currentScript.previousElementSibling.setAttribute("data-text", "swingjump.steps.step2_title"); document.currentScript.previousElementSibling.innerHTML = "";</script>
+              <p class="text-slate-400 font-medium" data-text="swingjump.steps.step2_desc"></p>
+            </div>
+          </div>
+
+          <!-- Step 3 -->
+          <div class="flex items-start gap-5 group/step">
+            <div
+              class="w-14 h-14 rounded-2xl bg-amber-500/10 text-amber-400 flex flex-col justify-center items-center font-black text-2xl border border-amber-500/30 shadow-[0_0_15px_rgba(245,158,11,0.15)] shrink-0 group-hover/step:scale-110 group-hover/step:bg-amber-500/20 group-hover/step:shadow-[0_0_20px_rgba(245,158,11,0.4)] group-hover/step:border-amber-400 transition-all duration-300">
+              3</div>
+            <div class="pt-1">
+              <h3 class="font-bold text-xl mb-2 text-white group-hover/step:text-amber-300 transition-colors"></h3>
+              <script>document.currentScript.previousElementSibling.setAttribute("data-text", "swingjump.steps.step3_title"); document.currentScript.previousElementSibling.innerHTML = "";</script>
+              <p class="text-slate-400 font-medium" data-text="swingjump.steps.step3_desc"></p>
+            </div>
+          </div>
+
+        </div>
+      </section>
+    </main>
+
+    <!-- フッター -->
+    <footer
+      class="border-t border-slate-800/80 pt-8 pb-12 flex flex-col md:flex-row justify-between items-center gap-6 relative z-10">
+      <div
+        class="text-slate-400 text-sm flex items-center gap-2 bg-slate-900/50 px-4 py-2 rounded-full border border-slate-800 backdrop-blur-sm">
+        </div>
+      <script>document.currentScript.previousElementSibling.setAttribute("data-text", "swingjump.footer.tech"); document.currentScript.previousElementSibling.innerHTML = "";</script>
+
+
+    </footer>
+
+  </div>
+  <script src="../texts.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      document.querySelectorAll("[data-text]").forEach(el => {
+        const path = el.getAttribute("data-text").split('.');
+        let val = APP_TEXTS;
+        for (const p of path) { val = val[p]; }
+        if (val) el.innerHTML = val;
+      });
+    });
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>フィッシング・エボリューション | 遊んでみよう！</title>
+  <meta name="description" content="魚を釣って売り、釣り竿を強化！35種の魚と豊富なスキルビルドが楽しめる成長型釣りゲーム。" />
+  <meta property="og:title" content="フィッシング・エボリューション | 海の覇者を目指せ！" />
+  <meta property="og:description" content="魚を釣って売り、釣り竿を強化！35種の魚と豊富なスキルビルドが楽しめる成長型釣りゲーム。" />
+  <meta property="og:image" content="../images/fishing-thumb.jpg" />
+  <meta property="og:type" content="website" />
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: { sans: ['"Noto Sans JP"', 'Inter', 'sans-serif'] },
+          colors: {
+            deep: {
+              900: '#020617', // 超深海の黒に近い青
+              800: '#082f49', // 深海のティールブルー
+              700: '#0369a1',
+            }
+          },
+          animation: {
+            'float-slow': 'float 6s ease-in-out infinite',
+            'float-fast': 'float 3s ease-in-out infinite',
+            'pulse-glow': 'pulse-glow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+            'wave-bg': 'wave-bg 15s ease infinite alternate',
+          },
+          keyframes: {
+            float: {
+              '0%, 100%': { transform: 'translateY(0)' },
+              '50%': { transform: 'translateY(-15px)' },
+            },
+            'pulse-glow': {
+              '0%, 100%': { opacity: 1, filter: 'drop-shadow(0 0 15px rgba(6, 182, 212, 0.6))' },
+              '50%': { opacity: .8, filter: 'drop-shadow(0 0 5px rgba(6, 182, 212, 0.3))' },
+            },
+            'wave-bg': {
+              '0%': { backgroundPosition: '0% 50%' },
+              '100%': { backgroundPosition: '100% 50%' }
+            }
+          }
+        },
+      },
+    };
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Noto+Sans+JP:wght@400;700;900&display=swap"
+    rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <style>
+    /* スクロールバーを非表示 */
+    ::-webkit-scrollbar { display: none; }
+    * { scrollbar-width: none; -ms-overflow-style: none; }
+
+    body {
+      background-color: #020617;
+      color: #f8fafc;
+      overflow-x: hidden;
+    }
+
+    /* 深海のゆらぎとグラデーション背景 */
+    .ocean-bg {
+      background: linear-gradient(-45deg, #020617, #082f49, #020617, #0f766e);
+      background-size: 400% 400%;
+      animation: wave-bg 15s ease infinite;
+    }
+
+    /* 水中の気泡アニメーション */
+    .bubbles-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .bubble {
+      position: absolute;
+      bottom: -100px;
+      background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.05));
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 50%;
+      animation: floatUp infinite ease-in;
+    }
+
+    @keyframes floatUp {
+      0% {
+        transform: translateY(0) scale(0.8);
+        opacity: 0;
+      }
+
+      20% {
+        opacity: 0.8;
+      }
+
+      100% {
+        transform: translateY(-120vh) scale(1.5);
+        opacity: 0;
+      }
+    }
+
+    /* 気泡のランダム配置 */
+    .bubble:nth-child(1) {
+      width: 60px;
+      height: 60px;
+      left: 10%;
+      animation-duration: 12s;
+    }
+
+    .bubble:nth-child(2) {
+      width: 30px;
+      height: 30px;
+      left: 25%;
+      animation-duration: 8s;
+      animation-delay: 2s;
+    }
+
+    .bubble:nth-child(3) {
+      width: 80px;
+      height: 80px;
+      left: 45%;
+      animation-duration: 15s;
+      animation-delay: 1s;
+    }
+
+    .bubble:nth-child(4) {
+      width: 20px;
+      height: 20px;
+      left: 65%;
+      animation-duration: 6s;
+      animation-delay: 4s;
+    }
+
+    .bubble:nth-child(5) {
+      width: 50px;
+      height: 50px;
+      left: 85%;
+      animation-duration: 10s;
+      animation-delay: 0s;
+    }
+
+    .bubble:nth-child(6) {
+      width: 40px;
+      height: 40px;
+      left: 80%;
+      animation-duration: 11s;
+      animation-delay: 3s;
+    }
+
+    /* ネオンテキスト */
+    .text-neon {
+      text-shadow: 0 0 10px rgba(34, 211, 238, 0.8), 0 0 30px rgba(34, 211, 238, 0.4);
+    }
+
+    /* グラスモーフィズムカード */
+    .glass-card {
+      background: rgba(255, 255, 255, 0.03);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+    }
+
+    /* プレイボタンのリッチなエフェクト */
+    .btn-play {
+      background: linear-gradient(135deg, #06b6d4, #2563eb);
+      box-shadow: 0 0 20px rgba(6, 182, 212, 0.4), inset 0 0 0 border-box transparent;
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .btn-play:hover {
+      transform: translateY(-5px) scale(1.05);
+      box-shadow: 0 15px 35px rgba(6, 182, 212, 0.6), inset 0 0 20px rgba(255, 255, 255, 0.3);
+    }
+
+    .btn-play:active {
+      transform: translateY(2px) scale(0.98);
+    }
+
+    .btn-play::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 50%;
+      height: 100%;
+      background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.4), transparent);
+      transform: skewX(-20deg);
+      transition: none;
+    }
+
+    .btn-play:hover::after {
+      animation: shine 1.5s infinite;
+    }
+
+    @keyframes shine {
+      100% {
+        left: 200%;
+      }
+    }
+  </style>
+    <!-- Google AdSense Code -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8223576768449365" crossorigin="anonymous"></script>
+</head>
+
+<body class="font-sans min-h-screen ocean-bg relative selection:bg-cyan-500/30 selection:text-cyan-100">
+
+  <!-- 水中の気泡エフェクト -->
+  <div class="bubbles-container">
+    <div class="bubble"></div>
+    <div class="bubble"></div>
+    <div class="bubble"></div>
+    <div class="bubble"></div>
+    <div class="bubble"></div>
+    <div class="bubble"></div>
+  </div>
+
+  <div class="relative z-10 max-w-6xl mx-auto px-4 py-8 md:py-12">
+
+
+
+    <!-- ヒーローセクション -->
+    <header class="text-center mb-32 relative">
+      <div class="inline-block animate-float-slow mb-6">
+        <div class="relative">
+          <span class="material-icons text-7xl md:text-8xl drop-shadow-[0_0_20px_rgba(255,255,255,0.3)]">phishing</span>
+          <div class="absolute top-0 right-0 -mt-2 -mr-2 w-4 h-4 bg-yellow-400 rounded-full animate-ping opacity-75">
+          </div>
+        </div>
+      </div>
+
+      <h1
+        class="text-5xl md:text-8xl font-black mb-8 tracking-tighter text-transparent bg-clip-text bg-gradient-to-b from-white via-cyan-100 to-cyan-500 text-neon leading-tight">
+        </h1>
+      <!-- スクリプトで置換されます -->
+      <script>document.currentScript.previousElementSibling.setAttribute("data-text", "fishing.hero.title"); document.currentScript.previousElementSibling.innerHTML = "";</script>
+
+      <p class="text-lg md:text-2xl font-bold text-cyan-50 mb-12 max-w-3xl mx-auto leading-relaxed drop-shadow-md">
+        </p>
+      <script>document.currentScript.previousElementSibling.setAttribute("data-text", "fishing.hero.subtitle"); document.currentScript.previousElementSibling.innerHTML = "";</script>
+
+      <div class="flex justify-center mb-20">
+        <a href="https://fishing.yurand.com/" target="_blank" rel="noopener noreferrer"
+          class="btn-play relative px-12 py-5 rounded-full text-white font-black text-2xl md:text-3xl flex items-center gap-4 overflow-hidden group">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 md:w-10 md:h-10 animate-pulse-glow" fill="currentColor"
+            viewBox="0 0 24 24">
+            <path d="M8 5v14l11-7z" />
+          </svg>
+          <span class="relative z-10 tracking-tight" data-text="fishing.hero.play_btn"></span>
+        </a>
+      </div>
+
+      <!-- メインビジュアル / サムネイル -->
+      <div
+        class="relative max-w-4xl mx-auto rounded-3xl overflow-hidden glass-card p-2 md:p-3 group transform transition-transform duration-700 hover:scale-[1.02]">
+        <div class="absolute inset-0 bg-gradient-to-r from-cyan-500/20 to-blue-500/20 blur-xl"></div>
+        <div class="relative rounded-2xl overflow-hidden border border-white/20">
+          <img src="../images/fishing-thumb.jpg" alt="フィッシング・エボリューションのプレイ画面"
+            class="w-full object-cover transition-transform duration-1000 group-hover:scale-105"
+            onerror="this.style.display='none'; this.parentElement.innerHTML='<div class=\'w-full aspect-video bg-gradient-to-br from-cyan-900 to-slate-900 flex flex-col items-center justify-center text-white gap-6\'><span class=\'material-icons text-8xl animate-float-fast\'>waves</span><span class=\'text-3xl md:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-400 tracking-widest\'>NO IMAGE</span></div>'" />
+          <!-- 光のオーバーレイ -->
+          <div
+            class="absolute inset-0 bg-gradient-to-tr from-cyan-500/10 via-transparent to-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none">
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="space-y-32 mb-32">
+
+      <!-- 熱狂のポイント セクション -->
+      <section class="glass-card rounded-[2.5rem] p-8 md:p-16 relative overflow-hidden">
+        <!-- 装飾的な光の球 -->
+        <div class="absolute top-0 right-0 -mr-20 -mt-20 w-64 h-64 bg-cyan-500/20 rounded-full blur-3xl"></div>
+        <div class="absolute bottom-0 left-0 -ml-20 -mb-20 w-64 h-64 bg-blue-600/20 rounded-full blur-3xl"></div>
+
+        <div class="relative z-10 max-w-3xl mx-auto text-center">
+          <h2
+            class="text-4xl md:text-5xl font-black mb-8 tracking-tight text-white inline-flex items-center gap-4 justify-center">
+            <span class="material-icons text-5xl drop-shadow-lg">waves</span>
+            <span class="bg-clip-text text-transparent bg-gradient-to-r from-cyan-300 to-blue-300" data-text="fishing.point.title"></span>
+          </h2>
+          <div class="space-y-8 text-lg md:text-xl">
+            <p class="text-cyan-200 font-bold leading-relaxed text-2xl">
+              </p>
+            <script>document.currentScript.previousElementSibling.setAttribute("data-text", "fishing.point.subtitle"); document.currentScript.previousElementSibling.innerHTML = "";</script>
+            <p class="text-slate-300 leading-relaxed" data-text="fishing.point.desc1"></p>
+            <p class="text-slate-300 leading-relaxed" data-text="fishing.point.desc2"></p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 遊び方 セクション (Gridレイアウト) -->
+      <section>
+        <h2
+          class="text-4xl md:text-5xl font-black mb-12 tracking-tight text-white flex items-center justify-center gap-4 text-center">
+          <span class="material-icons text-5xl">sports_esports</span>
+          <span class="bg-clip-text text-transparent bg-gradient-to-r from-emerald-300 to-cyan-300" data-text="fishing.steps.title"></span>
+        </h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+
+          <!-- Step 1 -->
+          <div class="glass-card rounded-3xl p-8 hover:-translate-y-2 transition-transform duration-300 group">
+            <div
+              class="w-16 h-16 mb-6 rounded-2xl bg-gradient-to-br from-cyan-400 to-blue-600 text-white flex justify-center items-center font-black text-3xl shadow-[0_0_20px_rgba(6,182,212,0.5)] group-hover:scale-110 transition-transform">
+              1</div>
+            <h3 class="font-black text-2xl mb-4 text-cyan-100 tracking-tight" data-text="fishing.steps.step1_title"></h3>
+            <p class="text-slate-300 leading-relaxed">
+              </p>
+            <script>document.currentScript.previousElementSibling.setAttribute("data-text", "fishing.steps.step1_desc"); document.currentScript.previousElementSibling.innerHTML = "";</script>
+          </div>
+
+          <!-- Step 2 -->
+          <div class="glass-card rounded-3xl p-8 hover:-translate-y-2 transition-transform duration-300 group">
+            <div
+              class="w-16 h-16 mb-6 rounded-2xl bg-gradient-to-br from-yellow-400 to-orange-500 text-white flex justify-center items-center font-black text-3xl shadow-[0_0_20px_rgba(250,204,21,0.5)] group-hover:scale-110 transition-transform">
+              2</div>
+            <h3 class="font-black text-2xl mb-4 text-yellow-100 tracking-tight" data-text="fishing.steps.step2_title"></h3>
+            <p class="text-slate-300 leading-relaxed">
+              </p>
+            <script>document.currentScript.previousElementSibling.setAttribute("data-text", "fishing.steps.step2_desc"); document.currentScript.previousElementSibling.innerHTML = "";</script>
+          </div>
+
+          <!-- Step 3 -->
+          <div class="glass-card rounded-3xl p-8 hover:-translate-y-2 transition-transform duration-300 group">
+            <div
+              class="w-16 h-16 mb-6 rounded-2xl bg-gradient-to-br from-emerald-400 to-teal-600 text-white flex justify-center items-center font-black text-3xl shadow-[0_0_20px_rgba(52,211,153,0.5)] group-hover:scale-110 transition-transform">
+              3</div>
+            <h3 class="font-black text-2xl mb-4 text-emerald-100 tracking-tight" data-text="fishing.steps.step3_title"></h3>
+            <p class="text-slate-300 leading-relaxed">
+              </p>
+            <script>document.currentScript.previousElementSibling.setAttribute("data-text", "fishing.steps.step3_desc"); document.currentScript.previousElementSibling.innerHTML = "";</script>
+          </div>
+
+        </div>
+      </section>
+
+    </main>
+
+    <!-- フッター -->
+    <footer
+      class="border-t border-white/10 pt-10 pb-16 flex flex-col md:flex-row justify-between items-center gap-6 relative z-10">
+      <div class="text-slate-400 text-sm font-medium">
+        </div>
+      <script>document.currentScript.previousElementSibling.setAttribute("data-text", "fishing.footer.tech"); document.currentScript.previousElementSibling.innerHTML = "";</script>
+
+
+    </footer>
+
+  </div>
+  <script src="../texts.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      document.querySelectorAll("[data-text]").forEach(el => {
+        const path = el.getAttribute("data-text").split('.');
+        let val = APP_TEXTS;
+        for (const p of path) { val = val[p]; }
+        if (val) el.innerHTML = val;
+      });
+    });
+  </script>
+</body>
+
+</html>
