@@ -240,14 +240,16 @@
           });
       }, []);
 
+      const visibleGames = useMemo(() => games.filter(g => !g.disabled), [games]);
+
       const allTags = useMemo(() => {
         const set = new Set();
-        games.forEach(g => g.tags.forEach(t => set.add(t)));
+        visibleGames.forEach(g => g.tags.forEach(t => set.add(t)));
         return ["すべて", ...Array.from(set)];
-      }, [games]);
+      }, [visibleGames]);
 
       const filtered = useMemo(() => {
-        let r = games;
+        let r = visibleGames;
         if (tag !== "すべて") r = r.filter((g) => g.tags.includes(tag));
         if (query.trim()) {
           const q = query.toLowerCase();
@@ -258,7 +260,7 @@
           if (sort === "oldest") return +new Date(a.created_at) - +new Date(b.created_at);
           return a.title.localeCompare(b.title, "ja");
         });
-      }, [games, tag, query, sort]);
+      }, [visibleGames, tag, query, sort]);
 
       const playable = games.filter((g) => !g.in_development && !g.disabled).length;
 
