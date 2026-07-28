@@ -177,14 +177,13 @@
     }
 
     /* ── Game row ──────────────────────────────────────────────────────────── */
-    function GameRow({ game, onOpen }) {
+    function GameRow({ game }) {
       return (
-        <button
+        <a
+          href={game.detail_url}
           className={`group w-full text-left flex items-center gap-4 px-4 py-4 rounded-xl transition-colors duration-150 hover:bg-black/[0.03] ${
             game.disabled ? "opacity-40 pointer-events-none" : ""
           }`}
-          onClick={() => onOpen(game)}
-          disabled={game.disabled}
         >
           {/* Icon */}
           <GameIcon game={game} />
@@ -209,59 +208,7 @@
 
           {/* Arrow */}
           <ChevronRightIcon size={18} className="shrink-0 text-gray-300 group-hover:text-gray-500 transition-colors" />
-        </button>
-      );
-    }
-
-    /* ── Modal ─────────────────────────────────────────────────────────────── */
-    function GameModal({ game, onClose }) {
-      useEffect(() => {
-        if (!game) return;
-        const h = (e) => e.key === "Escape" && onClose();
-        window.addEventListener("keydown", h);
-        document.body.style.overflow = "hidden";
-        return () => { window.removeEventListener("keydown", h); document.body.style.overflow = ""; };
-      }, [game, onClose]);
-
-      if (!game) return null;
-
-      return (
-        <div className="fixed inset-0 z-50 flex flex-col bg-white animate-fadeIn">
-          {/* Top Bar */}
-          <div className="flex items-center gap-3 px-5 py-3.5 border-b border-gray-100 shrink-0 bg-white">
-            <button
-              onClick={onClose}
-              className="w-8 h-8 rounded-full flex items-center justify-center hover:bg-gray-100 text-gray-400 hover:text-gray-700 transition-colors"
-              aria-label="閉じる"
-            >
-              <XIcon size={15} />
-            </button>
-            <GameIcon game={game} />
-            <div className="min-w-0 flex-1">
-              <p className="font-semibold text-sm text-gray-900 truncate">{game.title}</p>
-              <p className="text-xs text-gray-400 truncate">{game.detail_url}</p>
-            </div>
-            <a
-              href={game.detail_url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="ml-auto flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-xs font-medium transition-colors shadow-sm"
-            >
-              <ExternalLinkIcon size={13} />
-              <span>別タブで開く</span>
-            </a>
-          </div>
-
-          {/* Iframe View */}
-          <div className="flex-1 bg-black relative w-full h-full overflow-hidden">
-            <iframe
-              src={game.detail_url}
-              title={game.title}
-              className="w-full h-full border-0"
-              allow="fullscreen"
-            />
-          </div>
-        </div>
+        </a>
       );
     }
 
@@ -274,7 +221,6 @@
       const [tag, setTag] = useState("すべて");
       const [query, setQuery] = useState("");
       const [sort, setSort] = useState("newest");
-      const [active, setActive] = useState(null);
       const [searchOpen, setSearchOpen] = useState(false);
 
       // Fetch projects.json
@@ -313,9 +259,6 @@
           return a.title.localeCompare(b.title, "ja");
         });
       }, [games, tag, query, sort]);
-
-      const open = useCallback((g) => setActive(g), []);
-      const close = useCallback(() => setActive(null), []);
 
       const playable = games.filter((g) => !g.in_development && !g.disabled).length;
 
@@ -429,7 +372,7 @@
                   </div>
                 ) : (
                   <div className="divide-y divide-gray-50">
-                    {filtered.map((g) => <GameRow key={g.id} game={g} onOpen={open} />)}
+                    {filtered.map((g) => <GameRow key={g.id} game={g} />)}
                   </div>
                 )}
               </section>
@@ -440,8 +383,6 @@
               © {new Date().getFullYear()} {APP_TEXTS.footer.copyright} — all games handcrafted & free
             </footer>
           </div>
-
-          <GameModal game={active} onClose={close} />
         </div>
       );
     }
