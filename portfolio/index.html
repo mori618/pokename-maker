@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" class="light">
+<html lang="ja">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -21,51 +21,16 @@
   }
   </script>
 
-  <!-- Google Fonts: Plus Jakarta Sans & Noto Sans JP -->
+  <!-- Google Fonts: Noto Sans JP, Geist, Geist Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Plus+Jakarta+Sans:wght@500;700;800;900&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500&family=Geist:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;600;700;900&display=swap" rel="stylesheet" />
 
   <!-- Material Icons -->
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
 
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          fontFamily: {
-            sans: ['"Plus Jakarta Sans"', '"Noto Sans JP"', 'sans-serif'],
-          },
-          colors: {
-            brand: {
-              50: '#f0f3ff',
-              100: '#e0e7ff',
-              500: '#6366f1',
-              600: '#4f46e5',
-              700: '#4338ca',
-            }
-          },
-          keyframes: {
-            float: {
-              '0%, 100%': { transform: 'translateY(0)' },
-              '50%': { transform: 'translateY(-8px)' },
-            },
-            pulseGlow: {
-              '0%, 100%': { opacity: '0.4' },
-              '50%': { opacity: '0.8' },
-            }
-          },
-          animation: {
-            float: 'float 4s ease-in-out infinite',
-            pulseGlow: 'pulseGlow 3s ease-in-out infinite',
-          }
-        },
-      },
-    };
-  </script>
 
   <!-- React + Babel (CDN) -->
   <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
@@ -73,107 +38,24 @@
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
   <style>
-    /* スクロールバーのカスタマイズ */
-    ::-webkit-scrollbar {
-      width: 8px;
-      height: 8px;
-    }
-    ::-webkit-scrollbar-track {
-      background: transparent;
-    }
-    ::-webkit-scrollbar-thumb {
-      background: rgba(148, 163, 184, 0.4);
-      border-radius: 9999px;
-    }
-    ::-webkit-scrollbar-thumb:hover {
-      background: rgba(148, 163, 184, 0.7);
-    }
-
-    /* 背景グラデーション・メッシュ */
-    body {
-      transition: background-color 0.3s ease, color 0.3s ease;
-    }
+    /* カスタムスクロールバー非表示 */
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     
-    .bg-mesh-light {
-      background-color: #f8fafc;
-      background-image: 
-        radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.12) 0px, transparent 50%),
-        radial-gradient(at 100% 0%, rgba(236, 72, 153, 0.1) 0px, transparent 50%),
-        radial-gradient(at 50% 100%, rgba(16, 185, 129, 0.08) 0px, transparent 50%),
-        radial-gradient(at 80% 50%, rgba(14, 165, 233, 0.08) 0px, transparent 50%);
+    body {
+      font-family: 'Noto Sans JP', 'Geist', sans-serif;
     }
 
-    .dark .bg-mesh-dark {
-      background-color: #0f172a;
-      background-image: 
-        radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.18) 0px, transparent 50%),
-        radial-gradient(at 100% 0%, rgba(217, 70, 239, 0.15) 0px, transparent 50%),
-        radial-gradient(at 50% 100%, rgba(16, 185, 129, 0.12) 0px, transparent 50%),
-        radial-gradient(at 80% 50%, rgba(56, 189, 248, 0.12) 0px, transparent 50%);
-    }
-
-    /* ガラスモルフィズム */
-    .glass-card {
-      background: rgba(255, 255, 255, 0.75);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border: 1px solid rgba(255, 255, 255, 0.8);
-      box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05), 0 2px 6px -1px rgba(0, 0, 0, 0.02);
-    }
-    .dark .glass-card {
-      background: rgba(30, 41, 59, 0.7);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.3);
-    }
-
-    .glass-header {
-      background: rgba(255, 255, 255, 0.85);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border-bottom: 1px solid rgba(226, 232, 240, 0.8);
-    }
-    .dark .glass-header {
-      background: rgba(15, 23, 42, 0.85);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-    }
-
-    /* テキストグラデーション */
-    .text-gradient {
-      background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #ec4899 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-    .dark .text-gradient {
-      background: linear-gradient(135deg, #818cf8 0%, #c084fc 50%, #f472b6 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-
-    /* インタラクティブカード hover */
-    .interactive-card {
-      transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
-    }
-    .interactive-card:hover {
-      transform: translateY(-6px) scale(1.015);
-      box-shadow: 0 20px 35px -10px rgba(99, 102, 241, 0.2);
-    }
-    .dark .interactive-card:hover {
-      box-shadow: 0 20px 35px -10px rgba(0, 0, 0, 0.5), 0 0 25px rgba(129, 140, 248, 0.15);
-    }
-
-    /* アニメーションキーフレーム */
-    @keyframes fadeInUp {
-      from { opacity: 0; transform: translateY(16px); }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
       to { opacity: 1; transform: translateY(0); }
     }
-    .animate-fadeInUp {
-      animation: fadeInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    .animate-fadeIn {
+      animation: fadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
   </style>
 </head>
-<body class="bg-mesh-light dark:bg-mesh-dark min-h-screen text-slate-800 dark:text-slate-100 transition-colors duration-300 font-sans antialiased selection:bg-indigo-500 selection:text-white">
+<body class="bg-white text-gray-900 antialiased selection:bg-blue-500 selection:text-white min-h-screen">
 
   <div id="root"></div>
 
@@ -181,156 +63,200 @@
   <script type="text/babel">
     const { useState, useEffect, useMemo, useCallback } = React;
 
-    /* ===== サムネイルプレースホルダー ===== */
-    function PlaceholderThumb({ title }) {
-      const gradients = [
-        'from-indigo-500 to-purple-600',
-        'from-blue-500 to-cyan-500',
-        'from-emerald-400 to-teal-600',
-        'from-amber-400 to-orange-500',
-        'from-rose-400 to-pink-600',
-        'from-violet-500 to-fuchsia-600',
-      ];
-      const idx = (title.charCodeAt(0) || 0) % gradients.length;
+    /* ── Icon Component (Lucide Replacements) ────────────────────────────── */
+    function GamepadIcon({ size = 14, className = "", strokeWidth = 2.5 }) {
       return (
-        <div className={`w-full h-full bg-gradient-to-br ${gradients[idx]} flex items-center justify-center text-white text-5xl font-black shadow-inner select-none`}>
-          {title.charAt(0)}
+        <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" className={className}>
+          <line x1="6" y1="12" x2="10" y2="12" />
+          <line x1="8" y1="10" x2="8" y2="14" />
+          <circle cx="15" cy="13" r="1" fill="currentColor" />
+          <circle cx="18" cy="11" r="1" fill="currentColor" />
+          <rect x="2" y="6" width="20" height="12" rx="6" />
+        </svg>
+      );
+    }
+
+    function SearchIcon({ size = 13, className = "" }) {
+      return (
+        <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+          <circle cx="11" cy="11" r="8" />
+          <line x1="21" y1="21" x2="16.65" y2="16.65" />
+        </svg>
+      );
+    }
+
+    function XIcon({ size = 12, className = "" }) {
+      return (
+        <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+          <line x1="18" y1="6" x2="6" y2="18" />
+          <line x1="6" y1="6" x2="18" y2="18" />
+        </svg>
+      );
+    }
+
+    function ChevronRightIcon({ size = 18, className = "" }) {
+      return (
+        <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+          <polyline points="9 18 15 12 9 6" />
+        </svg>
+      );
+    }
+
+    function PlayIcon({ size = 12, className = "", fill = "currentColor" }) {
+      return (
+        <svg width={size} height={size} viewBox="0 0 24 24" fill={fill} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+          <polygon points="5 3 19 12 5 21 5 3" />
+        </svg>
+      );
+    }
+
+    function ExternalLinkIcon({ size = 14, className = "" }) {
+      return (
+        <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+          <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+          <polyline points="15 3 21 3 21 9" />
+          <line x1="10" y1="14" x2="21" y2="3" />
+        </svg>
+      );
+    }
+
+    /* ── Icon thumbnail ────────────────────────────────────────────────────── */
+    function GameIcon({ game }) {
+      const [err, setErr] = useState(false);
+      const gradients = [
+        "from-violet-400 to-indigo-500",
+        "from-sky-400 to-blue-500",
+        "from-emerald-400 to-teal-500",
+        "from-amber-400 to-orange-400",
+        "from-rose-400 to-pink-500",
+        "from-fuchsia-400 to-purple-500",
+      ];
+      const g = gradients[(game.title.charCodeAt(0) || 0) % gradients.length];
+      return (
+        <div className="w-14 h-14 rounded-2xl overflow-hidden shrink-0 bg-gray-100 shadow-sm border border-gray-100">
+          {err || !game.thumbnail ? (
+            <div className={`w-full h-full bg-gradient-to-br ${g} flex items-center justify-center text-white text-xl font-bold`}>
+              {game.title.charAt(0)}
+            </div>
+          ) : (
+            <img
+              src={game.thumbnail}
+              alt={game.title}
+              onError={() => setErr(true)}
+              className="w-full h-full object-cover"
+            />
+          )}
         </div>
       );
     }
 
-    /* ===== ゲームカード ===== */
-    function GameCard({ project, index, onOpen }) {
-      const [imgError, setImgError] = useState(false);
-
+    /* ── Tag chip ──────────────────────────────────────────────────────────── */
+    function Tag({ label }) {
+      const palette = {
+        ゲーム:         "bg-blue-50 text-blue-600",
+        パズル:         "bg-violet-50 text-violet-600",
+        アクション:     "bg-rose-50 text-rose-600",
+        スコアアタック: "bg-amber-50 text-amber-600",
+        クラシック:     "bg-stone-100 text-stone-500",
+        言葉:           "bg-sky-50 text-sky-600",
+        RPG:            "bg-emerald-50 text-emerald-600",
+        ローグライク:   "bg-lime-50 text-lime-700",
+        音楽:           "bg-pink-50 text-pink-600",
+        戦略:           "bg-indigo-50 text-indigo-600",
+        シミュレーション:"bg-teal-50 text-teal-600",
+        放置:           "bg-orange-50 text-orange-600",
+        カジュアル:     "bg-cyan-50 text-cyan-600",
+        JavaScript:     "bg-yellow-50 text-yellow-700",
+        React:          "bg-indigo-50 text-indigo-600",
+      };
       return (
-        <div
-          className={`interactive-card glass-card rounded-3xl overflow-hidden flex flex-col group cursor-pointer animate-fadeInUp ${project.disabled ? 'opacity-75 grayscale-[40%]' : ''}`}
-          style={{ animationDelay: `${index * 70}ms` }}
-          onClick={() => { if (!project.disabled) onOpen(project); }}
-          role="button"
-          tabIndex={project.disabled ? -1 : 0}
-          onKeyDown={(e) => { if (!project.disabled && e.key === 'Enter') onOpen(project); }}
-          aria-label={`${project.title} をプレイ`}
+        <span className={`inline-block px-2.5 py-0.5 text-[11px] font-medium rounded-full ${palette[label] ?? "bg-gray-100 text-gray-500"}`}>
+          {label}
+        </span>
+      );
+    }
+
+    /* ── Game row ──────────────────────────────────────────────────────────── */
+    function GameRow({ game, onOpen }) {
+      return (
+        <button
+          className={`group w-full text-left flex items-center gap-4 px-4 py-4 rounded-xl transition-colors duration-150 hover:bg-black/[0.03] ${
+            game.disabled ? "opacity-40 pointer-events-none" : ""
+          }`}
+          onClick={() => onOpen(game)}
+          disabled={game.disabled}
         >
-          {/* サムネイル画像エリア */}
-          <div className="relative h-48 w-full overflow-hidden bg-slate-100 dark:bg-slate-800">
-            {imgError ? (
-              <PlaceholderThumb title={project.title} />
-            ) : (
-              <img
-                src={project.thumbnail}
-                alt={`${project.title}のサムネイル`}
-                onError={() => setImgError(true)}
-                loading="lazy"
-                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-              />
-            )}
+          {/* Icon */}
+          <GameIcon game={game} />
 
-            {/* オーバーレイグラデーション */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/10 opacity-60 group-hover:opacity-40 transition-opacity duration-300"></div>
-
-            {/* ステータスバッジ (左上) */}
-            <div className="absolute top-3 left-3 flex gap-2">
-              {project.in_development ? (
-                <span className="px-2.5 py-1 text-[11px] font-bold rounded-full bg-amber-500/90 text-white backdrop-blur-md shadow-sm flex items-center gap-1">
-                  <span className="w-1.5 h-1.5 rounded-full bg-white animate-ping"></span>
-                  {APP_TEXTS.card.in_development_badge}
-                </span>
-              ) : (
-                <span className="px-2.5 py-1 text-[11px] font-bold rounded-full bg-emerald-500/90 text-white backdrop-blur-md shadow-sm flex items-center gap-1">
-                  <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse"></span>
-                  {APP_TEXTS.card.playable_title}
+          {/* Text */}
+          <div className="flex-1 min-w-0 space-y-1.5">
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="font-semibold text-[15px] text-gray-900 leading-tight">{game.title}</span>
+              {game.title_en && <span className="text-xs text-gray-400 font-normal">{game.title_en}</span>}
+              {game.in_development && (
+                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-50 text-amber-600 text-[10px] font-medium">
+                  <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
+                  開発中
                 </span>
               )}
             </div>
-
-            {/* ホバー時プレイアクション (中央) */}
-            {!project.disabled && (
-              <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 bg-indigo-900/30 backdrop-blur-[2px]">
-                <div className="transform translate-y-3 group-hover:translate-y-0 transition-transform duration-300 flex items-center gap-2 px-5 py-2.5 rounded-full bg-indigo-600 text-white font-bold text-sm shadow-lg shadow-indigo-500/50">
-                  <span className="material-icons text-xl">play_arrow</span>
-                  <span>{APP_TEXTS.card.play_now}</span>
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/* カード本文 */}
-          <div className="p-5 flex-1 flex flex-col justify-between">
-            <div>
-              <h3 className="text-lg font-bold tracking-tight text-slate-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors duration-200 mb-2">
-                {project.title}
-              </h3>
-              <p className="text-slate-600 dark:text-slate-300 text-xs leading-relaxed line-clamp-2 mb-4">
-                {project.description_short}
-              </p>
-            </div>
-
-            {/* タグリスト */}
-            <div className="flex flex-wrap gap-1.5 pt-2 border-t border-slate-100 dark:border-slate-800/60">
-              {project.tags.map(tag => (
-                <span key={tag} className="px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-300 border border-indigo-100 dark:border-indigo-900/50">
-                  #{tag}
-                </span>
-              ))}
+            <p className="text-[13px] text-gray-500 leading-snug line-clamp-1 max-w-xl">{game.description_short}</p>
+            <div className="flex gap-1.5 flex-wrap">
+              {game.tags.map((t) => <Tag key={t} label={t} />)}
             </div>
           </div>
-        </div>
+
+          {/* Arrow */}
+          <ChevronRightIcon size={18} className="shrink-0 text-gray-300 group-hover:text-gray-500 transition-colors" />
+        </button>
       );
     }
 
-    /* ===== ゲームモーダル ===== */
-    function GameModal({ project, onClose }) {
+    /* ── Modal ─────────────────────────────────────────────────────────────── */
+    function GameModal({ game, onClose }) {
       useEffect(() => {
-        const handleKey = (e) => { if (e.key === 'Escape') onClose(); };
-        window.addEventListener('keydown', handleKey);
-        document.body.style.overflow = 'hidden';
-        return () => {
-          window.removeEventListener('keydown', handleKey);
-          document.body.style.overflow = '';
-        };
-      }, [onClose]);
+        if (!game) return;
+        const h = (e) => e.key === "Escape" && onClose();
+        window.addEventListener("keydown", h);
+        document.body.style.overflow = "hidden";
+        return () => { window.removeEventListener("keydown", h); document.body.style.overflow = ""; };
+      }, [game, onClose]);
 
-      if (!project) return null;
+      if (!game) return null;
 
       return (
-        <div className="fixed inset-0 z-50 flex flex-col bg-slate-950/80 backdrop-blur-xl animate-fadeInUp" role="dialog" aria-modal="true">
-          {/* ヘッダーバー */}
-          <div className="glass-header px-4 py-3 flex items-center justify-between gap-4 shrink-0 shadow-md">
-            <div className="flex items-center gap-3 min-w-0">
-              <button
-                onClick={onClose}
-                className="w-9 h-9 rounded-xl flex items-center justify-center bg-slate-100 dark:bg-slate-800 hover:bg-rose-500 hover:text-white dark:hover:bg-rose-500 text-slate-600 dark:text-slate-300 transition-colors shadow-sm"
-                aria-label={APP_TEXTS.modal.close_aria}
-              >
-                <span className="material-icons text-xl">close</span>
-              </button>
-              <div className="min-w-0">
-                <h2 className="font-extrabold text-base text-slate-900 dark:text-white truncate">{project.title}</h2>
-                <p className="text-xs text-slate-500 dark:text-slate-400 truncate">{project.detail_url}</p>
-              </div>
+        <div className="fixed inset-0 z-50 flex flex-col bg-white animate-fadeIn">
+          {/* Top Bar */}
+          <div className="flex items-center gap-3 px-5 py-3.5 border-b border-gray-100 shrink-0 bg-white">
+            <button
+              onClick={onClose}
+              className="w-8 h-8 rounded-full flex items-center justify-center hover:bg-gray-100 text-gray-400 hover:text-gray-700 transition-colors"
+              aria-label="閉じる"
+            >
+              <XIcon size={15} />
+            </button>
+            <GameIcon game={game} />
+            <div className="min-w-0 flex-1">
+              <p className="font-semibold text-sm text-gray-900 truncate">{game.title}</p>
+              <p className="text-xs text-gray-400 truncate">{game.detail_url}</p>
             </div>
-
-            <div className="flex items-center gap-2">
-              <a
-                href={project.detail_url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="px-3.5 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs flex items-center gap-1.5 transition-colors shadow-md shadow-indigo-500/20"
-                title={APP_TEXTS.modal.new_tab_title}
-              >
-                <span className="material-icons text-sm">open_in_new</span>
-                <span className="hidden sm:inline">{APP_TEXTS.modal.new_tab_title}</span>
-              </a>
-            </div>
+            <a
+              href={game.detail_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="ml-auto flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-xs font-medium transition-colors shadow-sm"
+            >
+              <ExternalLinkIcon size={13} />
+              <span>別タブで開く</span>
+            </a>
           </div>
 
-          {/* iframe エリア */}
-          <div className="flex-1 relative w-full h-full bg-black">
+          {/* Iframe View */}
+          <div className="flex-1 bg-black relative w-full h-full overflow-hidden">
             <iframe
-              src={project.detail_url}
-              title={project.title}
+              src={game.detail_url}
+              title={game.title}
               className="w-full h-full border-0"
               allow="fullscreen"
             />
@@ -339,31 +265,19 @@
       );
     }
 
-    /* ===== メインアプリケーション ===== */
+    /* ── Main App ──────────────────────────────────────────────────────────── */
     function App() {
-      const [projects, setProjects] = useState([]);
+      const [games, setGames] = useState([]);
       const [loading, setLoading] = useState(true);
       const [error, setError] = useState(null);
-      const [selectedTag, setSelectedTag] = useState('ALL');
-      const [searchQuery, setSearchQuery] = useState('');
-      const [sortKey, setSortKey] = useState('newest');
-      const [activeProject, setActiveProject] = useState(null);
-      const [darkMode, setDarkMode] = useState(() => {
-        return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-      });
 
-      // ダークモードの適用
-      useEffect(() => {
-        if (darkMode) {
-          document.documentElement.classList.add('dark');
-          document.documentElement.classList.remove('light');
-        } else {
-          document.documentElement.classList.remove('dark');
-          document.documentElement.classList.add('light');
-        }
-      }, [darkMode]);
+      const [tag, setTag] = useState("すべて");
+      const [query, setQuery] = useState("");
+      const [sort, setSort] = useState("newest");
+      const [active, setActive] = useState(null);
+      const [searchOpen, setSearchOpen] = useState(false);
 
-      // データフェッチ
+      // Fetch projects.json
       useEffect(() => {
         fetch('./projects.json')
           .then(res => {
@@ -371,207 +285,169 @@
             return res.json();
           })
           .then(data => {
-            setProjects(data);
+            setGames(data);
             setLoading(false);
           })
-          .catch(err => { setError(err.message); setLoading(false); });
+          .catch(err => {
+            setError(err.message);
+            setLoading(false);
+          });
       }, []);
 
-      // 全タグ抽出
       const allTags = useMemo(() => {
         const set = new Set();
-        projects.forEach(p => p.tags.forEach(t => set.add(t)));
-        return ['ALL', ...Array.from(set)];
-      }, [projects]);
+        games.forEach(g => g.tags.forEach(t => set.add(t)));
+        return ["すべて", ...Array.from(set)];
+      }, [games]);
 
-      // フィルタリング＆ソート
-      const filteredProjects = useMemo(() => {
-        let result = projects;
-        
-        // タグフィルター
-        if (selectedTag !== 'ALL') {
-          result = result.filter(p => p.tags.includes(selectedTag));
+      const filtered = useMemo(() => {
+        let r = games;
+        if (tag !== "すべて") r = r.filter((g) => g.tags.includes(tag));
+        if (query.trim()) {
+          const q = query.toLowerCase();
+          r = r.filter((g) => g.title.toLowerCase().includes(q) || g.description_short.toLowerCase().includes(q) || g.tags.some((t) => t.toLowerCase().includes(q)));
         }
-
-        // キーワード検索
-        if (searchQuery.trim() !== '') {
-          const q = searchQuery.toLowerCase();
-          result = result.filter(p => 
-            p.title.toLowerCase().includes(q) ||
-            p.description_short.toLowerCase().includes(q) ||
-            p.tags.some(t => t.toLowerCase().includes(q))
-          );
-        }
-
-        // 並び替え
-        result = [...result].sort((a, b) => {
-          if (sortKey === 'newest') return new Date(b.created_at) - new Date(a.created_at);
-          if (sortKey === 'oldest') return new Date(a.created_at) - new Date(b.created_at);
-          if (sortKey === 'name')   return a.title.localeCompare(b.title, 'ja');
-          return 0;
+        return [...r].sort((a, b) => {
+          if (sort === "newest") return +new Date(b.created_at) - +new Date(a.created_at);
+          if (sort === "oldest") return +new Date(a.created_at) - +new Date(b.created_at);
+          return a.title.localeCompare(b.title, "ja");
         });
+      }, [games, tag, query, sort]);
 
-        return result;
-      }, [projects, selectedTag, searchQuery, sortKey]);
+      const open = useCallback((g) => setActive(g), []);
+      const close = useCallback(() => setActive(null), []);
+
+      const playable = games.filter((g) => !g.in_development && !g.disabled).length;
 
       return (
-        <div className="min-h-screen flex flex-col justify-between">
-          <div>
-            {/* Top Navigation */}
-            <nav className="max-w-6xl mx-auto px-4 py-6 flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-indigo-600 to-pink-500 flex items-center justify-center text-white font-black text-xl shadow-lg shadow-indigo-500/30">
-                  G
+        <div className="min-h-screen bg-white">
+
+          {/* Nav */}
+          <nav className="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-gray-100">
+            <div className="max-w-2xl mx-auto px-4 sm:px-6 h-12 flex items-center justify-between gap-3">
+              {/* Logo */}
+              <div className="flex items-center gap-2 shrink-0">
+                <div className="w-7 h-7 rounded-lg bg-blue-600 flex items-center justify-center shadow-sm">
+                  <GamepadIcon size={14} className="text-white" strokeWidth={2.5} />
                 </div>
-                <span className="font-extrabold text-lg tracking-tight text-slate-900 dark:text-white">
-                  GAME ARCADE
-                </span>
+                <span className="font-bold text-sm text-gray-900 tracking-tight">GAME ARCADE</span>
               </div>
 
-              {/* テーマ切り替えボタン */}
-              <button
-                onClick={() => setDarkMode(!darkMode)}
-                className="w-10 h-10 rounded-2xl glass-card flex items-center justify-center text-slate-700 dark:text-slate-200 hover:scale-105 transition-transform"
-                title={darkMode ? 'ライトモードに切替' : 'ダークモードに切替'}
-              >
-                <span className="material-icons text-xl">
-                  {darkMode ? 'light_mode' : 'dark_mode'}
+              {/* Search bar — expands inline */}
+              <div className={`flex-1 transition-all duration-200 ${searchOpen ? "max-w-xs" : "max-w-0 overflow-hidden"}`}>
+                <div className="relative">
+                  <SearchIcon size={13} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
+                  <input
+                    autoFocus={searchOpen}
+                    type="text"
+                    placeholder="ゲームを検索..."
+                    value={query}
+                    onChange={(e) => setQuery(e.target.value)}
+                    className="w-full pl-8 pr-7 py-1.5 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400 transition-all placeholder:text-gray-400 text-gray-900"
+                  />
+                  {query && (
+                    <button onClick={() => setQuery("")} className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                      <XIcon size={12} />
+                    </button>
+                  )}
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2 shrink-0">
+                {/* Tags toggle */}
+                <button
+                  onClick={() => setSearchOpen((v) => !v)}
+                  className={`w-7 h-7 rounded-lg flex items-center justify-center transition-colors ${
+                    searchOpen || query ? "bg-blue-600 text-white" : "bg-gray-100 text-gray-500 hover:bg-gray-200"
+                  }`}
+                  aria-label="検索"
+                >
+                  <SearchIcon size={13} />
+                </button>
+                <span className="text-[11px] text-gray-400 hidden sm:block font-mono" style={{ fontFamily: "'Geist Mono', monospace" }}>
+                  {playable} games
                 </span>
-              </button>
-            </nav>
+              </div>
+            </div>
 
-            <main className="max-w-6xl mx-auto px-4 pt-6 pb-20">
-              {/* ヒーローセクション */}
-              <section className="text-center py-10 md:py-16 relative">
-                <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full glass-card text-xs font-bold text-indigo-600 dark:text-indigo-300 mb-6 shadow-sm">
-                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                  <span>{APP_TEXTS.header.badge}</span>
-                </div>
+            {/* Tag bar */}
+            <div className="max-w-2xl mx-auto px-4 sm:px-6 pb-2.5 flex items-center justify-between gap-3">
+              <div className="flex gap-1.5 overflow-x-auto pb-0.5 no-scrollbar">
+                {allTags.map((t) => (
+                  <button
+                    key={t}
+                    onClick={() => setTag(t)}
+                    className={`px-3 py-1 text-xs font-medium rounded-full whitespace-nowrap transition-colors ${
+                      tag === t
+                        ? "bg-blue-600 text-white"
+                        : "bg-gray-100 text-gray-500 hover:bg-gray-200 hover:text-gray-700"
+                    }`}
+                  >
+                    {t}
+                  </button>
+                ))}
+              </div>
+              <select
+                value={sort}
+                onChange={(e) => setSort(e.target.value)}
+                className="text-xs text-gray-400 bg-transparent focus:outline-none cursor-pointer hover:text-gray-700 transition-colors shrink-0"
+              >
+                <option value="newest">最新順</option>
+                <option value="oldest">古い順</option>
+                <option value="name">名前順</option>
+              </select>
+            </div>
+          </nav>
 
-                <h1 className="text-5xl md:text-7xl font-black tracking-tight mb-6 text-gradient italic">
-                  {APP_TEXTS.header.title}
-                </h1>
+          <div className="max-w-2xl mx-auto px-4 sm:px-6">
 
-                <p className="text-slate-600 dark:text-slate-300 text-base md:text-lg max-w-2xl mx-auto leading-relaxed font-medium">
-                  {APP_TEXTS.header.description}
-                </p>
+            {/* Divider */}
+            <div className="flex items-center gap-2 my-3">
+              <div className="h-px flex-1 bg-gray-100" />
+              <span className="text-[11px] text-gray-400 font-mono" style={{ fontFamily: "'Geist Mono', monospace" }}>
+                {filtered.length} 件
+              </span>
+              <div className="h-px flex-1 bg-gray-100" />
+            </div>
+
+            {/* Loading */}
+            {loading && (
+              <div className="py-20 text-center space-y-2">
+                <div className="inline-block w-8 h-8 border-2 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+                <p className="text-xs text-gray-400">読み込み中...</p>
+              </div>
+            )}
+
+            {/* Error */}
+            {error && (
+              <div className="py-20 text-center space-y-2 text-rose-500">
+                <p className="text-sm font-semibold">{error}</p>
+              </div>
+            )}
+
+            {/* List */}
+            {!loading && !error && (
+              <section className="-mx-4 sm:-mx-6">
+                {filtered.length === 0 ? (
+                  <div className="py-20 text-center space-y-2">
+                    <GamepadIcon size={32} strokeWidth={1} className="mx-auto text-gray-300" />
+                    <p className="text-sm text-gray-400">ゲームが見つかりませんでした</p>
+                  </div>
+                ) : (
+                  <div className="divide-y divide-gray-50">
+                    {filtered.map((g) => <GameRow key={g.id} game={g} onOpen={open} />)}
+                  </div>
+                )}
               </section>
+            )}
 
-              {/* コントロールパネル (検索・タグ・ソート) */}
-              <section className="mb-10 space-y-4">
-                <div className="glass-card p-4 rounded-3xl flex flex-col md:flex-row items-center justify-between gap-4">
-                  {/* 検索入力 */}
-                  <div className="relative w-full md:w-80">
-                    <span className="material-icons absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xl">
-                      search
-                    </span>
-                    <input
-                      type="text"
-                      placeholder="ゲームを検索..."
-                      value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                      className="w-full pl-10 pr-4 py-2.5 rounded-2xl bg-white/60 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/60 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all"
-                    />
-                    {searchQuery && (
-                      <button
-                        onClick={() => setSearchQuery('')}
-                        className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
-                      >
-                        <span className="material-icons text-sm">clear</span>
-                      </button>
-                    )}
-                  </div>
-
-                  {/* タグピルリスト */}
-                  <div className="flex items-center gap-1.5 overflow-x-auto w-full md:w-auto pb-2 md:pb-0 scrollbar-none">
-                    {allTags.map(tag => (
-                      <button
-                        key={tag}
-                        onClick={() => setSelectedTag(tag)}
-                        className={`px-4 py-2 rounded-2xl text-xs font-bold whitespace-nowrap transition-all ${
-                          selectedTag === tag
-                            ? 'bg-indigo-600 text-white shadow-md shadow-indigo-500/30 scale-105'
-                            : 'bg-white/50 dark:bg-slate-800/50 text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-800'
-                        }`}
-                      >
-                        {tag === 'ALL' ? 'すべて' : `#${tag}`}
-                      </button>
-                    ))}
-                  </div>
-
-                  {/* ソート選択 */}
-                  <div className="shrink-0 w-full md:w-auto flex justify-end">
-                    <select
-                      value={sortKey}
-                      onChange={(e) => setSortKey(e.target.value)}
-                      className="px-3.5 py-2 rounded-2xl bg-white/60 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/60 text-xs font-bold text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
-                    >
-                      <option value="newest">最新順</option>
-                      <option value="oldest">古い順</option>
-                      <option value="name">名前順</option>
-                    </select>
-                  </div>
-                </div>
-              </section>
-
-              {/* ローディング */}
-              {loading && (
-                <div className="text-center py-24">
-                  <div className="inline-block w-12 h-12 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin mb-4"></div>
-                  <p className="font-bold text-slate-500 tracking-wider text-sm">{APP_TEXTS.status.loading}</p>
-                </div>
-              )}
-
-              {/* エラー */}
-              {error && (
-                <div className="text-center py-24 text-rose-500 glass-card rounded-3xl max-w-md mx-auto p-8">
-                  <span className="material-icons text-5xl mb-2">error_outline</span>
-                  <p className="font-bold">{error}</p>
-                </div>
-              )}
-
-              {/* 検索結果が空 */}
-              {!loading && !error && filteredProjects.length === 0 && (
-                <div className="text-center py-24 glass-card rounded-3xl max-w-md mx-auto p-8">
-                  <span className="material-icons text-6xl text-slate-300 dark:text-slate-600 mb-3">sports_esports</span>
-                  <h3 className="text-lg font-bold text-slate-800 dark:text-slate-200 mb-1">{APP_TEXTS.status.empty_title}</h3>
-                  <p className="text-xs text-slate-500 dark:text-slate-400">{APP_TEXTS.status.empty_description}</p>
-                </div>
-              )}
-
-              {/* ゲームカードグリッド */}
-              {!loading && !error && filteredProjects.length > 0 && (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                  {filteredProjects.map((project, index) => (
-                    <GameCard
-                      key={project.id}
-                      project={project}
-                      index={index}
-                      onOpen={setActiveProject}
-                    />
-                  ))}
-                </div>
-              )}
-            </main>
+            {/* Footer */}
+            <footer className="py-12 text-center text-xs text-gray-400 border-t border-gray-100 mt-4">
+              © {new Date().getFullYear()} {APP_TEXTS.footer.copyright} — all games handcrafted & free
+            </footer>
           </div>
 
-          {/* フッター */}
-          <footer className="border-t border-slate-200/60 dark:border-slate-800/60 py-8 text-center glass-header">
-            <p className="text-xs font-bold text-slate-500 dark:text-slate-400">
-              © {new Date().getFullYear()} {APP_TEXTS.footer.copyright}
-            </p>
-            <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-1">
-              {APP_TEXTS.footer.status}
-            </p>
-          </footer>
-
-          {/* ゲームモーダル */}
-          {activeProject && (
-            <GameModal
-              project={activeProject}
-              onClose={() => setActiveProject(null)}
-            />
-          )}
+          <GameModal game={active} onClose={close} />
         </div>
       );
     }
